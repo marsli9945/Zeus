@@ -1,0 +1,17 @@
+server:
+  port: 8100
+spring:
+  application:
+    name: auth
+
+## auth
+management:
+  endpoints:
+    web.exposure.include: "*"
+
+eureka:
+  instance:
+    prefer-ip-address: true # 使用IP进行注册
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
