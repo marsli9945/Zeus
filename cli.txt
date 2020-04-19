@@ -22,3 +22,13 @@ curl -X GET http://localhost:8201/api/user -sI
 curl -X GET \
   http://localhost:8201/api/user \
   -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODY4OTgyMDksInVzZXJfbmFtZSI6InVzZXItdXNlcm5hbWUiLCJhdXRob3JpdGllcyI6WyJVU0VSIl0sImp0aSI6IjE4ZmJhYTE5LTJhNWQtNDcwZi1hNGFiLTU1ZGE1NGE0NTQ4MSIsImNsaWVudF9pZCI6InRlc3QtY2xpZW50Iiwic2NvcGUiOlsiZGVmYXVsdC1zY29wZSJdfQ.Q0rdS4Pj9Skub8YstYraOvAgvSFpGpK5tK6NQCZv1FtxvR-PqBVrBQriLwULdIRF_Vo7vsIKTmDAfSkh5DROK24WL1LPNCuCS3W3MG_4UmWiBrvWirO2ohS3LCnz4NyusXJQaRKiPcsq_M2htg42-AqJojauM1pUIq9dxoa-Mqbhh-cRMDOADAsx59Rh14xx4HF3TS2gE82jgKtjajG80-_p5DW231KyhUFbfzQWtdJaULZruaLq1IPsYeBv7liIesbQlrnrnJoxj4LDV5Qwm4zGfCltoUfJ_KxWT2GdUsNKTlZxSODKLPG-tMsw5m39_lIze6-chDsoCInzMNB2Iw'
+
+
+// 生成证书
+keytool -genkeypair -keyalg RSA -alias gakey -keystore ga.jks -storepass tuyoostore
+
+// 查看证书
+keytool -list -keystore ga.jks
+
+// 获取公钥
+keytool -list -rfc --keystore ga.jks | openssl x509 -inform pem -pubkey

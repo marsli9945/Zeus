@@ -4,6 +4,11 @@ spring:
   application:
     name: auth
 
+keystore:
+  keystore: ga.jks
+  keystorePassword: tuyoostore
+  alias: gakey
+
 ## auth
 management:
   endpoints:
