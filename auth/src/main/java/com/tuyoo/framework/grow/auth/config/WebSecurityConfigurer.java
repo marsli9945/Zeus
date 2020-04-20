@@ -25,6 +25,7 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+                .antMatchers("/user/**").permitAll()
                 .antMatchers("/.well-known/jwks.json").permitAll()
                 .anyRequest().authenticated();
     }

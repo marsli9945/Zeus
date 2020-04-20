@@ -3,7 +3,17 @@ server:
 spring:
   application:
     name: auth
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://192.168.10.143:3306/oauth2?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false}
+    username: root
+    password: tuyou@123game
+    driverClassName: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update # 更新或创建数据表
+    show-sql: true # 打印sql
 
+# 加密证书
 keystore:
   keystore: ga.jks
   keystorePassword: tuyoostore
