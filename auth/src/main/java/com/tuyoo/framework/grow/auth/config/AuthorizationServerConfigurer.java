@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -52,14 +53,9 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception
     {
         clients.withClientDetails(new JdbcClientDetailsService(dataSource));
-
-//        clients.jdbc(this.dataSource).clients(this.clientDetails());
-//        clients.inMemory()
-//                .withClient("test-client")
-//                .secret(passwordEncoder.encode("test-secret"))
-//                .authorizedGrantTypes("refresh_token", "password")
-//                .scopes("default-scope");
     }
+
+
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints)
@@ -100,7 +96,6 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
         jwtAccessTokenConverter.setKeyPair(keyPair());
         return jwtAccessTokenConverter;
     }
-
 
     @Bean
     public KeyPair keyPair()

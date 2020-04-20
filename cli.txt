@@ -4,8 +4,8 @@ curl -X POST \
   -d grant_type=password \
   -d client_id=net5ijy \
   -d client_secret=123456 \
-  -d username=user-admin001 \
-  -d password=user-123456
+  -d username=admin001 \
+  -d password=$2a$10$lQPS9TZeg3Zg0eBwuyRGCOsVy4PU57fY4mjiXIJL49f.2A3iSutva
 
 curl -X POST \
   http://localhost:8201/auth/oauth/token \
@@ -36,4 +36,4 @@ keytool -list -rfc --keystore ga.jks | openssl x509 -inform pem -pubkey
 
 http://localhost:8100/oauth/authorize?response_type=code&client_id=net5ijy&redirect_uri=http://localhost:8080&scope=all
 
-
+http://localhost:8100/oauth/authorize?response_type=code&client_id=net5ijy&redirect_uri=http://localhost:8100/login&scope=all
