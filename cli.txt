@@ -2,10 +2,10 @@
 curl -X POST \
   http://localhost:8100/oauth/token \
   -d grant_type=password \
-  -d client_id=test-client \
-  -d client_secret=test-secret \
-  -d username=user-username \
-  -d password=user-password
+  -d client_id=net5ijy \
+  -d client_secret=123456 \
+  -d username=user-admin001 \
+  -d password=user-123456
 
 curl -X POST \
   http://localhost:8201/auth/oauth/token \
@@ -32,3 +32,8 @@ keytool -list -keystore ga.jks
 
 // 获取公钥
 keytool -list -rfc --keystore ga.jks | openssl x509 -inform pem -pubkey
+
+
+http://localhost:8100/oauth/authorize?response_type=code&client_id=net5ijy&redirect_uri=http://localhost:8080&scope=all
+
+

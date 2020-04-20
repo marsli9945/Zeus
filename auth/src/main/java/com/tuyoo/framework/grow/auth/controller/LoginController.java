@@ -42,10 +42,10 @@ public class LoginController
         return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
-    @GetMapping("user/{id}")
-    public ResultEntities<Object> getUser(@PathVariable Integer id)
+    @GetMapping("user/{username}")
+    public ResultEntities<Object> getUser(@PathVariable String username)
     {
-        return ResultEntities.success(userRepository.findAll());
+        return ResultEntities.success(userRepository.findByUsername(username));
     }
 
 }

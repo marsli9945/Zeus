@@ -1,6 +1,7 @@
 package com.tuyoo.framework.grow.auth.entities;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "springcloud_user")
@@ -21,6 +22,20 @@ public class UserEntities
 
     @Column
     private String email;
+
+    @ManyToMany
+    @JoinTable(name = "springcloud_user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<RoleEntities> roleEntitiesList;
+
+    public List<RoleEntities> getRoleEntitiesList()
+    {
+        return roleEntitiesList;
+    }
+
+    public void setRoleEntitiesList(List<RoleEntities> roleEntitiesList)
+    {
+        this.roleEntitiesList = roleEntitiesList;
+    }
 
     public Integer getId()
     {

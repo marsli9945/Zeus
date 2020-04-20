@@ -2,10 +2,12 @@ package com.tuyoo.framework.grow.auth.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -13,8 +15,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
+import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
@@ -27,21 +34,26 @@ import java.security.KeyPair;
 public class AuthorizationServerConfigurer extends AuthorizationServerConfigurerAdapter
 {
 
-    private final AuthenticationManager authenticationManagerBean;
-    private final PasswordEncoder passwordEncoder;
-    private final DataSource dataSource;
+    @Autowired
+    AuthenticationManager authenticationManagerBean;
 
-    //客户端配置
-    @Bean
-    public ClientDetailsService clientDetails()
-    {
-        return new JdbcClientDetailsService(dataSource);
-    }
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    @Autowired
+    DataSource dataSource;
+
+    @Qualifier("myUserDetailsService")
+    @Autowired
+    UserDetailsService userDetailsService;
+
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception
     {
-        clients.jdbc(this.dataSource).clients(this.clientDetails());
+        clients.withClientDetails(new JdbcClientDetailsService(dataSource));
+
+//        clients.jdbc(this.dataSource).clients(this.clientDetails());
 //        clients.inMemory()
 //                .withClient("test-client")
 //                .secret(passwordEncoder.encode("test-secret"))
@@ -52,8 +64,25 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints)
     {
+        // 数据库管理access_token和refresh_token
+        TokenStore tokenStore = new JdbcTokenStore(dataSource);
+
+        ClientDetailsService clientService = new JdbcClientDetailsService(dataSource);
+
+        DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore);
+        tokenServices.setSupportRefreshToken(true);
+        tokenServices.setClientDetailsService(clientService);
+        // tokenServices.setAccessTokenValiditySeconds(180);
+        // tokenServices.setRefreshTokenValiditySeconds(180);
+
         endpoints
+                .userDetailsService(userDetailsService) // 用户信息查询服务
+                .tokenStore(tokenStore) // token存入mysql
+                .tokenServices(tokenServices)
                 .authenticationManager(authenticationManagerBean)
+                .authorizationCodeServices(new JdbcAuthorizationCodeServices(dataSource)) // 数据库管理授权码
+                .approvalStore(new JdbcApprovalStore(dataSource)) // 数据库管理授权信息
                 .accessTokenConverter(accessTokenConverter());
     }
 
