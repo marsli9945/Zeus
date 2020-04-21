@@ -59,7 +59,7 @@ public class TestJwt {
         //公钥
         String publickey = "-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk2ULSmOH2ZdkYFeUCm7wKHolHfp36NVJogt0ZucT/DLp4PVEYdBtl8JrTVCoi4CToPfTOXvKvsXm5Cbt/OQfEWA92HXSv2VJRx55kqTswh0qsATKBXqH2XQRinkuxrYOV9KDYf4hHpXTjVHtirTG4LDF91FFXMwxzvyx/8g0ZfEGOzA6O/YMz3teGLjbMqbWP/cYyvagIS6fKQvy6vmFh1+azj/YkwFIKnZcqf4+fz6d4FMMKjXf5BcCF9DxiSxc65n4myIpsEvdvwDjucEG24rxW1YAKyBfiDDrND7lCTM/jHCx/rI/lLi6PUDx/R1AaTrRLUCATaFOS+73PCXAWQIDAQAB-----END PUBLIC KEY-----";
         //jwt令牌
-        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiaXRjYXN0In0.Kmpb_fchn37I8nqfWxf5PkfaWjvQK0hYHYrc1367hddh8gPGp64bg402huh-IiwRqaZ2WVvxi6dQm7X2vzLrTBRPhaE5BcEYrpRkJhHKfPRVD55tOqbdeU01WIunUsScfNlC8jXJAyW1HHyU6oyEJU995wyqSuzTlAIcVfDmHxWNAJOw20Z1-SLEvcqmGBY0pfgtU0mzyr_FCzSDeIKJ7fa_KebR9qU6wL6f33EiabnFCExNaZU7cDDWfeWJRcnuwyZtQHQResTK36SidRUjLBHESqoj-4vXgJUPtnQU2dMlWxpHUgVdQMiS0uolNFz2wTZTQe43-iim9pRd8pO7-Q";
+        String jwtString = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODc0NDQxMjgsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiI5YTZlZjU3MC0zOTJiLTQxZGUtYTkzYi1hMmIyNjY2NWE5MzIiLCJjbGllbnRfaWQiOiJuZXQ1aWp5Iiwic2NvcGUiOlsiYWxsIiwicmVhZCIsIndyaXRlIl19.NRGJYgEuOe3L2YcxhsftE2gaXqJgi7oEx31aPftS05ryedh2Xl9orGzuiWJcCFXGxZNvi6UKYIJmwAIw70GOV5tDPttHLVzAXQclaQtdwMPDTEkaVX5FNkICEulxy48dwedg6awyPhQa3p9NhVh1AJGdYSs6KrHyB-sNhjdx3w-fsvS7NThOAA6PqT8GtEJxpX-BmcKOq3lSBp6wi2QwTvKrDHxb8C-sruwmQydnGl_g8ET_ao7h5Pgmz7-YavgYWf9P1xZdfkNfIkdOifIlaBHBfyiiBbKJ2fQN39zJRXdhHFPPpmwGfNfD34ehXSpYJfVHiqt_VoGX8zAHsPeP9A";
         //校验jwt令牌
         Jwt jwt = JwtHelper.decodeAndVerify(jwtString, new RsaVerifier(publickey));
         //拿到jwt令牌中自定义的内容

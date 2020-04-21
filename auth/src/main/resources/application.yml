@@ -3,6 +3,10 @@ server:
 spring:
   application:
     name: auth
+  redis:
+    host: ${REDIS_HOST:127.0.0.1}
+    port: ${REDIS_PORT:6379}
+    timeout: 5000 #连接超时 毫秒
   datasource:
     url: ${MYSQL_URL:jdbc:mysql://192.168.10.143:3306/oauth2?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false}
     username: root
@@ -12,7 +16,7 @@ spring:
     hibernate:
       ddl-auto: update # 更新或创建数据表
     show-sql: true # 打印sql
-    open-in-view: false
+    open-in-view: true
 
 # 加密证书
 keystore:

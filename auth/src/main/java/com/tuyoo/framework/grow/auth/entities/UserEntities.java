@@ -1,5 +1,7 @@
 package com.tuyoo.framework.grow.auth.entities;
 
+import org.springframework.data.repository.cdi.Eager;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -23,7 +25,7 @@ public class UserEntities
     @Column
     private String email;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "springcloud_user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<RoleEntities> roleEntitiesList;
 

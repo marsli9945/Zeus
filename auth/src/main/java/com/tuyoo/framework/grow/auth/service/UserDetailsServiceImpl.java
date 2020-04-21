@@ -33,8 +33,6 @@ public class UserDetailsServiceImpl implements UserDetailsService
             throw new UsernameNotFoundException("Username not found: " + username);
         }
 
-        log.info("*************user: " + user.getUsername());
-
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), true, true, true, true, getGrantedAuthorities(user));
     }
 
@@ -47,8 +45,6 @@ public class UserDetailsServiceImpl implements UserDetailsService
             authorities
                     .add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         }
-
-        log.info("------------------" + authorities);
 
         return authorities;
     }

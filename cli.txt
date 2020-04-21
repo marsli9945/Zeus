@@ -5,7 +5,7 @@ curl -X POST \
   -d client_id=net5ijy \
   -d client_secret=123456 \
   -d username=admin001 \
-  -d password=$2a$10$lQPS9TZeg3Zg0eBwuyRGCOsVy4PU57fY4mjiXIJL49f.2A3iSutva
+  -d password=123456
 
 curl -X POST \
   http://localhost:8201/auth/oauth/token \
