@@ -35,6 +35,8 @@ public class TestJks
     @Test
     public void config() {
         // $2a$10$9dFyv1Gr3/.1C.VdevQo4uN.jWZ/zp1VIJc3kFV9EXStVjue8fjBW
-        System.out.println(new BCryptPasswordEncoder().encode("123456"));
+//        System.out.println(new BCryptPasswordEncoder().encode("123456"));
+
+        System.out.println(System.currentTimeMillis() / 1000);
     }
 }

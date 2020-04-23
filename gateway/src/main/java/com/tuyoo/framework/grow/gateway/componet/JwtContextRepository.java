@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class SecurityContextRepository implements ServerSecurityContextRepository
+public class JwtContextRepository implements ServerSecurityContextRepository
 {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
@@ -41,7 +41,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
     public Mono<SecurityContext> load(ServerWebExchange exchange)
     {
         ServerHttpRequest request = exchange.getRequest();
-        // 头信息中取出jwt令牌,并且开头为制定字符串
+        // 头信息中取出jwt令牌,并且开头为指定字符串
         String authHeader = request.getHeaders().getFirst(tokenHeader);
 
         log.info("authHeader:{}" + authHeader);
@@ -61,7 +61,8 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
             JwtEntities parse = JSON.parseObject(jwt.getClaims(), JwtEntities.class);
             log.info("checking username:{}", parse.getUser_name());
 
-            if (parse.getUser_name() == null)
+            // 拿不到用户名和过期时间，或超过过期事件校验失败
+            if (parse.getUser_name() == null || parse.getExp() == null || System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
             {
                 return Mono.empty();
             }
@@ -70,7 +71,7 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
             request.mutate().header("search_user", parse.getUser_name()).build();
             exchange.getAttributes().put("search_user", parse.getUser_name());
 
-            //此处应该列出token中携带的角色表。
+            //列出token中携带的角色表。
             List<String> roles=parse.getAuthorities();
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     parse.getUser_name(),

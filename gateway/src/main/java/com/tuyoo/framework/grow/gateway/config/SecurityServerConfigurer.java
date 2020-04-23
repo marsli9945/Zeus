@@ -2,7 +2,7 @@ package com.tuyoo.framework.grow.gateway.config;
 
 import com.tuyoo.framework.grow.gateway.componet.RestAuthenticationEntryPoint;
 import com.tuyoo.framework.grow.gateway.componet.RestfulAccessDeniedHandler;
-import com.tuyoo.framework.grow.gateway.componet.SecurityContextRepository;
+import com.tuyoo.framework.grow.gateway.componet.JwtContextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
@@ -13,7 +13,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
  * 鉴权设置
  */
 @EnableWebFluxSecurity
-public class ResourceServerConfigurer {
+public class SecurityServerConfigurer
+{
 
     @Autowired
     RestfulAccessDeniedHandler restfulAccessDeniedHandler;
@@ -22,7 +23,7 @@ public class ResourceServerConfigurer {
     RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Autowired
-    SecurityContextRepository securityContextRepository;
+    JwtContextRepository jwtContextRepository;
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
@@ -31,7 +32,7 @@ public class ResourceServerConfigurer {
                 .anyExchange().authenticated();
 
         // 添加JWT filter
-        http.securityContextRepository(securityContextRepository);
+        http.securityContextRepository(jwtContextRepository);
 
         //添加自定义未授权和未登录结果返回
         http.exceptionHandling()
