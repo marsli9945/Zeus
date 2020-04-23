@@ -18,10 +18,14 @@ curl -X POST \
 // 不带 token 访问接口，返回 401 Unauthorized
 curl -X GET http://localhost:8201/api/user -sI
 
+// jwt内容
+{"exp":1587444128,"user_name":"admin001","authorities":["ROLE_ADMIN"],"jti":"9a6ef570-392b-41de-a93b-a2b26665a932","client_id":"net5ijy","scope":["all","read","write"]}
+
+
 // 带 token 访问接口
 curl -X GET \
   http://localhost:8201/api/user \
-  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODY4OTgyMDksInVzZXJfbmFtZSI6InVzZXItdXNlcm5hbWUiLCJhdXRob3JpdGllcyI6WyJVU0VSIl0sImp0aSI6IjE4ZmJhYTE5LTJhNWQtNDcwZi1hNGFiLTU1ZGE1NGE0NTQ4MSIsImNsaWVudF9pZCI6InRlc3QtY2xpZW50Iiwic2NvcGUiOlsiZGVmYXVsdC1zY29wZSJdfQ.Q0rdS4Pj9Skub8YstYraOvAgvSFpGpK5tK6NQCZv1FtxvR-PqBVrBQriLwULdIRF_Vo7vsIKTmDAfSkh5DROK24WL1LPNCuCS3W3MG_4UmWiBrvWirO2ohS3LCnz4NyusXJQaRKiPcsq_M2htg42-AqJojauM1pUIq9dxoa-Mqbhh-cRMDOADAsx59Rh14xx4HF3TS2gE82jgKtjajG80-_p5DW231KyhUFbfzQWtdJaULZruaLq1IPsYeBv7liIesbQlrnrnJoxj4LDV5Qwm4zGfCltoUfJ_KxWT2GdUsNKTlZxSODKLPG-tMsw5m39_lIze6-chDsoCInzMNB2Iw'
+  -H 'Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODc2MTgxMDAsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiJdLCJqdGkiOiI5MGM0NzZhYy1jNTMxLTRiYTEtYTgxOS05NTY5MzMxYTAwMGMiLCJjbGllbnRfaWQiOiJuZXQ1aWp5Iiwic2NvcGUiOlsiYWxsIiwicmVhZCIsIndyaXRlIl19.f313U157OzMGDCvrOSFcbFZINEYCmIC8rkbJqIwgdwrYhNrnEZxn1hrCxL2RaG6lt1EFT-d8uKiHoktgvc6uMwAvYV5lQm1vB9Jub3RhhfipalS7UleKgFFmAnLquQMx5j1TD1w7kKnLtJrUs5FmCmzYyCTBfeAIOiwmoLvYP6JI6SnlHJGxLcaEKN85noiICoNsgQgCpLi_iECEmG7Lt99DD0r3XaDY7DgkP-p32wMEi62ljz7BX-GU0maOYAtbaJvByGDoqLZi1yJ3JozvdjKHVjOgh0silziBg5JZ_60K9XPzQb0hz1a6Om_J3avrAxqfd8V5d26dR2CKiwNfDw'
 
 
 // 生成证书

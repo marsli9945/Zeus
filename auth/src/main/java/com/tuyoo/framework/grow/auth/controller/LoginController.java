@@ -30,7 +30,7 @@ public class LoginController
     public ResponseEntity<Object> login()
     {
         log.info("*********************** login");
-        return new ResponseEntity<>("this is login11", HttpStatus.OK);
+        return new ResponseEntity<>("this is login", HttpStatus.OK);
     }
 
     @RequestMapping("/map")
