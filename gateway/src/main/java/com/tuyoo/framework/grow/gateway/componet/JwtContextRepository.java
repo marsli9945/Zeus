@@ -41,18 +41,16 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     public Mono<SecurityContext> load(ServerWebExchange exchange)
     {
         ServerHttpRequest request = exchange.getRequest();
-        // 头信息中取出jwt令牌,并且开头为指定字符串
+
+        // 头信息中取出jwt令牌,并判断开头为指定字符串
         String authHeader = request.getHeaders().getFirst(tokenHeader);
-
         log.info("authHeader:{}" + authHeader);
-
         if (authHeader == null || !authHeader.startsWith(tokenHead))
         {
             return Mono.empty();
         }
 
-        String authToken = authHeader.substring(this.tokenHead.length() + 1);// The part after "Bearer "
-        log.info("authToken:{}" + authToken);
+        String authToken = authHeader.substring(this.tokenHead.length());
         try
         {
             //校验jwt令牌
@@ -61,7 +59,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             JwtEntities parse = JSON.parseObject(jwt.getClaims(), JwtEntities.class);
             log.info("checking username:{}", parse.getUser_name());
 
-            // 拿不到用户名和过期时间，或超过过期事件校验失败
+            // 拿不到用户名和过期时间，或超过过期时间
             if (parse.getUser_name() == null || parse.getExp() == null || System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
             {
                 return Mono.empty();
@@ -69,7 +67,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
             // 头信息中添加查询用户
             request.mutate().header("search_user", parse.getUser_name()).build();
-            exchange.getAttributes().put("search_user", parse.getUser_name());
+            request.mutate().header("claims", jwt.getClaims()).build();
 
             //列出token中携带的角色表。
             List<String> roles=parse.getAuthorities();
