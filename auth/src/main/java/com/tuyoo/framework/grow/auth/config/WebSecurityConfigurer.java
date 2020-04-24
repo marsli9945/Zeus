@@ -32,7 +32,6 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/.well-known/jwks.json").permitAll()
                 .anyRequest().authenticated();
     }
 

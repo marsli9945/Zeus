@@ -16,15 +16,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.AccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
@@ -52,7 +48,7 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     KeystoreConfig keystoreConfig;
 
     @Autowired
-    private RedisConnectionFactory redisConnectionFactory;
+    private final RedisConnectionFactory redisConnectionFactory;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception
@@ -65,13 +61,10 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints)
     {
-        // 数据库管理access_token和refresh_token
-        TokenStore tokenStore = jwtTokenStore();
-
         endpoints
                 .userDetailsService(userDetailsService) // 用户信息查询服务
                 .accessTokenConverter(accessTokenConverter())
-                .tokenStore(tokenStore) // token存入mysql
+                .tokenStore(jwtTokenStore()) // 数据库管理access_token和refresh_token
                 .authenticationManager(authenticationManagerBean)
                 .authorizationCodeServices(new JdbcAuthorizationCodeServices(dataSource)) // 数据库管理授权码
                 .approvalStore(new JdbcApprovalStore(dataSource)); // 数据库管理授权信息
@@ -86,7 +79,6 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     @Bean
     public TokenStore jwtTokenStore() {
         return new RedisTokenStore(redisConnectionFactory);
-//        return new JwtTokenStore(accessTokenConverter());
     }
 
     @Bean
