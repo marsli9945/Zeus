@@ -31,6 +31,9 @@ public class SecurityServerConfigurer
                 .pathMatchers("/auth/**").permitAll()
                 .anyExchange().authenticated();
 
+        // 禁用csrf防止拦截get意外对请求
+        http.csrf().disable();
+
         // 添加JWT filter
         http.securityContextRepository(jwtContextRepository);
 

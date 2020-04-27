@@ -30,9 +30,11 @@ public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
-                .antMatchers("/user/**").permitAll()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
+
+        // 禁用csrf防止拦截get意外对请求
+        http.csrf().disable();
     }
 
     @Override
