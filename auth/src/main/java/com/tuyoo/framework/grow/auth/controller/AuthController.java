@@ -6,11 +6,15 @@ import com.tuyoo.framework.grow.auth.form.RefreshForm;
 import com.tuyoo.framework.grow.auth.util.RedisUtil;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.annotation.Validated;
@@ -30,6 +34,10 @@ public class AuthController
     @Autowired
     RedisUtil redisUtil;
 
+    @Autowired
+    @Qualifier("consumerTokenServices")
+    ConsumerTokenServices consumerTokenServices;
+
     @Value("${server.port}")
     private String port;
 
@@ -42,9 +50,7 @@ public class AuthController
     {
         // 先判断username+client_id组合是否已经登录
         // 已登录的账号只能通过刷新接口
-        log.info("username_to_access:" + loginForm.getClientId() + ":" + loginForm.getUsername());
-        boolean hasKey = redisUtil.hasKey("username_to_access:" + loginForm.getClientId() + ":" + loginForm.getUsername());
-//        log.info("hasKey:{}" + hasKey);
+        boolean hasKey = redisUtil.hasKey("uname_to_access:" + loginForm.getClientId() + ":" + loginForm.getUsername());
         if (hasKey)
         {
             return ResultEntities.failed("该用户已登录");
@@ -95,6 +101,8 @@ public class AuthController
     {
         String token = refreshForm.getToken();
         Object refresh = redisUtil.get("access_to_refresh:" + token);
+        log.info("access_to_refresh:" + token);
+//        log.info("refresh:{}"+refresh);
         if (refresh == null)
         {
             return ResultEntities.failed("令牌已超出有效期，请重新登录");
@@ -112,7 +120,7 @@ public class AuthController
             HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
             ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
 
-//            log.info("refresh - exchange.getBody():{}"+exchange.getStatusCode());
+//            log.info("refresh - exchange.getBody():{}"+exchange.getBody());
 
             // 获取回调信息，少一样都不行
             JSONObject authResult = exchange.getBody();
@@ -134,6 +142,17 @@ public class AuthController
         {
             return ResultEntities.failed("令牌刷新失败");
         }
+    }
+
+    @DeleteMapping("/signOut")
+    @ApiOperation(value = "令牌注销", notes = "使用已有令牌无法刷新，只能重新登录", response = ResultEntities.class)
+    @ApiImplicitParam(name = "token", type = "String", value = "令牌", required = true, paramType = "query")
+    public ResultEntities<String> signOut(String token) {
+        if (!consumerTokenServices.revokeToken(token)){
+            return ResultEntities.failed("注销失败");
+        }
+
+        return ResultEntities.success(null);
     }
 
     private String getHttpBasic(String clientId, String clientSecret)
