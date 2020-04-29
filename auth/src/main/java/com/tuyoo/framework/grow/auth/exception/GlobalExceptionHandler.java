@@ -24,10 +24,10 @@ public class GlobalExceptionHandler
      **/
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResultEntities<Object> error(Exception e)
+    public ResultEntities<Object> error1(Exception e)
     {
         e.printStackTrace();
-        return ResultEntities.failed();    // 通用异常结果
+        return ResultEntities.failed(e.getMessage());    // 通用异常结果
     }
 
     /**
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler
      */
     @ExceptionHandler(NullPointerException.class)
     @ResponseBody
-    public ResultEntities<Object> error(NullPointerException e)
+    public ResultEntities<Object> error2(NullPointerException e)
     {
         e.printStackTrace();
         return ResultEntities.failed(ResultCode.NULL_POINT);
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler
      */
     @ExceptionHandler(HttpClientErrorException.class)
     @ResponseBody
-    public ResultEntities<Object> error(IndexOutOfBoundsException e)
+    public ResultEntities<Object> error3(HttpClientErrorException e)
     {
         e.printStackTrace();
         return ResultEntities.failed(ResultCode.HTTP_CLIENT_ERROR);
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
-    public ResultEntities<Object> error(MethodArgumentNotValidException ex)
+    public ResultEntities<Object> error4(MethodArgumentNotValidException ex)
     {
         FieldError fieldError = ex.getBindingResult().getFieldError();
         assert fieldError != null;
@@ -70,7 +70,7 @@ public class GlobalExceptionHandler
      */
     @ExceptionHandler(BindException.class)
     @ResponseBody
-    public ResultEntities<Object> error(BindException bindException)
+    public ResultEntities<Object> error5(BindException bindException)
     {
         ArrayList<String> messages = new ArrayList<>();
         for (ObjectError error : bindException.getBindingResult().getAllErrors())
@@ -81,12 +81,14 @@ public class GlobalExceptionHandler
     }
 
 
+
+
     /**
      * -------- 自定义定异常处理方法 --------
      **/
     @ExceptionHandler(CMSException.class)
     @ResponseBody
-    public ResultEntities<Object> error(CMSException e)
+    public ResultEntities<Object> error6(CMSException e)
     {
         e.printStackTrace();
         return ResultEntities.init(e.getCode(), e.getMessage(), null);

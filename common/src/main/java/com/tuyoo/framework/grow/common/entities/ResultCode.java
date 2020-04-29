@@ -11,7 +11,7 @@ public enum ResultCode implements IErrorCode {
     FORBIDDEN(403, "没有相关权限"),
     NULL_POINT(405, "空指针异常"),
     VALIDATE_FAILED(406, "参数检验失败"),
-    HTTP_CLIENT_ERROR(408, "服务器请求超时"),
+    HTTP_CLIENT_ERROR(408, "服务请求错误"),
 
     FAILED(500, "操作失败");
 

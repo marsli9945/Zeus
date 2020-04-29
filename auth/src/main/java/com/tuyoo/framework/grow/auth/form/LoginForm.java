@@ -1,34 +1,50 @@
-package com.tuyoo.framework.grow.auth.entities;
+package com.tuyoo.framework.grow.auth.form;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 
 @ApiModel("登录表单")
-public class LoginEntities implements Serializable
+public class LoginForm
 {
+    @ApiModelProperty(value = "授权ID", name = "client_id", required = true, example = "test_client")
+    @NotBlank(message = "授权ID不能为空")
+    private String clientId;
+
+    @ApiModelProperty(value = "授权密码", name = "client_secret", required = true, example = "123456")
+    @NotBlank(message = "授权密码不能为空")
+    @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
+    private String clientSecret;
+
     @ApiModelProperty(value = "登录账号", name = "username", required = true, example = "admin")
     @NotBlank(message = "用户名不能为空")
     private String username;
 
     @ApiModelProperty(value = "登录密码", name = "password", required = true, example = "123456")
     @NotBlank(message = "密码不能为空")
-    @Size(min = 2,max = 4,message = "密码的长度范围为2-4")
+    @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
     private String password;
 
-    SignEntities signEntities;
-
-    public SignEntities getSignEntities()
+    public String getClientId()
     {
-        return signEntities;
+        return clientId;
     }
 
-    public void setSignEntities(SignEntities signEntities)
+    public void setClientId(String clientId)
     {
-        this.signEntities = signEntities;
+        this.clientId = clientId;
+    }
+
+    public String getClientSecret()
+    {
+        return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret)
+    {
+        this.clientSecret = clientSecret;
     }
 
     public String getUsername()

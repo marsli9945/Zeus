@@ -14,8 +14,15 @@ public class RoleEntities
     @Column
     private String name;
 
+    RoleEntities() {}
+
     @ManyToMany
     private List<UserEntities> userEntitiesList;
+
+    public RoleEntities(Integer id)
+    {
+        this.id = id;
+    }
 
     public List<UserEntities> getUserEntitiesList()
     {

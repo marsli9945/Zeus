@@ -1,6 +1,6 @@
 // 获取token
 curl -X POST \
-  http://localhost:8100/oauth/token \
+  http://127.0.0.1:8100/oauth/token \
   -d grant_type=password \
   -d client_id=net5ijy \
   -d client_secret=123456 \
@@ -21,6 +21,11 @@ curl -X GET http://localhost:8201/api/user -sI
 // jwt内容
 {"exp":1587444128,"user_name":"admin001","authorities":["ROLE_ADMIN"],"jti":"9a6ef570-392b-41de-a93b-a2b26665a932","client_id":"net5ijy","scope":["all","read","write"]}
 
+// 刷新令牌
+curl -X POST \
+  http://127.0.0.1:8100/oauth/token \
+  -d grant_type=refresh_token \
+  -d refresh_token=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbjAwMSIsInNjb3BlIjpbImFsbCIsInJlYWQiLCJ3cml0ZSJdLCJhdGkiOiJjNDBmMTRlNi1hMDZmLTQzMTgtODAxZS04MDVlM2FhMDAyOTUiLCJleHAiOjE1ODgwNTU2MzksImF1dGhvcml0aWVzIjpbIlJPTEVfQURNSU4iXSwianRpIjoiNzIwMjA0ZGQtZmE2YS00N2Q3LWI0ZTktZGMzYjM0MjU3YTcwIiwiY2xpZW50X2lkIjoibmV0NWlqeSJ9.ce0gMoIhat9clO4zN-RNQH-qStq1HMcWFXyIuktVZ1ACzmicIBIHvgA1BkU8rfkSYx8ga_OUenfqBl4JUJKp14IR0y10-kFeE4JkNzuD1nWk22EJq3eCinvkelsbaMt2ieVSzI-bd3jDOcOiX12Pt4BJQSGQT36_qo4vF7_AAcYPjuWVD-Ur7XsFw8YS_BCt2WZ5u1z2OVU1KfdnmM777aunGgiUIkyymIaakwWtfmd6pmsfJBxrnjpxX3FJj11IJ-KgWgxElmHq8bAkIohmPV-V1KUGshPAjGeEfnmbiDmvinBy1NOE3sUNEccUCsq102BtF-Cvo-_H6Ul9Qx1I5A
 
 // 带 token 访问接口
 curl -X GET \
