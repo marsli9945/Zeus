@@ -44,7 +44,6 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
         // 头信息中取出jwt令牌,并判断开头为指定字符串
         String authHeader = request.getHeaders().getFirst(tokenHeader);
-        log.info("authHeader:{}" + authHeader);
         if (authHeader == null || !authHeader.startsWith(tokenHead))
         {
             return Mono.empty();

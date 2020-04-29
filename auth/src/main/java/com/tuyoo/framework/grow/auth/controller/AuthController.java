@@ -68,26 +68,7 @@ public class AuthController
 
         try
         {
-            ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-
-//            log.info("login - exchange.getBody():{}"+exchange.getStatusCode());
-
-            // 获取回调信息，少一样都不行
-            JSONObject authResult = exchange.getBody();
-            if (
-                    authResult == null ||
-                            authResult.getString("access_token") == null ||
-                            authResult.getString("refresh_token") == null ||
-                            authResult.getString("scope") == null ||
-                            authResult.getString("token_type") == null ||
-                            authResult.getString("expires_in") == null ||
-                            authResult.getString("jti") == null
-            )
-            {
-                return ResultEntities.failed("令牌申请失败");
-            }
-
-            return ResultEntities.success(authResult.getString("access_token"));
+            return sendSecurity(entity);
         }
         catch (Exception e)
         {
@@ -101,42 +82,23 @@ public class AuthController
     {
         String token = refreshForm.getToken();
         Object refresh = redisUtil.get("access_to_refresh:" + token);
-        log.info("access_to_refresh:" + token);
-//        log.info("refresh:{}"+refresh);
         if (refresh == null)
         {
             return ResultEntities.failed("令牌已超出有效期，请重新登录");
         }
 
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("Authorization", getHttpBasic(refreshForm.getClientId(), refreshForm.getClientSecret()));
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "refresh_token");
+        body.add("refresh_token", refresh.toString());
+
+        HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+
         try
         {
-            LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-            headers.add("Authorization", getHttpBasic(refreshForm.getClientId(), refreshForm.getClientSecret()));
-
-            LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-            body.add("grant_type", "refresh_token");
-            body.add("refresh_token", refresh.toString());
-
-            HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-            ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-
-//            log.info("refresh - exchange.getBody():{}"+exchange.getBody());
-
-            // 获取回调信息，少一样都不行
-            JSONObject authResult = exchange.getBody();
-            if (
-                    authResult == null ||
-                            authResult.getString("access_token") == null ||
-                            authResult.getString("refresh_token") == null ||
-                            authResult.getString("scope") == null ||
-                            authResult.getString("token_type") == null ||
-                            authResult.getString("expires_in") == null ||
-                            authResult.getString("jti") == null
-            )
-            {
-                return ResultEntities.failed("令牌刷新失败");
-            }
-            return ResultEntities.success(authResult.getString("access_token"));
+            return sendSecurity(entity);
         }
         catch (Exception e)
         {
@@ -147,12 +109,26 @@ public class AuthController
     @DeleteMapping("/signOut")
     @ApiOperation(value = "令牌注销", notes = "使用已有令牌无法刷新，只能重新登录", response = ResultEntities.class)
     @ApiImplicitParam(name = "token", type = "String", value = "令牌", required = true, paramType = "query")
-    public ResultEntities<String> signOut(String token) {
-        if (!consumerTokenServices.revokeToken(token)){
+    public ResultEntities<String> signOut(String token)
+    {
+        if (!consumerTokenServices.revokeToken(token))
+        {
             return ResultEntities.failed("注销失败");
         }
 
         return ResultEntities.success(null);
+    }
+
+    private ResultEntities<Object> sendSecurity(HttpEntity<LinkedMultiValueMap<String, String>> entity) {
+        ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
+
+        // 判断security反馈信息
+        if (exchange.getStatusCodeValue() != 200 || exchange.getBody() == null)
+        {
+            return ResultEntities.failed("令牌刷新失败");
+        }
+
+        return ResultEntities.success(exchange.getBody().getString("access_token"));
     }
 
     private String getHttpBasic(String clientId, String clientSecret)

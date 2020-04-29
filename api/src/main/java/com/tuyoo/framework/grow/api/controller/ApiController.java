@@ -4,6 +4,7 @@ import com.tuyoo.framework.grow.api.entities.LoginEntities;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,14 +19,14 @@ public class ApiController
     @Autowired
     HttpServletRequest request;
 
-    @RequestMapping("/user")
+    @GetMapping("/user")
     public ResultEntities<String> user()
     {
         log.info("***********send user11");
         return ResultEntities.success(request.getHeader("search_user"));
     }
 
-    @RequestMapping("/api")
+    @GetMapping("/api")
     public ResultEntities<Object> api()
     {
         HashMap<String, Object> data = new HashMap<>();
