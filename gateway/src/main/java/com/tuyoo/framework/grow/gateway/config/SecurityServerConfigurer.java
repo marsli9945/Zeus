@@ -5,6 +5,7 @@ import com.tuyoo.framework.grow.gateway.componet.RestfulAccessDeniedHandler;
 import com.tuyoo.framework.grow.gateway.componet.JwtContextRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -28,7 +29,21 @@ public class SecurityServerConfigurer
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http.authorizeExchange()
-                .pathMatchers("/auth/**").permitAll()
+                .pathMatchers(HttpMethod.GET,
+                        "/",
+                        "/*.html",
+                        "/favicon.ico",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/swagger-resources/**",
+                        "/v2/api-docs/**"
+                ).permitAll() // 允许对于网站静态资源的无授权访问
+                .pathMatchers(HttpMethod.OPTIONS).permitAll() //跨域请求会先进行一次options请求
+                // 令牌操作的三个接口允许匿名访问
+                .pathMatchers("/auth/login").permitAll()
+                .pathMatchers("/auth/refresh").permitAll()
+                .pathMatchers("/auth/singOut").permitAll()
                 .anyExchange().authenticated();
 
         // 禁用csrf防止拦截get意外对请求
