@@ -15,8 +15,6 @@ import java.util.List;
 @ApiModel("用户添加表单")
 public class UserForm
 {
-    private Integer id;
-
     @ApiModelProperty(value = "用户账号", name = "username", required = true, example = "admin")
     @NotBlank(message = "授权ID不能为空")
     private String username;
@@ -73,16 +71,6 @@ public class UserForm
         }
 
         return userEntities;
-    }
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
     }
 
     public List<Integer> getRoleList()

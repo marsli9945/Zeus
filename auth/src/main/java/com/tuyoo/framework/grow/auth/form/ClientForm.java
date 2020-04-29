@@ -6,12 +6,11 @@ import io.swagger.annotations.ApiModelProperty;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @ApiModel("客户端账号表单")
 public class ClientForm
 {
-    private Integer id;
-
     @ApiModelProperty(value = "客户端id", name = "clientId", required = true, example = "test_client")
     @NotBlank(message = "客户端ID不能为空")
     private String clientId;
@@ -30,11 +29,11 @@ public class ClientForm
     private String authorities;
 
     @ApiModelProperty(value = "access_token有效时间", name = "accessTokenValidity", required = true, example = "7200")
-    @NotBlank(message = "access_token有效时间为必填项")
+    @NotNull(message = "access_token有效时间为必填项")
     private Integer accessTokenValidity;
 
     @ApiModelProperty(value = "refresh_token有效时间", name = "refreshTokenValidity", required = true, example = "7200")
-    @NotBlank(message = "refresh_token有效时间为必填项")
+    @NotNull(message = "refresh_token有效时间为必填项")
     private Integer refreshTokenValidity;
 
     public ClientEntities entities()
@@ -77,16 +76,6 @@ public class ClientForm
         }
 
         return clientEntities;
-    }
-
-    public Integer getId()
-    {
-        return id;
-    }
-
-    public void setId(Integer id)
-    {
-        this.id = id;
     }
 
     public String getClientId()
