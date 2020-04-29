@@ -41,9 +41,6 @@ public class AuthController
     @Value("${server.port}")
     private String port;
 
-    // security令牌申请和刷新地址
-    private final String url = "http://127.0.0.1:8100/oauth/token";
-
     @PostMapping("/login")
     @ApiOperation(value = "登录", notes = "使用账号密码登录以获取token", response = ResultEntities.class)
     public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
@@ -119,7 +116,10 @@ public class AuthController
         return ResultEntities.success(null);
     }
 
-    private ResultEntities<Object> sendSecurity(HttpEntity<LinkedMultiValueMap<String, String>> entity) {
+    private ResultEntities<Object> sendSecurity(HttpEntity<LinkedMultiValueMap<String, String>> entity)
+    {
+        // security令牌申请和刷新地址
+        String url = "http://127.0.0.1:" + port + "/oauth/token";
         ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
 
         // 判断security反馈信息
