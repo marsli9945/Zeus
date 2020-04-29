@@ -10,6 +10,8 @@ import javax.validation.constraints.NotBlank;
 @ApiModel("客户端账号表单")
 public class ClientForm
 {
+    private Integer id;
+
     @ApiModelProperty(value = "客户端id", name = "clientId", required = true, example = "test_client")
     @NotBlank(message = "客户端ID不能为空")
     private String clientId;
@@ -35,38 +37,56 @@ public class ClientForm
     @NotBlank(message = "refresh_token有效时间为必填项")
     private Integer refreshTokenValidity;
 
-    public ClientEntities entities() {
+    public ClientEntities entities()
+    {
         ClientEntities clientEntities = new ClientEntities();
 
-        if (this.clientId != null) {
+        if (this.clientId != null)
+        {
             clientEntities.setClientId(this.clientId);
         }
 
-        if (this.clientSecret != null) {
+        if (this.clientSecret != null)
+        {
             clientEntities.setClientSecret(new BCryptPasswordEncoder().encode(this.clientSecret));
         }
 
-        if (this.scope != null) {
+        if (this.scope != null)
+        {
             clientEntities.setScope(this.scope);
         }
 
-        if (this.authorizedGrantTypes != null) {
+        if (this.authorizedGrantTypes != null)
+        {
             clientEntities.setAuthorizedGrantTypes(this.authorizedGrantTypes);
         }
 
-        if (this.authorities != null) {
+        if (this.authorities != null)
+        {
             clientEntities.setAuthorities(this.authorities);
         }
 
-        if (this.accessTokenValidity != null) {
+        if (this.accessTokenValidity != null)
+        {
             clientEntities.setAccessTokenValidity(this.accessTokenValidity);
         }
 
-        if (this.refreshTokenValidity != null) {
+        if (this.refreshTokenValidity != null)
+        {
             clientEntities.setRefreshTokenValidity(this.refreshTokenValidity);
         }
 
         return clientEntities;
+    }
+
+    public Integer getId()
+    {
+        return id;
+    }
+
+    public void setId(Integer id)
+    {
+        this.id = id;
     }
 
     public String getClientId()

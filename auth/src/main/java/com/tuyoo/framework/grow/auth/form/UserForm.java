@@ -15,7 +15,6 @@ import java.util.List;
 @ApiModel("用户添加表单")
 public class UserForm
 {
-    @ApiModelProperty(value = "主键ID", name = "id", example = "1")
     private Integer id;
 
     @ApiModelProperty(value = "用户账号", name = "username", required = true, example = "admin")
@@ -64,7 +63,7 @@ public class UserForm
             userEntities.setEmail(this.email);
         }
 
-        if (this.roleList.size() > 0) {
+        if (this.roleList != null && this.roleList.size() > 0) {
             ArrayList<RoleEntities> roleList = new ArrayList<>();
             for (Integer id: this.roleList)
             {
