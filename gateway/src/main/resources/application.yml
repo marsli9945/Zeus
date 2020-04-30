@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: gateway-serve
+    name: gateway
   # 鉴权处理接口
   security.oauth2.resourceserver.jwt.jwk-set-uri: 'http://localhost:8100/.well-known/jwks.json'
 #  security.oauth2.resourceserver.jwt.jwk-set-uri: 'lb://AUTH/.well-known/jwks.json'
