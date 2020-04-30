@@ -3,6 +3,7 @@ package com.tuyoo.framework.grow.auth.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.auth.form.LoginForm;
 import com.tuyoo.framework.grow.auth.form.RefreshForm;
+import com.tuyoo.framework.grow.auth.response.TokenResponse;
 import com.tuyoo.framework.grow.auth.util.RedisUtil;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
+import org.springframework.security.oauth2.provider.TokenRequest;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.LinkedMultiValueMap;
@@ -41,7 +43,7 @@ public class AuthController
     private String port;
 
     @PostMapping("/login")
-    @ApiOperation(value = "登录", notes = "使用账号密码登录以获取token", response = ResultEntities.class)
+    @ApiOperation(value = "登录", notes = "使用账号密码登录以获取token", response = TokenResponse.class)
     public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
     {
         // 先判断username+client_id组合是否已经登录
@@ -73,12 +75,12 @@ public class AuthController
     }
 
     @PostMapping("/refresh")
-    @ApiOperation(value = "刷新令牌", notes = "使用已有令牌刷新令牌有效时间", response = ResultEntities.class)
+    @ApiOperation(value = "刷新令牌", notes = "使用已有令牌刷新令牌有效时间", response = TokenResponse.class)
     public ResultEntities<Object> refresh(@RequestBody @Validated RefreshForm refreshForm)
     {
-        String token = refreshForm.getToken();
-        Object refresh = redisUtil.get("access_to_refresh:" + token);
-        if (refresh == null)
+        String token = refreshForm.getRefreshToken();
+        boolean hasKey = redisUtil.hasKey("refresh:" + token);
+        if (hasKey)
         {
             return ResultEntities.failed("令牌已超出有效期，请重新登录");
         }
@@ -88,7 +90,7 @@ public class AuthController
 
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "refresh_token");
-        body.add("refresh_token", refresh.toString());
+        body.add("refresh_token", token);
 
         HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 
@@ -127,7 +129,7 @@ public class AuthController
             return ResultEntities.failed("令牌刷新失败");
         }
 
-        return ResultEntities.success(exchange.getBody().getString("access_token"));
+        return ResultEntities.success(exchange.getBody());
     }
 
     private String getHttpBasic(String clientId, String clientSecret)

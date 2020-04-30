@@ -17,6 +17,6 @@ Cloud Alibaba|2.1.0.RELEASE|null
 测试接口|8001|api|api
 
 ### 整体架构
-
 ![](/static/gateway.png)
+
 
