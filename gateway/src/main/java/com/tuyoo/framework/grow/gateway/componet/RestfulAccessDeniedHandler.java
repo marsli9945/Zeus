@@ -33,8 +33,7 @@ public class RestfulAccessDeniedHandler implements ServerAccessDeniedHandler
         headers.add("Content-Type", "text/html; charset=UTF-8");
 
         // 返回自定义的统一错误内容
-//        ResultEntities<Object> failed = ResultEntities.failed(ResultCode.FORBIDDEN);
-        ResultEntities<Object> failed = ResultEntities.failed(e.getMessage());
+        ResultEntities<Object> failed = ResultEntities.forbidden(null);
         String jsonString = JSON.toJSONString(failed);
         byte[] bytes = (jsonString.getBytes(StandardCharsets.UTF_8));
         DataBuffer wrap = serverWebExchange.getResponse().bufferFactory().wrap(bytes);

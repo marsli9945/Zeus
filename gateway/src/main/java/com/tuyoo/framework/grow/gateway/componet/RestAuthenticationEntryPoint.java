@@ -32,7 +32,7 @@ public class RestAuthenticationEntryPoint implements ServerAuthenticationEntryPo
         headers.add("Content-Type", "text/html; charset=UTF-8");
 
         // 返回自定义的统一错误内容
-        String jsonString = JSON.toJSONString(ResultEntities.failed(ResultCode.UNAUTHORIZED));
+        String jsonString = JSON.toJSONString(ResultEntities.unauthorized(null));
         byte[] bytes = (jsonString.getBytes(StandardCharsets.UTF_8));
         DataBuffer wrap = serverWebExchange.getResponse().bufferFactory().wrap(bytes);
         return response.writeWith(Flux.just(wrap));
