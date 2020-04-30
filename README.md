@@ -19,4 +19,6 @@ Cloud Alibaba|2.1.0.RELEASE|null
 ### 整体架构
 ![](/static/gateway.png)
 
+@import "/static/gateway.png"
+
 
