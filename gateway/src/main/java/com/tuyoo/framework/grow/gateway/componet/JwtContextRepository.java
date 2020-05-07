@@ -26,8 +26,6 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
-    @Value("${jwt.tokenHead}")
-    private String tokenHead;
     @Value("${jwt.pubKey}")
     private String pubKey;
 
@@ -43,13 +41,12 @@ public class JwtContextRepository implements ServerSecurityContextRepository
         ServerHttpRequest request = exchange.getRequest();
 
         // 头信息中取出jwt令牌,并判断开头为指定字符串
-        String authHeader = request.getHeaders().getFirst(tokenHeader);
-        if (authHeader == null || !authHeader.startsWith(tokenHead))
+        String authToken = request.getHeaders().getFirst(tokenHeader);
+        if (authToken == null)
         {
             return Mono.empty();
         }
 
-        String authToken = authHeader.substring(this.tokenHead.length());
         try
         {
             //校验jwt令牌
@@ -57,9 +54,18 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             //拿到jwt令牌中自定义的内容
             JwtEntities parse = JSON.parseObject(jwt.getClaims(), JwtEntities.class);
             log.info("checking username:{}", parse.getUser_name());
+            log.info("checking claims:{}", jwt.getClaims());
 
             // 拿不到用户名和过期时间，或超过过期时间
-            if (parse.getUser_name() == null || parse.getExp() == null || System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
+            if (parse.getUser_name() == null)
+            {
+                return Mono.empty();
+            }
+            if (parse.getExp() == null)
+            {
+                return Mono.empty();
+            }
+            if (System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
             {
                 return Mono.empty();
             }

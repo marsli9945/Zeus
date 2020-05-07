@@ -27,23 +27,29 @@ public class ApiController
     }
 
     @GetMapping("/api")
-    public ResultEntities<Object> api()
+    public ResultEntities<String> api()
     {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("name", "Jack");
-        data.put("age", 22);
-        return ResultEntities.success(data);
+        return ResultEntities.success("this is api");
     }
 
-    @PostMapping("post")
-    public ResultEntities<Object> post(LoginEntities loginEntities)
+    @GetMapping("/io500")
+    public ResultEntities<String> io500() throws InterruptedException
     {
-        log.info("push login********************");
-        HashMap<String, String> result = new HashMap<>();
-        result.put("username", loginEntities.getUsername());
-        result.put("password", loginEntities.getPassword());
-        return ResultEntities.success(result);
+        Thread.sleep(500);
+        return ResultEntities.success("this is io");
     }
 
+    @GetMapping("/io1000")
+    public ResultEntities<String> io1000() throws InterruptedException
+    {
+        Thread.sleep(1000);
+        return ResultEntities.success("this is io");
+    }
 
+    @GetMapping("/io3000")
+    public ResultEntities<String> io3000() throws InterruptedException
+    {
+        Thread.sleep(3000);
+        return ResultEntities.success("this is io");
+    }
 }
