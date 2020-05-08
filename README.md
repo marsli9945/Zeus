@@ -81,7 +81,7 @@ Cloud Alibaba|2.1.0.RELEASE|null
 - 内存 16 GB 1600 MHz DDR3
 
 >对照组
-1. 无jwt校验服务本身调用
+1. 无jwt校验服务本体调用
 2. 无jwt校验网关服务调用
 3. jwt校验网关服务调用
 4. Redis+jwt校验网关服务调用
@@ -96,7 +96,7 @@ Cloud Alibaba|2.1.0.RELEASE|null
 2. 1000次请求，100次并发
 3. 10000次请求，300次并发
 
-#### 无jwt校验服务本身调用
+#### 无jwt校验服务本体调用
 > ab -n 100 -c 10 http://localhost:8001/api
 ```shell script
 Server Software:
@@ -1162,4 +1162,361 @@ Percentage of the requests served within a certain time (ms)
 ```
 
 #### Redis+jwt校验网关服务调用
+> ab -n 100 -c 10 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/api
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
 
+Document Path:          /api/api
+Document Length:        69 bytes
+
+Concurrency Level:      10
+Time taken for tests:   0.137 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      50600 bytes
+HTML transferred:       6900 bytes
+Requests per second:    730.34 [#/sec] (mean)
+Time per request:       13.692 [ms] (mean)
+Time per request:       1.369 [ms] (mean, across all concurrent requests)
+Transfer rate:          360.89 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       2
+Processing:     4   13   4.3     13      23
+Waiting:        3   12   4.1     12      21
+Total:          4   13   4.3     13      24
+
+Percentage of the requests served within a certain time (ms)
+  50%     13
+  66%     15
+  75%     16
+  80%     17
+  90%     19
+  95%     19
+  98%     22
+  99%     24
+ 100%     24 (longest request)
+```
+
+> ab -n 1000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/api
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/api
+Document Length:        69 bytes
+
+Concurrency Level:      100
+Time taken for tests:   1.472 seconds
+Complete requests:      1000
+Failed requests:        5
+   (Connect: 0, Receive: 0, Length: 5, Exceptions: 0)
+Total transferred:      506025 bytes
+HTML transferred:       69025 bytes
+Requests per second:    679.18 [#/sec] (mean)
+Time per request:       147.235 [ms] (mean)
+Time per request:       1.472 [ms] (mean, across all concurrent requests)
+Transfer rate:          335.63 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   1.0      0       5
+Processing:    10  139  30.1    148     192
+Waiting:        4  138  30.3    147     192
+Total:         10  140  29.4    148     192
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%    148
+  66%    153
+  75%    155
+  80%    158
+  90%    168
+  95%    179
+  98%    183
+  99%    186
+ 100%    192 (longest request)
+```
+
+> ab -n 10000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/api
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/api
+Document Length:        69 bytes
+
+Concurrency Level:      100
+Time taken for tests:   13.087 seconds
+Complete requests:      10000
+Failed requests:        80
+   (Connect: 0, Receive: 0, Length: 80, Exceptions: 0)
+Total transferred:      5060406 bytes
+HTML transferred:       690406 bytes
+Requests per second:    764.10 [#/sec] (mean)
+Time per request:       130.872 [ms] (mean)
+Time per request:       1.309 [ms] (mean, across all concurrent requests)
+Transfer rate:          377.60 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.7      0      36
+Processing:    11  130  29.4    122     312
+Waiting:        4  129  29.2    121     305
+Total:         11  130  29.4    122     312
+
+Percentage of the requests served within a certain time (ms)
+  50%    122
+  66%    127
+  75%    130
+  80%    133
+  90%    159
+  95%    203
+  98%    240
+  99%    250
+ 100%    312 (longest request)
+```
+
+> ab -n 100 -c 10 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io500
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io500
+Document Length:        68 bytes
+
+Concurrency Level:      10
+Time taken for tests:   5.611 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      50500 bytes
+HTML transferred:       6800 bytes
+Requests per second:    17.82 [#/sec] (mean)
+Time per request:       561.076 [ms] (mean)
+Time per request:       56.108 [ms] (mean, across all concurrent requests)
+Transfer rate:          8.79 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.1      0       1
+Processing:   504  509   2.3    509     514
+Waiting:      504  509   2.3    508     513
+Total:        504  509   2.3    509     514
+
+Percentage of the requests served within a certain time (ms)
+  50%    509
+  66%    511
+  75%    511
+  80%    512
+  90%    512
+  95%    513
+  98%    514
+  99%    514
+ 100%    514 (longest request)
+```
+
+> ab -n 1000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io500
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io500
+Document Length:        68 bytes
+
+Concurrency Level:      100
+Time taken for tests:   5.884 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      505000 bytes
+HTML transferred:       68000 bytes
+Requests per second:    169.95 [#/sec] (mean)
+Time per request:       588.416 [ms] (mean)
+Time per request:       5.884 [ms] (mean, across all concurrent requests)
+Transfer rate:          83.81 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   0.9      0       5
+Processing:   504  527  27.0    515     609
+Waiting:      503  526  26.4    515     601
+Total:        504  527  27.7    515     609
+WARNING: The median and mean for the initial connection time are not within a normal deviation
+        These results are probably not that reliable.
+
+Percentage of the requests served within a certain time (ms)
+  50%    515
+  66%    521
+  75%    528
+  80%    539
+  90%    587
+  95%    590
+  98%    597
+  99%    600
+ 100%    609 (longest request)
+```
+
+> ab -n 10000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io500
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io500
+Document Length:        73 bytes
+
+Concurrency Level:      100
+Time taken for tests:   53.179 seconds
+Complete requests:      10000
+Failed requests:        9913
+   (Connect: 0, Receive: 0, Length: 9913, Exceptions: 0)
+Total transferred:      5050441 bytes
+HTML transferred:       680441 bytes
+Requests per second:    188.04 [#/sec] (mean)
+Time per request:       531.792 [ms] (mean)
+Time per request:       5.318 [ms] (mean, across all concurrent requests)
+Transfer rate:          92.74 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.5      0       5
+Processing:   504  526  16.2    523     621
+Waiting:      504  525  15.9    522     620
+Total:        504  526  16.4    523     625
+
+Percentage of the requests served within a certain time (ms)
+  50%    523
+  66%    530
+  75%    533
+  80%    536
+  90%    544
+  95%    552
+  98%    562
+  99%    612
+ 100%    625 (longest request)
+```
+
+> ab -n 100 -c 10 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io1000
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io1000
+Document Length:        68 bytes
+
+Concurrency Level:      10
+Time taken for tests:   11.132 seconds
+Complete requests:      100
+Failed requests:        0
+Total transferred:      50500 bytes
+HTML transferred:       6800 bytes
+Requests per second:    8.98 [#/sec] (mean)
+Time per request:       1113.162 [ms] (mean)
+Time per request:       111.316 [ms] (mean, across all concurrent requests)
+Transfer rate:          4.43 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.2      0       1
+Processing:  1005 1012   2.8   1012    1018
+Waiting:     1005 1011   2.9   1011    1018
+Total:       1005 1012   2.9   1012    1018
+
+Percentage of the requests served within a certain time (ms)
+  50%   1012
+  66%   1013
+  75%   1014
+  80%   1014
+  90%   1017
+  95%   1017
+  98%   1018
+  99%   1018
+ 100%   1018 (longest request)
+```
+
+> ab -n 1000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io1000
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io1000
+Document Length:        68 bytes
+
+Concurrency Level:      100
+Time taken for tests:   11.317 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      505000 bytes
+HTML transferred:       68000 bytes
+Requests per second:    88.36 [#/sec] (mean)
+Time per request:       1131.716 [ms] (mean)
+Time per request:       11.317 [ms] (mean, across all concurrent requests)
+Transfer rate:          43.58 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.7      0       4
+Processing:  1004 1022  24.5   1012    1103
+Waiting:     1003 1022  24.4   1011    1102
+Total:       1004 1023  25.1   1012    1104
+
+Percentage of the requests served within a certain time (ms)
+  50%   1012
+  66%   1015
+  75%   1019
+  80%   1027
+  90%   1072
+  95%   1085
+  98%   1099
+  99%   1103
+ 100%   1104 (longest request)
+```
+
+> ab -n 10000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODg5MDk1MDUsInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6IjI4ZmY5Y2UwLTMxOTYtNGZjNS04YzBjLTMwZWQ0OTI5YjBlMCIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.AOhyy3REjRVfw5kbTBI_KiLUuk91z6K9Ghe9gAXaUDvOZWGGn51BbJPTl99qMIhONdYPY0eAYkJmjWL0Z5T0RL4PgACblOfflooYI_a8KDfAeXZxj1uDKGJuJJUozz_ozNYov6lFy4azbbvZf4AnEGj_ltjup-5ELV9OfP8l_5D3RB731lfO8ZHsrEDMGTQEXhFG8nyfyFZAx-5y26jNZYJrCmOdU9MAPfih2zTwlwBI5W5k0nLpfrHzME8xNaY3ilM8yhSjSHMtMiK_G33BN-cTm5aS6ZXPe0i4FAMLlUJdgvDmVrmkL4KgeDSrLwN8UXnKGT4aFzQ09POgyZHh5w' http://localhost:8201/api/io1000
+```shell script
+Server Software:
+Server Hostname:        localhost
+Server Port:            8201
+
+Document Path:          /api/io1000
+Document Length:        73 bytes
+
+Concurrency Level:      100
+Time taken for tests:   102.520 seconds
+Complete requests:      10000
+Failed requests:        9919
+   (Connect: 0, Receive: 0, Length: 9919, Exceptions: 0)
+Total transferred:      5050423 bytes
+HTML transferred:       680423 bytes
+Requests per second:    97.54 [#/sec] (mean)
+Time per request:       1025.196 [ms] (mean)
+Time per request:       10.252 [ms] (mean, across all concurrent requests)
+Transfer rate:          48.11 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    0   0.3      0       6
+Processing:  1004 1013  11.1   1010    1119
+Waiting:     1003 1013  11.0   1010    1118
+Total:       1004 1013  11.4   1010    1120
+
+Percentage of the requests served within a certain time (ms)
+  50%   1010
+  66%   1012
+  75%   1014
+  80%   1016
+  90%   1020
+  95%   1026
+  98%   1046
+  99%   1086
+ 100%   1120 (longest request)
+```
