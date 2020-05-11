@@ -44,6 +44,7 @@ public class SecurityServerConfigurer
                 .pathMatchers("/auth/login").permitAll()
                 .pathMatchers("/auth/refresh").permitAll()
                 .pathMatchers("/auth/singOut").permitAll()
+//                .pathMatchers("/**").permitAll()
                 .anyExchange().authenticated();
 
         // 禁用csrf防止拦截get意外对请求
