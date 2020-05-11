@@ -17,7 +17,7 @@ Cloud Alibaba|2.1.0.RELEASE|null
 测试接口|8001|api|api
 
 ### 整体架构
-![](/static/gateway.png)
+![](static/gateway.png)
 
 ### 网关使用
 
@@ -143,6 +143,6 @@ Cloud Alibaba|2.1.0.RELEASE|null
 - ab -n 10000 -c 100 -H 'Authorization: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODkxOTQyNTksInVzZXJfbmFtZSI6ImFkbWluMDAxIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9BRE1JTiIsIlJPTEVfREJBIl0sImp0aSI6Ijk1ZDcwMWQ1LWUwYjItNGJiNi04MWRmLTAzY2U4ODIxOTMxMSIsImNsaWVudF9pZCI6Im5ldDVpankiLCJzY29wZSI6WyJhbGwiLCJyZWFkIiwid3JpdGUiXX0.QRV-7d7hpysuVfqdwPMbsggJ9q3Qzy8s1ri_rl66jGfL2RVlRsDEpaksd-4QOesFbxv_uzW2--ONfV9h-COjKL99_attIypMlTo3JqWkUGSOQ_h16WpK75ii6ryImoUAEibG4CIdH8C0O2yWxAYkkAUugzaMPdeUbPh74lqK1aJ4KSwcu2zXknOrx188KrRWEiQamK0eZ1NAG6gFt2qEPy6TXKqsECyRSmrdAcsbp1MfEoPpGVpsEUhrmUfqXIertpUJBOclzsKD2gBN6e_vjLrMgrA8wMmk6eYhWa5pSs1HHtJiAVKFFi6bB22DOnCr8vTx2GgDSKCGSj0oGM9p3w' http://localhost:8201/api/io1000
 
 #### 结果统计
-![](/static/reqs.png)
+![](static/reqs.png)
 
-![](/static/range_time.png)
+![](static/range_time.png)
