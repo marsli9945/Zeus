@@ -1,28 +1,35 @@
 package com.tuyoo.framework.grow.auth.entities;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@ApiModel("用户信息内容")
 @Table(name = "springcloud_user")
 public class UserEntities
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 自增主键
+    @ApiModelProperty(value = "主键ID", name = "id", required = true, example = "1")
     private Integer id;
 
     @Column
+    @ApiModelProperty(value = "用户账号", name = "username", required = true, example = "admin")
     private String username;
 
     @Column
     private String password;
 
     @Column
+    @ApiModelProperty(value = "电话号码", name = "phone", required = true, example = "13810647108")
     private String phone;
 
     @Column
+    @ApiModelProperty(value = "用户邮箱", required = true, example = "13810647108@163.com")
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)

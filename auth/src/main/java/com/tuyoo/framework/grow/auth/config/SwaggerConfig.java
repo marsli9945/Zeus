@@ -34,11 +34,11 @@ public class SwaggerConfig {
                 //页面标题
                 .title("Zeus 微服务网Auth模块相关 RESTful API")
                 //创建人
-                .contact(new Contact("Bryan", "http://blog.bianxh.top/", ""))
+                .contact(new Contact("Lilei", "http://192.168.10.143:3000", ""))
                 //版本号
                 .version("1.0")
                 //描述
-                .description("API 描述")
+                .description("用户管理和鉴权相关接口")
                 .build();
     }
 }
