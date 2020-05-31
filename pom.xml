@@ -16,6 +16,7 @@
         <module>auth</module>
         <module>api</module>
         <module>common</module>
+        <module>consumer</module>
     </modules>
 
     <parent>
