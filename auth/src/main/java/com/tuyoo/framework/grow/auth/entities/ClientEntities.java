@@ -1,9 +1,12 @@
 package com.tuyoo.framework.grow.auth.entities;
 
+import io.swagger.annotations.ApiModel;
+
 import javax.persistence.*;
 
-@Entity
-@Table(name = "oauth_client_details")
+@Table
+@ApiModel("客户端ID内容")
+@Entity(name = "oauth_client_details")
 public class ClientEntities
 {
     @Id

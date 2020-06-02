@@ -6,11 +6,18 @@ import io.swagger.annotations.ApiModelProperty;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Table
 @ApiModel("用户角色信息")
-@Table(name = "springcloud_role")
+@Entity(name = "springcloud_role")
 public class RoleEntities
 {
+    public RoleEntities() {}
+
+    public RoleEntities(Integer id)
+    {
+        this.id = id;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ApiModelProperty(value = "主键ID", required = true, example = "1")
@@ -20,15 +27,8 @@ public class RoleEntities
     @ApiModelProperty(value = "角色名", required = true, example = "admin")
     private String name;
 
-    RoleEntities() {}
-
     @ManyToMany
     private List<UserEntities> userEntitiesList;
-
-    public RoleEntities(Integer id)
-    {
-        this.id = id;
-    }
 
     public List<UserEntities> getUserEntitiesList()
     {

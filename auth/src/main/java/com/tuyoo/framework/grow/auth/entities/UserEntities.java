@@ -2,14 +2,13 @@ package com.tuyoo.framework.grow.auth.entities;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import org.springframework.data.repository.cdi.Eager;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
+@Table
 @ApiModel("用户信息内容")
-@Table(name = "springcloud_user")
+@Entity(name = "springcloud_user")
 public class UserEntities
 {
     @Id

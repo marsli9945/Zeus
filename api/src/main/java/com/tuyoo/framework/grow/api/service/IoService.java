@@ -9,4 +9,6 @@ public interface IoService
     String io1000() throws InterruptedException;
 
     String io3000() throws InterruptedException;
+
+    String io5000() throws InterruptedException;
 }

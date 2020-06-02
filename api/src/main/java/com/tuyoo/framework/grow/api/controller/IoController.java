@@ -37,4 +37,10 @@ public class IoController
     {
         return ResultEntities.success(ioService.io3000());
     }
+
+    @GetMapping("/io5000")
+    public ResultEntities<String> io5000() throws InterruptedException
+    {
+        return ResultEntities.success(ioService.io5000());
+    }
 }
