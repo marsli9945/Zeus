@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface IoService
 {
     @GetMapping("/io0")
-    public ResultEntities<String> io0();
+    ResultEntities<String> io0();
 
     @GetMapping("/io500")
-    public ResultEntities<String> io500();
+    ResultEntities<String> io500();
 
     @GetMapping("/io1000")
-    public ResultEntities<String> io1000();
+    ResultEntities<String> io1000();
 
     @GetMapping("/io3000")
-    public ResultEntities<String> io3000();
+    ResultEntities<String> io3000();
 
     @GetMapping("/io5000")
-    public ResultEntities<String> io5000();
+    ResultEntities<String> io5000();
 }

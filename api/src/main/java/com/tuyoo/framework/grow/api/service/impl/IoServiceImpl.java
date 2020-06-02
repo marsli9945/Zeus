@@ -52,9 +52,6 @@ public class IoServiceImpl implements IoService
     }
 
     @Override
-//    @HystrixCommand(fallbackMethod = "io5000Handler", commandProperties = {
-//            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "3000")
-//    })
     @HystrixCommand
     public String io5000() throws InterruptedException
     {
