@@ -1,9 +1,7 @@
 package com.tuyoo.framework.grow.gateway.componet;
 
-import javax.persistence.Entity;
 import java.util.List;
 
-@Entity
 public class JwtEntities
 {
     private String exp;

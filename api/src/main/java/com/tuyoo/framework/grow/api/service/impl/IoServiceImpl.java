@@ -5,7 +5,9 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.tuyoo.framework.grow.api.service.IoService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @Slf4j
@@ -66,5 +68,25 @@ public class IoServiceImpl implements IoService
         counter++;
         log.info("IoFallbackMethod counter:{}" + counter);
         return "8001处理超时：this is IoFallbackMethod";
+    }
+
+    @HystrixCommand(fallbackMethod = "IoCircuitBreaker_fallback", commandProperties = {
+            @HystrixProperty(name = "circuitBreaker.enabled", value = "true"), //是否开启断路器
+            @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"), //请求次数
+            @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "10000"), //时间窗口期
+            @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "60") //失败率达到多少后跳闸
+    })
+    public String IoCircuitBreaker(@PathVariable("id") Integer id)
+    {
+        if (id < 0)
+        {
+            throw new RuntimeException("id 不能为负数");
+        }
+
+        return "id:{} " + id;
+    }
+
+    public String IoCircuitBreaker_fallback(@PathVariable("id") Integer id) {
+        return "id 不能为负数，请稍后再试！";
     }
 }
