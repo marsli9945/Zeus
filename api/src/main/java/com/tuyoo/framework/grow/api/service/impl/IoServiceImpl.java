@@ -5,7 +5,6 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.tuyoo.framework.grow.api.service.IoService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.commons.util.IdUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
