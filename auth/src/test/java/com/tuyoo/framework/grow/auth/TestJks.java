@@ -15,12 +15,6 @@ public class TestJks
     KeystoreConfig keystore;
 
     @Test
-    public void jks() {
-        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("demojwt.jks"), "keystorepass".toCharArray());
-        System.out.println(keyStoreKeyFactory.getKeyPair("jwt", "keypairpass".toCharArray()));
-    }
-
-    @Test
     public void keystore() {
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("ga.keystore"), "GaKeystore".toCharArray());
         System.out.println(keyStoreKeyFactory.getKeyPair("gakey", "Tuyoogame123".toCharArray()));

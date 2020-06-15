@@ -1,0 +1,16 @@
+server:
+  port: 8003
+spring:
+  application:
+    name: sentinel
+  cloud:
+    sentinel:
+      transport:
+        dashboard: localhost:8080
+        port: 8719
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

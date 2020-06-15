@@ -17,6 +17,7 @@
         <module>api</module>
         <module>common</module>
         <module>consumer</module>
+        <module>sentinel</module>
     </modules>
 
     <parent>
@@ -33,6 +34,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <druid.version>1.1.16</druid.version>
         <spring.cloud.version>Hoxton.SR1</spring.cloud.version>
+        <spring.cloud.alibaba.version>2.1.0.RELEASE</spring.cloud.alibaba.version>
         <common.version>1.0-SNAPSHOT</common.version>
     </properties>
 
@@ -72,6 +74,21 @@
                 <version> ${spring.cloud.version} </version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <!--Spring cloud alibaba 2.1.0.RELEASE-->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version> ${spring.cloud.alibaba.version} </version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

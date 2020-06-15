@@ -1,0 +1,10 @@
+[
+  {
+    "resource": "api",
+    "grade": 1,
+    "count": 1,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "limitApp": "default"
+  }
+]
