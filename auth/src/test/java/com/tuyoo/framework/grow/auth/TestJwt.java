@@ -2,6 +2,7 @@ package com.tuyoo.framework.grow.auth;
 
 import com.tuyoo.framework.grow.auth.bean.KeystoreConfig;
 import net.minidev.json.JSONObject;
+import org.junit.Ignore;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +18,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.util.HashMap;
 import java.util.Map;
 
+@Ignore
 @SpringBootTest
 public class TestJwt {
 

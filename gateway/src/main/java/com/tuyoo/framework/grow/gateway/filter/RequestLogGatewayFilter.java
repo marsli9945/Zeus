@@ -19,7 +19,7 @@ public class RequestLogGatewayFilter implements GlobalFilter, Ordered
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
     {
-        System.out.println("********************** this is log filter" + new Date());
+        System.out.println(new Date() + " send path:{}" + exchange.getRequest().getPath());
         return chain.filter(exchange);
     }
 

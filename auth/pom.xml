@@ -13,6 +13,13 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.tuyoo.framework.grow</groupId>
+            <artifactId>common</artifactId>
+            <version>${common.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../common/target/common-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>

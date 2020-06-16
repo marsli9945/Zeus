@@ -12,6 +12,13 @@
     <artifactId>gateway</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.tuyoo.framework.grow</groupId>
+            <artifactId>common</artifactId>
+            <version>${common.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../common/target/common-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
         <!-- 框架部分 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
