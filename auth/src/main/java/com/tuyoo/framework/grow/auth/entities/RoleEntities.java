@@ -8,7 +8,7 @@ import java.util.List;
 
 @Table
 @ApiModel("用户角色信息")
-@Entity(name = "springcloud_role")
+@Entity(name = "oauth_role")
 public class RoleEntities
 {
     public RoleEntities() {}

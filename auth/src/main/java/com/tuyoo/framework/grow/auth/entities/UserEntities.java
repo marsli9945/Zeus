@@ -8,7 +8,7 @@ import java.util.List;
 
 @Table
 @ApiModel("用户信息内容")
-@Entity(name = "springcloud_user")
+@Entity(name = "oauth_user")
 public class UserEntities
 {
     @Id
@@ -32,7 +32,7 @@ public class UserEntities
     private String email;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "springcloud_user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "oauth_user_role",joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<RoleEntities> roleEntitiesList;
 
     public List<RoleEntities> getRoleEntitiesList()
