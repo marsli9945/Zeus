@@ -1,7 +1,5 @@
 package com.tuyoo.framework.grow.gateway.componet;
 
-import com.tuyoo.framework.grow.common.entities.IErrorCode;
-import com.tuyoo.framework.grow.common.entities.ResultCode;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import com.alibaba.fastjson.JSON;
 import org.springframework.core.io.buffer.DataBuffer;
