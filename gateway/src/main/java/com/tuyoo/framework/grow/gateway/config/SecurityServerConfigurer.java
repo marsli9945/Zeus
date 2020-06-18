@@ -27,7 +27,8 @@ public class SecurityServerConfigurer
     JwtContextRepository jwtContextRepository;
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http)
+    {
         http.authorizeExchange()
                 .pathMatchers(HttpMethod.GET,
                         "/",

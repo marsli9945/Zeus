@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.auth.form.LoginForm;
 import com.tuyoo.framework.grow.auth.form.RefreshForm;
 import com.tuyoo.framework.grow.auth.response.TokenResponse;
-import com.tuyoo.framework.grow.auth.util.RedisUtil;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,9 +31,6 @@ public class AuthController
     RestTemplate restTemplate;
 
     @Autowired
-    RedisUtil redisUtil;
-
-    @Autowired
     @Qualifier("consumerTokenServices")
     ConsumerTokenServices consumerTokenServices;
 
@@ -45,14 +41,6 @@ public class AuthController
     @ApiOperation(value = "登录", notes = "使用账号密码登录以获取token", response = TokenResponse.class)
     public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
     {
-        // 先判断username+client_id组合是否已经登录
-        // 已登录的账号只能通过刷新接口
-        boolean hasKey = redisUtil.hasKey("uname_to_access:" + loginForm.getClientId() + ":" + loginForm.getUsername());
-        if (hasKey)
-        {
-            return ResultEntities.failed("该用户已登录");
-        }
-
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Authorization", getHttpBasic(loginForm.getClientId(), loginForm.getClientSecret()));
 
@@ -77,19 +65,12 @@ public class AuthController
     @ApiOperation(value = "刷新令牌", notes = "使用已有令牌刷新令牌有效时间", response = TokenResponse.class)
     public ResultEntities<Object> refresh(@RequestBody @Validated RefreshForm refreshForm)
     {
-        String token = refreshForm.getRefreshToken();
-        boolean hasKey = redisUtil.hasKey("refresh:" + token);
-        if (hasKey)
-        {
-            return ResultEntities.failed("令牌已超出有效期，请重新登录");
-        }
-
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Authorization", getHttpBasic(refreshForm.getClientId(), refreshForm.getClientSecret()));
 
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "refresh_token");
-        body.add("refresh_token", token);
+        body.add("refresh_token", refreshForm.getRefreshToken());
 
         HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
 

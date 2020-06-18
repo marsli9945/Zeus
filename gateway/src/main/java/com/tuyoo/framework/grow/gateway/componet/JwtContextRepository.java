@@ -69,16 +69,28 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             log.info("checking username:{}", parse.getUser_name());
             log.info("checking claims:{}", jwt.getClaims());
 
-            // 拿不到用户名和过期时间，或超过过期时间
+            // 无用户名
             if (parse.getUser_name() == null)
             {
                 return Mono.empty();
             }
+
+            // 无过期时间
             if (parse.getExp() == null)
             {
                 return Mono.empty();
             }
+
+            // 超过过期时间
             if (System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
+            {
+                return Mono.empty();
+            }
+
+            //scope权限校验
+            String[] pathArr = request.getPath().toString().split("/");
+            List<String> scopeList = parse.getScope();
+            if (pathArr.length > 2 && !scopeValid(pathArr[1], parse.getScope()))
             {
                 return Mono.empty();
             }
@@ -100,5 +112,25 @@ public class JwtContextRepository implements ServerSecurityContextRepository
         {
             return Mono.empty();
         }
+    }
+
+    /**
+     * 判断用户是否拥有当初访问服务的权限
+     *
+     * @param serverName 服务名
+     * @param scopeList  用户的权限列表
+     * @return 是/否
+     */
+    private boolean scopeValid(String serverName, List<String> scopeList)
+    {
+        for (String scope : scopeList)
+        {
+            log.info("scope:{}"+scope);
+            if (scope.equals(serverName) || scope.equals("all"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
