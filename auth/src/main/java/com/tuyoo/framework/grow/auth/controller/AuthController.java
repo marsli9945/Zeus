@@ -57,6 +57,7 @@ public class AuthController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return ResultEntities.failed("令牌申请失败");
         }
     }
@@ -80,6 +81,7 @@ public class AuthController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return ResultEntities.failed("令牌刷新失败");
         }
     }

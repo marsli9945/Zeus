@@ -19,7 +19,8 @@ public class ClientForm
     @NotBlank(message = "客户端密码不能为空")
     private String clientSecret;
 
-    @ApiModelProperty(value = "客户端权限", name = "scope", example = "read,write")
+    @ApiModelProperty(value = "客户端权限", name = "scope", example = "read,write", required = true)
+    @NotBlank(message = "权限列表不能为空")
     private String scope;
 
     @ApiModelProperty(value = "可用授权类型", name = "authorizedGrantTypes", example = "authorization_code,refresh_token,password")
