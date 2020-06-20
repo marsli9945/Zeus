@@ -111,6 +111,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             return Mono.just(authentication).map(SecurityContextImpl::new);
         } catch (Exception e)
         {
+            e.printStackTrace();
             return Mono.empty();
         }
     }

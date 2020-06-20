@@ -47,17 +47,15 @@ public class ClientController
 
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "id");
 
-        Specification<ClientEntities> specification = new Specification<ClientEntities>() {
-            @Override
-            public Predicate toPredicate(Root<ClientEntities> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
-                List<Predicate> predicates = new ArrayList<>();
+        Specification<ClientEntities> specification = (Specification<ClientEntities>) (root, criteriaQuery, cb) ->
+        {
+            List<Predicate> predicates = new ArrayList<>();
 
-                if (!StringUtils.isEmpty(clientId)) {
-                    predicates.add(cb.like(root.get("clientId").as(String.class), "%" + clientId + "%"));
-                }
-
-                return cb.and(predicates.toArray(new Predicate[predicates.size()]));
+            if (!StringUtils.isEmpty(clientId)) {
+                predicates.add(cb.like(root.get("clientId").as(String.class), "%" + clientId + "%"));
             }
+
+            return cb.and(predicates.toArray(new Predicate[predicates.size()]));
         };
         Page<ClientEntities> all = clientRepository.findAll(specification, pageable);
         return ResultEntities.success(all);

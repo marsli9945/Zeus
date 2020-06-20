@@ -44,7 +44,8 @@ public class SecurityServerConfigurer
                 // 令牌操作的三个接口允许匿名访问
                 .pathMatchers("/v1/auth/login").permitAll()
                 .pathMatchers("/v1/auth/refresh").permitAll()
-                .pathMatchers("/v1/auth/singOut").permitAll()
+                .pathMatchers("/v1/auth/signOut").permitAll()
+                // 系统健康检查和对外监控允许匿名
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/monitor").permitAll()
 //                .pathMatchers("/**").permitAll()
