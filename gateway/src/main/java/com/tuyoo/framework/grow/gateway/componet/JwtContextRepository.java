@@ -56,7 +56,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
         try
         {
             Boolean hasKey = redisTemplate.hasKey("access:" + authToken);
-            log.info("hasKey:{}" + hasKey);
+            assert hasKey != null;
+            log.info("hasKey:{}" + hasKey.toString());
             if (!hasKey)
             {
                 return Mono.empty();
@@ -67,6 +68,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             //拿到jwt令牌中自定义的内容
             JwtEntities parse = JSON.parseObject(jwt.getClaims(), JwtEntities.class);
             log.info("checking username:{}", parse.getUser_name());
+            log.info("jwtPath:{}" + request.getPath().toString());
             log.info("checking claims:{}", jwt.getClaims());
 
             // 无用户名
@@ -90,7 +92,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             //scope权限校验
             String[] pathArr = request.getPath().toString().split("/");
             List<String> scopeList = parse.getScope();
-            if (pathArr.length > 2 && !scopeValid(pathArr[1], parse.getScope()))
+            if (pathArr.length > 2 && !scopeValid(pathArr[2], parse.getScope()))
             {
                 return Mono.empty();
             }
@@ -107,8 +109,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
                     roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
             return Mono.just(authentication).map(SecurityContextImpl::new);
-        }
-        catch (Exception e)
+        } catch (Exception e)
         {
             return Mono.empty();
         }
@@ -125,7 +126,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     {
         for (String scope : scopeList)
         {
-            log.info("scope:{}"+scope);
+            log.info("scope:{}" + scope);
             if (scope.equals(serverName) || scope.equals("all"))
             {
                 return true;

@@ -1,5 +1,6 @@
 package com.tuyoo.framework.grow.gateway.filter;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -12,6 +13,7 @@ import java.util.Date;
 /**
  * request 日志记录
  */
+@Slf4j
 @Component
 public class RequestLogGatewayFilter implements GlobalFilter, Ordered
 {
@@ -19,7 +21,7 @@ public class RequestLogGatewayFilter implements GlobalFilter, Ordered
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
     {
-        System.out.println(new Date() + " send path:{}" + exchange.getRequest().getPath());
+        log.info(new Date() + " send path:{}" + exchange.getRequest().getPath().toString());
         return chain.filter(exchange);
     }
 

@@ -42,9 +42,11 @@ public class SecurityServerConfigurer
                 ).permitAll() // 允许对于网站静态资源的无授权访问
                 .pathMatchers(HttpMethod.OPTIONS).permitAll() //跨域请求会先进行一次options请求
                 // 令牌操作的三个接口允许匿名访问
-                .pathMatchers("/auth/login").permitAll()
-                .pathMatchers("/auth/refresh").permitAll()
-                .pathMatchers("/auth/singOut").permitAll()
+                .pathMatchers("/v1/auth/login").permitAll()
+                .pathMatchers("/v1/auth/refresh").permitAll()
+                .pathMatchers("/v1/auth/singOut").permitAll()
+                .pathMatchers("/actuator/**").permitAll()
+                .pathMatchers("/monitor").permitAll()
 //                .pathMatchers("/**").permitAll()
                 .anyExchange().authenticated();
 

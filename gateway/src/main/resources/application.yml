@@ -38,13 +38,20 @@ spring:
         locator:
           enabled: true # 开启从注册中心中动态注册路由
           lower-case-service-id: true
-#      routes:
-#        - id: api
-#          uri: lb://API
-#          predicates:
-#            - Path=/api/**
-#          filters:
-#            - StripPrefix=1
+      routes:
+        - id: auth
+          uri: lb://AUTH
+          predicates:
+            - Path=/v1/auth/**
+          filters:
+            - StripPrefix=2
+
+        - id: feature
+          uri: lb://FEATURE
+          predicates:
+            - Path=/v1/feature/**
+          filters:
+            - StripPrefix=2
 
 eureka:
   instance:
@@ -65,3 +72,9 @@ logging:
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   pubKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk2ULSmOH2ZdkYFeUCm7wKHolHfp36NVJogt0ZucT/DLp4PVEYdBtl8JrTVCoi4CToPfTOXvKvsXm5Cbt/OQfEWA92HXSv2VJRx55kqTswh0qsATKBXqH2XQRinkuxrYOV9KDYf4hHpXTjVHtirTG4LDF91FFXMwxzvyx/8g0ZfEGOzA6O/YMz3teGLjbMqbWP/cYyvagIS6fKQvy6vmFh1+azj/YkwFIKnZcqf4+fz6d4FMMKjXf5BcCF9DxiSxc65n4myIpsEvdvwDjucEG24rxW1YAKyBfiDDrND7lCTM/jHCx/rI/lLi6PUDx/R1AaTrRLUCATaFOS+73PCXAWQIDAQAB-----END PUBLIC KEY-----
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
