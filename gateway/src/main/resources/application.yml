@@ -53,6 +53,13 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: api
+          uri: lb://API
+          predicates:
+            - Path=/v1/api/**
+          filters:
+            - StripPrefix=2
+
 eureka:
   instance:
     prefer-ip-address: true # 使用IP进行注册
@@ -72,6 +79,8 @@ logging:
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
   pubKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk2ULSmOH2ZdkYFeUCm7wKHolHfp36NVJogt0ZucT/DLp4PVEYdBtl8JrTVCoi4CToPfTOXvKvsXm5Cbt/OQfEWA92HXSv2VJRx55kqTswh0qsATKBXqH2XQRinkuxrYOV9KDYf4hHpXTjVHtirTG4LDF91FFXMwxzvyx/8g0ZfEGOzA6O/YMz3teGLjbMqbWP/cYyvagIS6fKQvy6vmFh1+azj/YkwFIKnZcqf4+fz6d4FMMKjXf5BcCF9DxiSxc65n4myIpsEvdvwDjucEG24rxW1YAKyBfiDDrND7lCTM/jHCx/rI/lLi6PUDx/R1AaTrRLUCATaFOS+73PCXAWQIDAQAB-----END PUBLIC KEY-----
+  sdkTokenHeader: SdkAuthorization #sdk的token携带参数
+  sdkPubKey: -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA63RCCWPGq01eiBJIhMlP 1IAxtfPg2bjQHH6zbkjnyAouit6WUf2dpppQs50WkCjrkdjMBLpOznuOUYImoQgG qLU7JN0kM5bkL5bG86op0TEbLtjZDKM+ZX8YJ5TpKhjgMgpISkbKpSpbhKHeu0Kt DtQ6w/ihZsNvMSAfWTWcsrZ8ZAz3bvkCUCSOS26XahoDQmjtao1ghj0cNjTz1os0 S0+ZQFJ/tO8RaEflHuMlsscGftsZiG/JD2c8E10i8TjSCCGWwHX5MDk81klDBrcb iallJZkvqyxqsfcn+YInQUmfaPHQ57MHce8oL78J+Z48VDQGU/T8cBAzUhY6Ijg0 qwIDAQAB-----END PUBLIC KEY-----
 
 management:
   endpoints:

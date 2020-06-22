@@ -20,7 +20,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 @Slf4j
 @RestController
@@ -118,5 +121,20 @@ public class AuthController
     {
         String str = clientId + ":" + clientSecret;
         return "Basic " + Base64Utils.encodeToString(str.getBytes());
+    }
+
+    @GetMapping("/header")
+    public ResultEntities<Object> user(HttpServletRequest request)
+    {
+        //获取请求头信息
+        Enumeration<String> headerNames = request.getHeaderNames();
+        ArrayList<String> headerArr = new ArrayList<>();
+        //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
+        while (headerNames.hasMoreElements()){
+            String headerName = headerNames.nextElement();
+            log.info(headerName + " : " + request.getHeader(headerName) + "<br/>");
+            headerArr.add(headerName + " : " + request.getHeader(headerName));
+        }
+        return ResultEntities.success(headerArr);
     }
 }

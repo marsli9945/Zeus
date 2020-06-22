@@ -19,6 +19,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +30,15 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 {
     @Value("${jwt.tokenHeader}")
     private String tokenHeader;
+
+    @Value("${jwt.sdkTokenHeader}")
+    private String sdkTokenHeader;
+
     @Value("${jwt.pubKey}")
     private String pubKey;
+
+    @Value("${jwt.sdkPubKey}")
+    private String sdkPubKey;
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -47,12 +56,76 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
         // 头信息中取出jwt令牌,并判断redis中是否存在token
         String authToken = request.getHeaders().getFirst(tokenHeader);
-        if (authToken == null)
+        String sdkToken = request.getHeaders().getFirst(sdkTokenHeader);
+
+        if (authToken == null && sdkToken == null)
         {
             return Mono.empty();
         }
 
+        // 优先校验sdk的令牌
+        if (sdkToken != null)
+        {
+            return checkSdkToken(request, sdkToken);
+        }
 
+        return checkToken(request, authToken);
+    }
+
+    /**
+     * 校验sdk的token
+     * @param request 请求信息
+     * @param authToken 令牌
+     * @return Mono结果
+     */
+    private Mono<SecurityContext> checkSdkToken(ServerHttpRequest request, String authToken)
+    {
+        try
+        {
+            //校验jwt令牌
+            Jwt jwt = JwtHelper.decodeAndVerify(authToken, new RsaVerifier(sdkPubKey));
+            //拿到jwt令牌中自定义的内容
+            JwtEntities parse = JSON.parseObject(jwt.getClaims(), JwtEntities.class);
+
+            // 无过期时间
+            if (parse.getExp() == null)
+            {
+                return Mono.empty();
+            }
+
+            // 超过过期时间
+            if (System.currentTimeMillis() / 1000 > Integer.parseInt(parse.getExp()))
+            {
+                return Mono.empty();
+            }
+
+            // 头信息中添加查询用户
+            request.mutate().header("search_user", "sdk").build();
+
+            //列出token中携带的角色表。
+            List<String> roles = new ArrayList<>();
+            roles.add("ADMIN");
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    "sdk",
+                    null,
+                    roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
+            );
+            return Mono.just(authentication).map(SecurityContextImpl::new);
+        } catch (Exception e)
+        {
+            e.printStackTrace();
+            return Mono.empty();
+        }
+    }
+
+    /**
+     * 校验自己的token
+     * @param request 请求信息
+     * @param authToken 令牌
+     * @return Mono结果
+     */
+    private Mono<SecurityContext> checkToken(ServerHttpRequest request, String authToken)
+    {
         try
         {
             Boolean hasKey = redisTemplate.hasKey("access:" + authToken);

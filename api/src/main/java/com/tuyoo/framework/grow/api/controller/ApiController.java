@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Enumeration;
 
 @Slf4j
 @RestController
@@ -19,6 +20,13 @@ public class ApiController
     @GetMapping("/user")
     public ResultEntities<String> user()
     {
+        //获取请求头信息
+        Enumeration<String> headerNames = request.getHeaderNames();
+        //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
+        while (headerNames.hasMoreElements()){
+            String headerName = headerNames.nextElement();
+            log.info(headerName + " : " + request.getHeader(headerName) + "<br/>");
+        }
         return ResultEntities.success(request.getHeader("search_user"));
     }
 
