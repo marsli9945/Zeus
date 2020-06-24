@@ -18,6 +18,7 @@
         <module>common</module>
         <module>consumer</module>
         <module>sentinel</module>
+        <module>admin</module>
     </modules>
 
     <parent>
