@@ -18,9 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +38,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     @Value("${jwt.sdkPubKey}")
     private String sdkPubKey;
 
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+//    @Resource
+//    private RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public Mono<Void> save(ServerWebExchange exchange, SecurityContext securityContext)
@@ -128,13 +126,13 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     {
         try
         {
-            Boolean hasKey = redisTemplate.hasKey("access:" + authToken);
-            assert hasKey != null;
-            log.info("hasKey:{}" + hasKey.toString());
-            if (!hasKey)
-            {
-                return Mono.empty();
-            }
+//            Boolean hasKey = redisTemplate.hasKey("access:" + authToken);
+//            assert hasKey != null;
+//            log.info("hasKey:{}" + hasKey.toString());
+//            if (!hasKey)
+//            {
+//                return Mono.empty();
+//            }
 
             //校验jwt令牌
             Jwt jwt = JwtHelper.decodeAndVerify(authToken, new RsaVerifier(pubKey));

@@ -27,19 +27,6 @@ public class RoleEntities
     @ApiModelProperty(value = "角色名", required = true, example = "admin")
     private String name;
 
-    @ManyToMany
-    private List<UserEntities> userEntitiesList;
-
-    public List<UserEntities> getUserEntitiesList()
-    {
-        return userEntitiesList;
-    }
-
-    public void setUserEntitiesList(List<UserEntities> userEntitiesList)
-    {
-        this.userEntitiesList = userEntitiesList;
-    }
-
     public Integer getId()
     {
         return id;

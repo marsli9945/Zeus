@@ -8,7 +8,7 @@ public class UserController
 {
     @GetMapping
     public ResultEntities<Object> getList() {
-        return ResultEntities.success("this is getlist");
+        return ResultEntities.success("this is get list");
     }
 
     @PostMapping

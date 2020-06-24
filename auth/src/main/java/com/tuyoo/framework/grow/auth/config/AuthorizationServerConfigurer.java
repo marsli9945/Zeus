@@ -11,8 +11,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -21,9 +19,6 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Aut
 import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenEnhancer;
-import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
@@ -31,8 +26,6 @@ import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
 import javax.sql.DataSource;
 import java.security.KeyPair;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Slf4j
 @EnableAuthorizationServer
@@ -63,8 +56,6 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
         clients.withClientDetails(new JdbcClientDetailsService(dataSource));
     }
 
-
-
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints)
     {
@@ -86,8 +77,8 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
     }
 
     @Bean
-    public TokenStore jwtTokenStore() {
-        RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
+    public TokenStore jwtTokenStore()
+    {
         return new RedisTokenStore(redisConnectionFactory);
     }
 
