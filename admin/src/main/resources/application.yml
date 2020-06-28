@@ -3,10 +3,11 @@ server:
 spring:
   application:
     name: admin
-
-eureka:
-  instance:
-    prefer-ip-address: true # 使用IP进行注册
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
+  data:
+    mongodb:
+      uri: mongodb://oauth:123456@127.0.0.1:27017/oauth
+  jpa:
+    hibernate:
+      ddl-auto: update # 更新或创建数据表
+    show-sql: true # 打印sql
+    open-in-view: true
