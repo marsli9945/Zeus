@@ -126,6 +126,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     {
         try
         {
+            // todo 保证高可用目前去掉redis校验
 //            Boolean hasKey = redisTemplate.hasKey("access:" + authToken);
 //            assert hasKey != null;
 //            log.info("hasKey:{}" + hasKey.toString());
@@ -162,7 +163,6 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
             //scope权限校验
             String[] pathArr = request.getPath().toString().split("/");
-            List<String> scopeList = parse.getScope();
             if (pathArr.length > 2 && !scopeValid(pathArr[2], parse.getScope()))
             {
                 return Mono.empty();
