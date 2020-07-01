@@ -45,6 +45,7 @@ public class SecurityServerConfigurer
                 .pathMatchers("/v1/auth/login").permitAll()
                 .pathMatchers("/v1/auth/refresh").permitAll()
                 .pathMatchers("/v1/auth/signOut").permitAll()
+                .pathMatchers("/v1/auth/io200NoAuth").permitAll()
                 // 系统健康检查和对外监控允许匿名
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/monitor").permitAll()

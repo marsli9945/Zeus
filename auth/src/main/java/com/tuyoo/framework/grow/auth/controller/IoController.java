@@ -24,6 +24,12 @@ public class IoController
         return ResultEntities.success(ioService.io200());
     }
 
+    @GetMapping("/io200NoAuth")
+    public ResultEntities<String> io200NoAuth() throws InterruptedException
+    {
+        return ResultEntities.success(ioService.io200());
+    }
+
     @GetMapping("/io500")
     public ResultEntities<String> io500() throws InterruptedException
     {
