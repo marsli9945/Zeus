@@ -1,4 +1,4 @@
-package com.tuyoo.framework.grow.auth.exception;
+package com.tuyoo.framework.grow.admin.exception;
 
 import com.tuyoo.framework.grow.common.entities.ResultCode;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;

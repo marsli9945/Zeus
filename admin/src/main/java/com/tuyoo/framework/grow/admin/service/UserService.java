@@ -1,14 +1,17 @@
 package com.tuyoo.framework.grow.admin.service;
 
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
-
-import java.util.List;
+import com.tuyoo.framework.grow.admin.form.user.CreateUserForm;
+import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
+import org.springframework.data.domain.Page;
 
 public interface UserService
 {
-    UserEntities findOne(Long id);
+    Page<UserEntities> fetch(Integer page, Integer size, String name);
 
-    UserEntities save(UserEntities user);
+    boolean create(CreateUserForm createUserForm);
 
-    List<UserEntities> queryAll();
+    boolean update(EditUserForm editUserForm);
+
+    boolean delete(String username);
 }

@@ -1,23 +1,37 @@
 package com.tuyoo.framework.grow.admin.entities;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "user")
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.*;
+import java.util.List;
+
 @Data
-@AllArgsConstructor
-@ToString
+@Table
+@Entity(name = "oauth_user")
 public class UserEntities
 {
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
+    @Column
     private String username;
 
+    @Column
     private String password;
 
-    private int age;
+    @Column
+    private String name;
+
+    @Column
+    private int level;
+
+    @Column
+    private Integer status = 0;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "oauth_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<RoleEntities> roleEntitiesList;
 }

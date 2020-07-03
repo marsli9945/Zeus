@@ -1,57 +1,63 @@
 package com.tuyoo.framework.grow.admin.controller;
 
-import com.tuyoo.framework.grow.admin.entities.UserEntities;
+import com.tuyoo.framework.grow.admin.form.PageForm;
+import com.tuyoo.framework.grow.admin.form.user.CreateUserForm;
+import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @Slf4j
-@RestController()
+@RestController
+@RequestMapping("/user")
+@Api(tags = "用户信息相关接口")
 public class UserController
 {
     @Autowired
     private UserService userService;
 
-//    @GetMapping
-//    public ResultEntities<Object> getList() {
-//        return ResultEntities.success("this is get list");
-//    }
-//
-//    @PostMapping
-//    public ResultEntities<Object> create() {
-//        return ResultEntities.success("this is create");
-//    }
-//
-//    @PutMapping
-//    public ResultEntities<Object> edit() {
-//        return ResultEntities.success("this is edit");
-//    }
-//
-//    @DeleteMapping
-//    public ResultEntities<Object> delete() {
-//        return ResultEntities.success("this is delete");
-//    }
-
-    @GetMapping("/findOne")
-    public ResultEntities<Object> findOne() {
-        UserEntities one = userService.findOne(3L);
-        return ResultEntities.success(one);
+    @GetMapping
+    @ApiOperation(value = "获取用户列表", notes = "获取用户列表接口", response = ResultEntities.class)
+    public ResultEntities<Object> fetch(@Validated PageForm pageForm, String name)
+    {
+        return ResultEntities.success(userService.fetch(pageForm.getPage(), pageForm.getSize(), name));
     }
 
-    @GetMapping("/save")
-    public ResultEntities<Object> save() {
-        UserEntities user = new UserEntities(3L,"convertor","null",0);
-        String username = userService.save(user).getUsername();
-        return ResultEntities.success(username);
+    @PostMapping
+    @ApiOperation(value = "添加用户", notes = "添加用户接口", response = ResultEntities.class)
+    public ResultEntities<Object> create(@RequestBody @Validated CreateUserForm createUserForm)
+    {
+        if (userService.create(createUserForm))
+        {
+            return ResultEntities.success();
+        }
+        return ResultEntities.failed();
     }
 
-    @GetMapping("/getAll")
-    public ResultEntities<Object> getAll() {
-        List<UserEntities> list = userService.queryAll();
-        return ResultEntities.success(list);
+    @PutMapping
+    @ApiOperation(value = "编辑用户", notes = "编辑用户接口", response = ResultEntities.class)
+    public ResultEntities<Object> edit(@RequestBody @Validated EditUserForm editUserForm)
+    {
+        if (userService.update(editUserForm))
+        {
+            return ResultEntities.success();
+        }
+        return ResultEntities.failed();
+    }
+
+    @DeleteMapping
+    @ApiOperation(value = "删除用户", notes = "删除用户接口", response = ResultEntities.class)
+    public ResultEntities<Object> delete(String username){
+        if (userService.delete(username))
+        {
+            return ResultEntities.success();
+        }
+        return ResultEntities.failed();
     }
 }

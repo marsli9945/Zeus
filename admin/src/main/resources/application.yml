@@ -3,9 +3,11 @@ server:
 spring:
   application:
     name: admin
-  data:
-    mongodb:
-      uri: mongodb://oauth:123456@127.0.0.1:27017/oauth
+  datasource:
+    url: ${MYSQL_URL:jdbc:mysql://192.168.10.143:3306/ga_system?serverTimezone=UTC&characterEncoding=utf-8&useSSL=false}
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWOR:tuyou@123game}
+    driverClassName: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update # 更新或创建数据表

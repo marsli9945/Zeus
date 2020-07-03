@@ -37,6 +37,15 @@ public class ResultEntities<T>
     /**
      * 成功返回结果
      *
+     */
+    public static <T> ResultEntities<T> success()
+    {
+        return new ResultEntities<>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), null);
+    }
+
+    /**
+     * 成功返回结果
+     *
      * @param data 获取的数据
      */
     public static <T> ResultEntities<T> success(T data)
