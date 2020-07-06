@@ -1,12 +1,12 @@
 package com.tuyoo.framework.grow.admin.repository;
 
-import com.tuyoo.framework.grow.admin.entities.UserEntities;
+import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<UserEntities, Integer>, JpaSpecificationExecutor<UserEntities>
+public interface RoleRepository extends JpaRepository<RoleEntities, Integer>, JpaSpecificationExecutor<RoleEntities>
 {
-    UserEntities findByUsername(String username);
+    RoleEntities findByName(String name);
 }

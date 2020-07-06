@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Table
-@Entity(name = "oauth_user")
+@Entity(name = "admin_user")
 public class UserEntities
 {
     @Id
@@ -32,6 +32,6 @@ public class UserEntities
     private Integer status = 0;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "oauth_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @JoinTable(name = "admin_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<RoleEntities> roleEntitiesList;
 }

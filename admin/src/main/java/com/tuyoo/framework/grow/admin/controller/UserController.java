@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequestMapping("/user")
-@Api(tags = "用户信息相关接口")
+@Api(tags = "用户管理接口")
 public class UserController
 {
     @Autowired
@@ -53,7 +53,7 @@ public class UserController
 
     @DeleteMapping
     @ApiOperation(value = "删除用户", notes = "删除用户接口", response = ResultEntities.class)
-    public ResultEntities<Object> delete(String username){
+    public ResultEntities<Object> delete(@RequestParam String username){
         if (userService.delete(username))
         {
             return ResultEntities.success();

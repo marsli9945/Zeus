@@ -70,14 +70,16 @@ public class UserServiceImp implements UserService
 
         UserEntities userEntities = editUserForm.entities(user);
         userEntities.setId(user.getId());
-        UserEntities save = userRepository.save(userEntities);
-        log.info("save:{}"+save.toString());
+        userRepository.save(userEntities);
         return true;
     }
 
     @Override
     public boolean delete(String username)
     {
+        if (username == null) {
+            return false;
+        }
         UserEntities user = userRepository.findByUsername(username);
         if (user == null)
         {

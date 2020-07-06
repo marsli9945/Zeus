@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "oauth_role")
+@Entity(name = "admin_role")
 public class RoleEntities
 {
     @Id
