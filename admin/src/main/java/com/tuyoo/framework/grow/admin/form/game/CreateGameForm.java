@@ -1,11 +1,13 @@
 package com.tuyoo.framework.grow.admin.form.game;
 
 import com.tuyoo.framework.grow.admin.entities.GameEntities;
+import com.tuyoo.framework.grow.admin.entities.StudioEntities;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel("游戏添加表单")
@@ -18,6 +20,10 @@ public class CreateGameForm
     @NotBlank(message = "游戏名不能为空")
     @ApiModelProperty(value = "游戏名", name = "name", required = true, example = "GrowAnalytics")
     private String name;
+
+    @NotNull(message = "工作室ID不能为空")
+    @ApiModelProperty(value = "工作室ID", name = "studio", required = true, example = "2")
+    private Integer studio;
 
     @ApiModelProperty(value = "游戏图标", name = "icon", required = true, example = "http://analytics.tuyoo.com/api/img/0b933762c947ec7eaacdcdacaa93dbe9.png")
     private String icon;
@@ -35,10 +41,10 @@ public class CreateGameForm
 
     public GameEntities entities(GameEntities gameEntities)
     {
-        return setValue(gameEntities, this.projectId, this.name, this.icon, this.timeZone, this.currency, this.status);
+        return setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status);
     }
 
-    static GameEntities setValue(GameEntities gameEntities, String projectId, String name, String icon, String timeZone, String currency, Integer status)
+    static GameEntities setValue(GameEntities gameEntities, String projectId, String name, Integer studio, String icon, String timeZone, String currency, Integer status)
     {
         if (projectId != null)
         {
@@ -48,6 +54,11 @@ public class CreateGameForm
         if (name != null)
         {
             gameEntities.setName(name);
+        }
+
+        if (studio != null)
+        {
+            gameEntities.setStudio(new StudioEntities(studio, null, null, null, null));
         }
 
         if (icon != null)

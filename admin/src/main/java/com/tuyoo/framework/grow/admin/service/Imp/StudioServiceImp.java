@@ -56,12 +56,12 @@ public class StudioServiceImp implements StudioService
     @Override
     public boolean update(EditStudioForm editStudioForm)
     {
-        StudioEntities studio = studioRepository.findByName(editStudioForm.getName());
-        if (studio == null) {
+        StudioEntities studio = studioRepository.findById(editStudioForm.getId()).get();
+        if (studio.getId() == null) {
             return false;
         }
         studioRepository.save(editStudioForm.entities(studio));
-        return false;
+        return true;
     }
 
     @Override

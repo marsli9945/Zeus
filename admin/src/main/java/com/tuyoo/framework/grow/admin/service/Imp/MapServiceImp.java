@@ -48,7 +48,8 @@ public class MapServiceImp implements MapService
     @Override
     public boolean create(CreateMapForm createMapForm)
     {
-        if (mapRepository.findByTypeAndStatusAndValue(createMapForm.getType(),1,createMapForm.getValue()) != null) {
+        if (mapRepository.findByTypeAndValue(createMapForm.getType(), createMapForm.getValue()) != null)
+        {
             return false;
         }
         mapRepository.save(createMapForm.entities(new MapEntities()));
@@ -58,8 +59,10 @@ public class MapServiceImp implements MapService
     @Override
     public boolean update(EditMapForm editMapForm)
     {
-        MapEntities map = mapRepository.findByTypeAndStatusAndValue(editMapForm.getType(), 1, editMapForm.getValue());
-        if (map == null) {
+
+        MapEntities map = mapRepository.findById(editMapForm.getId()).get();
+        if (map.getId() == null || mapRepository.findByTypeAndValue(editMapForm.getType(), editMapForm.getValue()) != null)
+        {
             return false;
         }
         mapRepository.save(editMapForm.entities(map));
@@ -69,10 +72,12 @@ public class MapServiceImp implements MapService
     @Override
     public boolean delete(Integer id)
     {
-        if (id == null) {
+        if (id == null)
+        {
             return false;
         }
-        if (mapRepository.findById(id).get().getId() == null) {
+        if (mapRepository.findById(id).get().getId() == null)
+        {
             return false;
         }
         mapRepository.deleteById(id);

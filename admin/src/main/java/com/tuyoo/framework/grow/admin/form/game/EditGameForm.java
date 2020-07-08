@@ -12,11 +12,14 @@ import javax.validation.constraints.NotBlank;
 public class EditGameForm
 {
     @NotBlank(message = "项目ID不能为空")
-    @ApiModelProperty(value = "项目ID", name = "projectId", required = true, example = "1")
+    @ApiModelProperty(value = "项目ID", name = "projectId", required = true, example = "20249")
     private String projectId;
 
     @ApiModelProperty(value = "游戏名", name = "name", example = "GrowAnalytics")
     private String name;
+
+    @ApiModelProperty(value = "工作室ID", name = "studio", required = true, example = "2")
+    private Integer studio;
 
     @ApiModelProperty(value = "游戏图标", name = "icon", example = "http://analytics.tuyoo.com/api/img/0b933762c947ec7eaacdcdacaa93dbe9.png")
     private String icon;
@@ -30,7 +33,8 @@ public class EditGameForm
     @ApiModelProperty(value = "游戏状态", name = "status", example = "1")
     private Integer status;
 
-    public GameEntities entities(GameEntities gameEntities) {
-        return CreateGameForm.setValue(gameEntities, this.projectId, this.name, this.icon, this.timeZone, this.currency, this.status);
+    public GameEntities entities(GameEntities gameEntities)
+    {
+        return CreateGameForm.setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status);
     }
 }

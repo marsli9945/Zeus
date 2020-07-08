@@ -1,12 +1,16 @@
 package com.tuyoo.framework.grow.admin.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Data
 @Table
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "admin_studio")
 public class StudioEntities
 {
