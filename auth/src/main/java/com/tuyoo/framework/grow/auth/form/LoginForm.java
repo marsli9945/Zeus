@@ -2,10 +2,12 @@ package com.tuyoo.framework.grow.auth.form;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@Data
 @ApiModel("登录表单")
 public class LoginForm
 {
@@ -26,44 +28,4 @@ public class LoginForm
     @NotBlank(message = "密码不能为空")
     @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
     private String password;
-
-    public String getClientId()
-    {
-        return clientId;
-    }
-
-    public void setClientId(String clientId)
-    {
-        this.clientId = clientId;
-    }
-
-    public String getClientSecret()
-    {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret)
-    {
-        this.clientSecret = clientSecret;
-    }
-
-    public String getUsername()
-    {
-        return username;
-    }
-
-    public void setUsername(String username)
-    {
-        this.username = username;
-    }
-
-    public String getPassword()
-    {
-        return password;
-    }
-
-    public void setPassword(String password)
-    {
-        this.password = password;
-    }
 }

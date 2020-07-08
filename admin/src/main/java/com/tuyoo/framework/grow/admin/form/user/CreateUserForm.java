@@ -4,7 +4,6 @@ import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 

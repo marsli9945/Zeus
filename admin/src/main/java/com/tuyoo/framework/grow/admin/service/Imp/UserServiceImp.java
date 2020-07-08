@@ -1,5 +1,6 @@
 package com.tuyoo.framework.grow.admin.service.Imp;
 
+import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.user.CreateUserForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
@@ -47,6 +48,12 @@ public class UserServiceImp implements UserService
     }
 
     @Override
+    public UserEntities findByUsernameAndStatusAndRoleEntitiesList(String username, Integer status, RoleEntities roleEntities)
+    {
+        return userRepository.findByUsernameAndStatusAndRoleEntitiesList(username, status, roleEntities);
+    }
+
+    @Override
     public boolean create(CreateUserForm createUserForm)
     {
         UserEntities user = userRepository.findByUsername(createUserForm.getUsername());
@@ -77,7 +84,8 @@ public class UserServiceImp implements UserService
     @Override
     public boolean delete(String username)
     {
-        if (username == null) {
+        if (username == null)
+        {
             return false;
         }
         UserEntities user = userRepository.findByUsername(username);

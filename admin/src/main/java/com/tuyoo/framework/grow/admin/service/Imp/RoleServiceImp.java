@@ -73,8 +73,7 @@ public class RoleServiceImp implements RoleService
         {
             return false;
         }
-        RoleEntities roleEntities = roleRepository.findById(id).get();
-        if (roleEntities.getName() == null) {
+        if (roleRepository.findById(id).get().getId() == null) {
             return false;
         }
         roleRepository.deleteById(id);

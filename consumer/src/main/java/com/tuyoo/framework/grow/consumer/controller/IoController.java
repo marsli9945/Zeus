@@ -1,8 +1,5 @@
 package com.tuyoo.framework.grow.consumer.controller;
 
-import com.netflix.hystrix.contrib.javanica.annotation.DefaultProperties;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import com.tuyoo.framework.grow.consumer.service.IoService;
 import org.springframework.web.bind.annotation.GetMapping;
