@@ -76,4 +76,16 @@ public class StudioServiceImp implements StudioService
         studioRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public boolean isStudioAdmin(String username, Integer studioId)
+    {
+        return studioRepository.findByAdminAndId(username, studioId) != null;
+    }
+
+    @Override
+    public List<StudioEntities> findAllIsAdminStudio(String username)
+    {
+        return studioRepository.findAllByAdmin(username);
+    }
 }

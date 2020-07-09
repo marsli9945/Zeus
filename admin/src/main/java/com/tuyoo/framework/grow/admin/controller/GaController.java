@@ -4,6 +4,7 @@ import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
+import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.service.AuthService;
 import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
@@ -11,7 +12,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +24,8 @@ import javax.annotation.Resource;
 @Api(tags = "GA登陆、注册相关接口")
 public class GaController
 {
-    @Value("${ga.roleId}")
-    private Integer roleId;
-
-    @Value("${ga.clientId}")
-    private String clientId;
-
-    @Value("${ga.clientSecret}")
-    private String clientSecret;
+    @Autowired
+    GaConfig gaConfig;
 
     @Resource
     AuthService authService;
@@ -47,7 +41,7 @@ public class GaController
         UserEntities user = userService.findByUsernameAndStatusAndRoleEntitiesList(
                 loginForm.getUsername(),
                 1,
-                new RoleEntities(roleId, null)
+                new RoleEntities(gaConfig.getRoleId(), null)
         );
 
         // 用户存在且密码正确进行下一步
@@ -57,8 +51,8 @@ public class GaController
         }
 
         // 用auth服务登陆接口获取access_token
-        loginForm.setClientId(clientId);
-        loginForm.setClientSecret(clientSecret);
+        loginForm.setClientId(gaConfig.getClientId());
+        loginForm.setClientSecret(gaConfig.getClientSecret());
         return authService.login(loginForm);
     }
 

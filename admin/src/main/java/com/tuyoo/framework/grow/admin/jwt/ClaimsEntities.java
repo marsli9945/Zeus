@@ -1,11 +1,11 @@
-package com.tuyoo.framework.grow.gateway.componet;
+package com.tuyoo.framework.grow.admin.jwt;
 
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class JwtEntities
+public class ClaimsEntities
 {
     private String exp;
     private String jti;

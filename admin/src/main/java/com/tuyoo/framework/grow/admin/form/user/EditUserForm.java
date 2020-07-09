@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class EditUserForm
 {
     @ApiModelProperty(value = "用户账号", name = "username", required = true, example = "tuyoo@tuyoogame.com")
-    @NotBlank(message = "用户名不能为空")
+    @NotBlank(message = "用户账号不能为空")
     private String username;
 
     @ApiModelProperty(value = "登录密码", name = "password", example = "Tuyoo@123")

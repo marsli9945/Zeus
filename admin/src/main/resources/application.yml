@@ -27,5 +27,40 @@ feign:
 
 ga:
   roleId: 1
+  roleName: ROLE_GA_WEB
   clientId: net5ijy
   clientSecret: 123456
+  permission:
+    - id: admin
+      name: 授权管理员权限
+      children:
+        - id: is_access_game
+          name: 从该账户添加或删除APP
+          is_own: false
+        - id: is_distribute
+          name: 添加或编辑团队成员
+          is_own: false
+        - id: page_sit
+          name: 编辑应用设置页面
+          is_own: false
+        - id: edit_preset_overview
+          name: 创建和编辑预置概览
+          is_own: false
+    - id: data
+      name: 授权数据权限
+      children:
+        - id: daily_table
+          name: 日常报表
+          is_own: false
+        - id: analysis_tool
+          name: 分析工具
+          is_own: false
+        - id: config
+          name: 配置
+          is_own: false
+    - id: game
+      name: 游戏相关权限
+      children:
+        - id: is_auto
+          name: 包含后续添加的所有应用
+          is_own: false
