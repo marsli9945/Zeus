@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@ApiModel
+@ApiModel("权限父级实体")
 public class GaPermissionEntities
 {
     @ApiModelProperty(value = "权限编码", name = "id", example = "admin")

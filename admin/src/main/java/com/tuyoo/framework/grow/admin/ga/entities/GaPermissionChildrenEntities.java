@@ -1,9 +1,11 @@
 package com.tuyoo.framework.grow.admin.ga.entities;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@ApiModel("权限子级实体")
 public class GaPermissionChildrenEntities
 {
     @ApiModelProperty(value = "权限编码", name = "id", example = "is_access_game")
