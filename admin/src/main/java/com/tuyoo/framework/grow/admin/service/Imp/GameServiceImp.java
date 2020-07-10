@@ -5,7 +5,6 @@ import com.tuyoo.framework.grow.admin.form.game.CreateGameForm;
 import com.tuyoo.framework.grow.admin.form.game.EditGameForm;
 import com.tuyoo.framework.grow.admin.repository.GameRepository;
 import com.tuyoo.framework.grow.admin.service.GameService;
-import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
