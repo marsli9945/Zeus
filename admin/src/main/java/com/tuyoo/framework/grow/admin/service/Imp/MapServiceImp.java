@@ -83,4 +83,10 @@ public class MapServiceImp implements MapService
         mapRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public List<MapEntities> select(String type)
+    {
+        return mapRepository.findAllByTypeAndStatus(type,1);
+    }
 }

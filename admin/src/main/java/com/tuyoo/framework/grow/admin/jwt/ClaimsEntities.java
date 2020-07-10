@@ -9,8 +9,8 @@ public class ClaimsEntities
 {
     private String exp;
     private String jti;
-    private String client_id;
-    private String user_name;
+    private String clientId;
+    private String userName;
 
     private List<String> scope;
     private List<String> authorities;

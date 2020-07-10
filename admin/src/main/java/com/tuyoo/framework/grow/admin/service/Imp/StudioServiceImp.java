@@ -46,7 +46,8 @@ public class StudioServiceImp implements StudioService
     @Override
     public boolean create(CreateStudioForm createStudioForm)
     {
-        if (studioRepository.findByName(createStudioForm.getName()) != null) {
+        if (studioRepository.findByName(createStudioForm.getName()) != null)
+        {
             return false;
         }
         studioRepository.save(createStudioForm.entities(new StudioEntities()));
@@ -57,7 +58,8 @@ public class StudioServiceImp implements StudioService
     public boolean update(EditStudioForm editStudioForm)
     {
         StudioEntities studio = studioRepository.findById(editStudioForm.getId()).get();
-        if (studio.getId() == null) {
+        if (studio.getId() == null)
+        {
             return false;
         }
         studioRepository.save(editStudioForm.entities(studio));
@@ -67,10 +69,12 @@ public class StudioServiceImp implements StudioService
     @Override
     public boolean delete(Integer id)
     {
-        if (id == null) {
+        if (id == null)
+        {
             return false;
         }
-        if (studioRepository.findById(id).get().getId() == null) {
+        if (studioRepository.findById(id).get().getId() == null)
+        {
             return false;
         }
         studioRepository.deleteById(id);
@@ -80,12 +84,12 @@ public class StudioServiceImp implements StudioService
     @Override
     public boolean isStudioAdmin(String username, Integer studioId)
     {
-        return studioRepository.findByAdminAndId(username, studioId) != null;
+        return studioRepository.findByAdminAndIdAndStatus(username, studioId, 1) != null;
     }
 
     @Override
     public List<StudioEntities> findAllIsAdminStudio(String username)
     {
-        return studioRepository.findAllByAdmin(username);
+        return studioRepository.findAllByAdminAndStatus(username, 1);
     }
 }

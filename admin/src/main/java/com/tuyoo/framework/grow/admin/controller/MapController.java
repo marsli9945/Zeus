@@ -26,6 +26,13 @@ public class MapController
         return ResultEntities.success(mapService.fetch(pageForm.getPage(), pageForm.getSize(), name));
     }
 
+    @GetMapping("/select")
+    @ApiOperation(value = "按类型获取下拉框内容", notes = "获取下拉列表接口", response = ResultEntities.class)
+    public ResultEntities<Object> select(@RequestParam String type)
+    {
+        return ResultEntities.success(mapService.select(type));
+    }
+
     @PostMapping
     @ApiOperation(value = "添加字典", notes = "添加字典接口", response = ResultEntities.class)
     public ResultEntities<Object> create(@RequestBody @Validated CreateMapForm createMapForm)
@@ -50,7 +57,8 @@ public class MapController
 
     @DeleteMapping
     @ApiOperation(value = "删除字典", notes = "删除字典接口", response = ResultEntities.class)
-    public ResultEntities<Object> delete(@RequestParam Integer id){
+    public ResultEntities<Object> delete(@RequestParam Integer id)
+    {
         if (mapService.delete(id))
         {
             return ResultEntities.success();

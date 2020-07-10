@@ -26,14 +26,14 @@ public class PermissionEntities
     private String permission;
 
     @Column
-    private Integer isAuto;
+    private Integer isAuto = 0;
 
     @Column
-    private Integer isDistribute;
+    private Integer isDistribute = 0;
 
     @Column
-    private Integer isAccessGame;
+    private Integer isAccessGame = 0;
 
     @Column
-    private Integer Status;
+    private Integer status = 1;
 }

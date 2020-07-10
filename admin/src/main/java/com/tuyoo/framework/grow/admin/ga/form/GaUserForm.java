@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 @ApiModel("Ga用户添加/编辑表单")
@@ -24,6 +25,6 @@ public class GaUserForm
     @NotNull(message = "用户部门不能为空")
     private Integer level;
 
-    @NotNull(message = "用户部门不能为空")
-    private GaStudioEntities permission;
+    @NotNull(message = "用户权限不能为空")
+    private List<GaStudioEntities> permission;
 }

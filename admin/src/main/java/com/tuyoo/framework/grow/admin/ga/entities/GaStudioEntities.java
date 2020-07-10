@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Data
@@ -13,6 +14,7 @@ import java.util.List;
 public class GaStudioEntities
 {
     @ApiModelProperty(value = "工作室ID", name = "id", example = "1")
+    @NotNull(message = "缺少工作室ID")
     private Integer id;
 
     @ApiModelProperty(value = "工作室名称", name = "name", example = "BI工作室")
@@ -20,5 +22,5 @@ public class GaStudioEntities
 
     private List<GaGameEntities> game;
 
-    private GaPermissionEntities permission;
+    private List<GaPermissionEntities> permission;
 }
