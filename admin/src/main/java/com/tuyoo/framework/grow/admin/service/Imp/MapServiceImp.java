@@ -60,8 +60,8 @@ public class MapServiceImp implements MapService
     public boolean update(EditMapForm editMapForm)
     {
 
-        MapEntities map = mapRepository.findById(editMapForm.getId()).get();
-        if (map.getId() == null || mapRepository.findByTypeAndValue(editMapForm.getType(), editMapForm.getValue()) != null)
+        MapEntities map = mapRepository.findById(editMapForm.getId()).orElse(null);
+        if (map == null || mapRepository.findByTypeAndValue(editMapForm.getType(), editMapForm.getValue()) != null)
         {
             return false;
         }
@@ -76,7 +76,7 @@ public class MapServiceImp implements MapService
         {
             return false;
         }
-        if (mapRepository.findById(id).get().getId() == null)
+        if (mapRepository.findById(id).orElse(null) == null)
         {
             return false;
         }

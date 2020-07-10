@@ -58,8 +58,8 @@ public class RoleServiceImp implements RoleService
     @Override
     public boolean update(EditRoleForm editRoleForm)
     {
-        RoleEntities roleEntities = roleRepository.findById(editRoleForm.getId()).get();
-        if (roleEntities.getName() == null || roleRepository.findByName(editRoleForm.getName()) != null) {
+        RoleEntities roleEntities = roleRepository.findById(editRoleForm.getId()).orElse(null);
+        if (roleEntities == null || roleRepository.findByName(editRoleForm.getName()) != null) {
             return false;
         }
         roleRepository.save(editRoleForm.entities());
@@ -73,7 +73,7 @@ public class RoleServiceImp implements RoleService
         {
             return false;
         }
-        if (roleRepository.findById(id).get().getId() == null) {
+        if (roleRepository.findById(id).orElse(null) == null) {
             return false;
         }
         roleRepository.deleteById(id);
