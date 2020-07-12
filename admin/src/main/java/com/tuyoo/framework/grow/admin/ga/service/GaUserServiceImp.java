@@ -603,4 +603,25 @@ public class GaUserServiceImp implements GaUserService
 
         permissionRepository.save(entities);
     }
+
+
+    /**
+     * 为指定拥有指定工作室的所有
+     * 有增加后续游戏权限的人添加游戏
+     * @param studioId 工作室ID
+     * @param gameId 要增加的游戏ID
+     */
+    @Override
+    public void addAutoPermissionGame(Integer studioId, Integer gameId) {
+        List<PermissionEntities> allByStudioIdAndIsAuto = permissionRepository.findAllByStudioIdAndIsAuto(studioId, 1);
+        for (PermissionEntities permissionEntities :
+                allByStudioIdAndIsAuto)
+        {
+            JSONArray jsonArray = JSON.parseArray(permissionEntities.getGame());
+            List<Integer> gameIdList = jsonArray.toJavaList(Integer.class);
+            gameIdList.add(gameId);
+            permissionEntities.setGame(JSON.toJSONString(gameIdList));
+            permissionRepository.save(permissionEntities);
+        }
+    }
 }

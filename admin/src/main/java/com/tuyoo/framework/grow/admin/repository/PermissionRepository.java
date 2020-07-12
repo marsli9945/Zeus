@@ -15,6 +15,8 @@ public interface PermissionRepository extends JpaRepository<PermissionEntities, 
     List<PermissionEntities> findAllByStudioIdIn(List<Integer> studioList);
     List<PermissionEntities> findAllByUsernameAndStudioIdNotIn(String username, List<Integer> studioIdList);
     List<PermissionEntities> findAllByUsername(String username);
+    List<PermissionEntities> findAllByStudioIdAndIsAuto(Integer studioId, Integer isAuto);
     void deleteAllByUsername(String username);
+    void deleteAllByStudioId(Integer studioId);
     void deleteAllByUsernameAndStudioIdIn(String username, List<Integer> studioIdList);
 }

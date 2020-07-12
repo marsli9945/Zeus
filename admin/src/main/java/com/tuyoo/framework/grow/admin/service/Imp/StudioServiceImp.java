@@ -3,6 +3,7 @@ package com.tuyoo.framework.grow.admin.service.Imp;
 import com.tuyoo.framework.grow.admin.entities.StudioEntities;
 import com.tuyoo.framework.grow.admin.form.studio.CreateStudioForm;
 import com.tuyoo.framework.grow.admin.form.studio.EditStudioForm;
+import com.tuyoo.framework.grow.admin.repository.PermissionRepository;
 import com.tuyoo.framework.grow.admin.repository.StudioRepository;
 import com.tuyoo.framework.grow.admin.service.StudioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
@@ -23,6 +25,9 @@ public class StudioServiceImp implements StudioService
 {
     @Autowired
     StudioRepository studioRepository;
+
+    @Autowired
+    PermissionRepository permissionRepository;
 
     @Override
     public Page<StudioEntities> fetch(Integer page, Integer size, String name)
@@ -67,6 +72,7 @@ public class StudioServiceImp implements StudioService
     }
 
     @Override
+    @Transactional
     public boolean delete(Integer id)
     {
         if (id == null)
@@ -78,6 +84,8 @@ public class StudioServiceImp implements StudioService
             return false;
         }
         studioRepository.deleteById(id);
+        // 同时删除权限中所有该工作室的记录
+        permissionRepository.deleteAllByStudioId(id);
         return true;
     }
 

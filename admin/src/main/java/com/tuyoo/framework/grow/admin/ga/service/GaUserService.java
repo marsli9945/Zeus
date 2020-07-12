@@ -23,4 +23,6 @@ public interface GaUserService
     boolean delete(String username);
 
     void clearNoPermissionUser(String username);
+
+    void addAutoPermissionGame(Integer studioId, Integer gameId);
 }

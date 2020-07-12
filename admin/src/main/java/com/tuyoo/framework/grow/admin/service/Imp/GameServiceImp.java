@@ -3,6 +3,7 @@ package com.tuyoo.framework.grow.admin.service.Imp;
 import com.tuyoo.framework.grow.admin.entities.GameEntities;
 import com.tuyoo.framework.grow.admin.form.game.CreateGameForm;
 import com.tuyoo.framework.grow.admin.form.game.EditGameForm;
+import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
 import com.tuyoo.framework.grow.admin.repository.GameRepository;
 import com.tuyoo.framework.grow.admin.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
@@ -23,6 +25,9 @@ public class GameServiceImp implements GameService
 {
     @Autowired
     GameRepository gameRepository;
+
+    @Autowired
+    GaUserService gaUserService;
 
     @Override
     public Page<GameEntities> fetch(Integer page, Integer size, String name)
@@ -44,12 +49,15 @@ public class GameServiceImp implements GameService
     }
 
     @Override
+    @Transactional
     public boolean create(CreateGameForm createGameForm)
     {
         if (gameRepository.findByProjectId(createGameForm.getProjectId()) != null) {
             return false;
         }
-        gameRepository.save(createGameForm.entities(new GameEntities()));
+        GameEntities save = gameRepository.save(createGameForm.entities(new GameEntities()));
+        // 同时为拥有工作室后续新增游戏权限的人增加游戏
+        gaUserService.addAutoPermissionGame(save.getStudio().getId(),save.getId());
         return true;
     }
 
