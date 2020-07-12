@@ -11,8 +11,10 @@ import java.util.List;
 public interface PermissionRepository extends JpaRepository<PermissionEntities, Integer>, JpaSpecificationExecutor<PermissionRepository>
 {
     PermissionEntities findByUsernameAndStudioId(String username, Integer studioId);
-    List<PermissionEntities> findAllByUsernameAndIsDistributeAndStatus(String username, Integer isDistribute, Integer status);
-    List<PermissionEntities> findAllByStudioIdInAndStatus(List<Integer> studioList, Integer status);
-    List<PermissionEntities> findAllByUsernameAndStudioIdNotInAndStatus(String username, List<Integer> studioIdList, Integer status);
-    List<PermissionEntities> findAllByUsernameAndStatus(String username, Integer status);
+    List<PermissionEntities> findAllByUsernameAndIsDistribute(String username, Integer isDistribute);
+    List<PermissionEntities> findAllByStudioIdIn(List<Integer> studioList);
+    List<PermissionEntities> findAllByUsernameAndStudioIdNotIn(String username, List<Integer> studioIdList);
+    List<PermissionEntities> findAllByUsername(String username);
+    void deleteAllByUsername(String username);
+    void deleteAllByUsernameAndStudioIdIn(String username, List<Integer> studioIdList);
 }

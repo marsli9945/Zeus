@@ -2,7 +2,6 @@ package com.tuyoo.framework.grow.admin.ga.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.admin.entities.*;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.entities.*;
@@ -62,7 +61,7 @@ public class GaUserServiceImp implements GaUserService
     private List<Integer> hasDistributeStudioId()
     {
         // 先找到自己可分配权限的所有工作室
-        List<PermissionEntities> allByUsernameAndIsDistributeAndStatus = permissionRepository.findAllByUsernameAndIsDistributeAndStatus(jwtUtil.getUsername(), 1, 1);
+        List<PermissionEntities> allByUsernameAndIsDistributeAndStatus = permissionRepository.findAllByUsernameAndIsDistribute(jwtUtil.getUsername(), 1);
         ArrayList<Integer> studioList = new ArrayList<>();
         for (PermissionEntities permissionEntities :
                 allByUsernameAndIsDistributeAndStatus)
@@ -91,7 +90,7 @@ public class GaUserServiceImp implements GaUserService
         List<Integer> studioList = hasDistributeStudioId();
 
         // 再找出拥有工作室权限的所有用户
-        List<PermissionEntities> allByStudioIdInAndStatus = permissionRepository.findAllByStudioIdInAndStatus(studioList, 1);
+        List<PermissionEntities> allByStudioIdInAndStatus = permissionRepository.findAllByStudioIdIn(studioList);
         ArrayList<String> usernameList = new ArrayList<>();
         for (PermissionEntities permissionEntities :
                 allByStudioIdInAndStatus)
@@ -258,7 +257,7 @@ public class GaUserServiceImp implements GaUserService
             }
 
             //  获取自己不是管理员的工作室权限记录
-            List<PermissionEntities> allByUsernameAndStudioIdNotInAndStatus = permissionRepository.findAllByUsernameAndStudioIdNotInAndStatus(jwtUtil.getUsername(), studioIdList, 1);
+            List<PermissionEntities> allByUsernameAndStudioIdNotInAndStatus = permissionRepository.findAllByUsernameAndStudioIdNotIn(jwtUtil.getUsername(), studioIdList);
             for (PermissionEntities permissionEntities :
                     allByUsernameAndStudioIdNotInAndStatus)
             {
@@ -317,7 +316,7 @@ public class GaUserServiceImp implements GaUserService
     private List<GaStudioEntities> setUserPermission(String username, List<GaStudioEntities> gaStudioEntitiesList)
     {
         // 构造用户的权限和游戏快查表
-        List<PermissionEntities> allByUsernameAndStatus = permissionRepository.findAllByUsernameAndStatus(username, 1);
+        List<PermissionEntities> allByUsernameAndStatus = permissionRepository.findAllByUsername(username);
         HashMap<Integer, Map<String, List<String>>> userPermissionMap = new HashMap<>();
         HashMap<Integer, List<Integer>> userGameMap = new HashMap<>();
         for (PermissionEntities permissionEntities : allByUsernameAndStatus)
@@ -362,10 +361,11 @@ public class GaUserServiceImp implements GaUserService
             for (GaPermissionEntities gaPermissionEntities :
                     gaStudioEntities.getPermission())
             {
-                for (GaPermissionChildrenEntities gaPermissionChildrenEntities:
-                     gaPermissionEntities.getChildren())
+                for (GaPermissionChildrenEntities gaPermissionChildrenEntities :
+                        gaPermissionEntities.getChildren())
                 {
-                    if (userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()).contains(gaPermissionChildrenEntities.getId())) {
+                    if (userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()).contains(gaPermissionChildrenEntities.getId()))
+                    {
                         gaPermissionChildrenEntities.setIs_own(true);
                     }
                 }
@@ -481,9 +481,67 @@ public class GaUserServiceImp implements GaUserService
     }
 
     @Override
+    @Transactional
     public boolean delete(String username)
     {
-        return false;
+        // 用户不存在不予处理
+        UserEntities user = userRepository.findByUsernameAndStatusAndRoleEntitiesList(
+                username,
+                1,
+                new RoleEntities(gaConfig.getRoleId(), null)
+        );
+        if (user == null)
+        {
+            return false;
+        }
+
+        // GA_ADMAIN 删除用户所有权限项
+        if (jwtUtil.isGaAdmin())
+        {
+            permissionRepository.deleteAllByUsername(username);
+        }
+        else
+        {
+            // 删除用户所有自己是管理员或拥有可编辑权限的工作室的权限
+            // 先获取自己是管理员的工作室下的游戏
+            List<StudioEntities> allByAdminAndStatus = studioRepository.findAllByAdminAndStatus(jwtUtil.getUsername(), 1);
+            List<Integer> studioIdList = new ArrayList<>();
+            for (StudioEntities studioEntities :
+                    allByAdminAndStatus)
+            {
+                studioIdList.add(studioEntities.getId());
+            }
+
+            //  获取自己不是管理员的工作室权限记录
+            List<PermissionEntities> allByUsernameAndStudioIdNotInAndStatus = permissionRepository.findAllByUsernameAndStudioIdNotIn(jwtUtil.getUsername(), studioIdList);
+            for (PermissionEntities permissionEntities :
+                    allByUsernameAndStudioIdNotInAndStatus)
+            {
+                studioIdList.add(permissionEntities.getStudioId());
+            }
+            permissionRepository.deleteAllByUsernameAndStudioIdIn(username, studioIdList);
+        }
+        return true;
+    }
+
+    @Override
+    public void clearNoPermissionUser(String username)
+    {
+        if (permissionRepository.findAllByUsername(username) == null)
+        {
+            UserEntities byUsername = userRepository.findByUsername(username);
+            ArrayList<RoleEntities> newRoleList = new ArrayList<>();
+            for (RoleEntities roleEntities :
+                    byUsername.getRoleEntitiesList())
+            {
+                if (!roleEntities.getId().equals(gaConfig.getRoleId()))
+                {
+                    newRoleList.add(roleEntities);
+                }
+            }
+            byUsername.setRoleEntitiesList(newRoleList);
+            userRepository.save(byUsername);
+        }
     }
 
     private void saveUserPermission(String username, GaStudioEntities studioEntities)

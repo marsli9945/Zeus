@@ -33,7 +33,4 @@ public class PermissionEntities
 
     @Column
     private Integer isAccessGame = 0;
-
-    @Column
-    private Integer status = 1;
 }

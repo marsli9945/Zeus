@@ -7,7 +7,6 @@ import com.tuyoo.framework.grow.admin.ga.form.GaUserForm;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -69,6 +68,8 @@ public class GaUserController
     {
         if (gaUserService.delete(username))
         {
+            // 清理处理后没有权限记录的用户
+            gaUserService.clearNoPermissionUser(username);
             return ResultEntities.success();
         }
         return ResultEntities.failed();

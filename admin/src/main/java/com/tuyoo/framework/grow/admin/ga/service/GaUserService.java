@@ -21,4 +21,6 @@ public interface GaUserService
     boolean update(GaUserForm gaUserForm);
 
     boolean delete(String username);
+
+    void clearNoPermissionUser(String username);
 }
