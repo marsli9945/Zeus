@@ -1,6 +1,7 @@
 package com.tuyoo.framework.grow.admin.controller;
 
 import com.tuyoo.framework.grow.admin.form.PageForm;
+import com.tuyoo.framework.grow.admin.ga.entities.GaSelectEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaStudioEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaUserInfoEntities;
 import com.tuyoo.framework.grow.admin.ga.form.GaUserForm;
@@ -9,8 +10,9 @@ import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("ga/user")
@@ -22,7 +24,7 @@ public class GaUserController
 
     @GetMapping
     @ApiOperation(value = "获取用户列表", notes = "获取用户列表接口", response = ResultEntities.class)
-    public ResultEntities<Object> fetch(@Validated PageForm pageForm, String name)
+    public ResultEntities<Object> fetch(@Valid PageForm pageForm, String name)
     {
         return ResultEntities.success(gaUserService.fetch(pageForm.getPage(), pageForm.getSize(), name));
     }
@@ -40,9 +42,16 @@ public class GaUserController
         return ResultEntities.success(gaUserService.getPermission(username));
     }
 
+    @GetMapping("getStudioSelect")
+    @ApiOperation(value = "获取当前用户可接入游戏的所有工作室下拉框数据", notes = "获取用户可接入游戏的所有工作室接口", response = GaSelectEntities.class)
+    public ResultEntities<Object> getStudioSelect()
+    {
+        return ResultEntities.success(gaUserService.getStudioSelect());
+    }
+
     @PostMapping
     @ApiOperation(value = "添加用户", notes = "添加用户接口", response = ResultEntities.class)
-    public ResultEntities<Object> create(@RequestBody @Validated GaUserForm gaUserForm)
+    public ResultEntities<Object> create(@RequestBody @Valid GaUserForm gaUserForm)
     {
         if (gaUserService.create(gaUserForm))
         {
@@ -53,7 +62,7 @@ public class GaUserController
 
     @PutMapping
     @ApiOperation(value = "编辑用户", notes = "编辑用户接口", response = ResultEntities.class)
-    public ResultEntities<Object> edit(@RequestBody @Validated GaUserForm gaUserForm)
+    public ResultEntities<Object> edit(@RequestBody @Valid GaUserForm gaUserForm)
     {
         if (gaUserService.update(gaUserForm))
         {

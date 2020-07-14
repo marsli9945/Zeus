@@ -1,12 +1,16 @@
 package com.tuyoo.framework.grow.admin.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Data
 @Table
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "admin_game")
 public class GameEntities
 {

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -25,6 +26,7 @@ public class GaUserForm
     @NotNull(message = "用户部门不能为空")
     private Integer level;
 
+    @Valid
     @NotNull(message = "用户权限不能为空")
     private List<GaStudioEntities> permission;
 }

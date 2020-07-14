@@ -1,6 +1,8 @@
 package com.tuyoo.framework.grow.admin.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +11,8 @@ import java.util.List;
 
 @Data
 @Table
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "oauth_user")
 public class UserEntities
 {

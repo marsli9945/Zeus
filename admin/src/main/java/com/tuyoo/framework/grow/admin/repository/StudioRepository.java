@@ -12,6 +12,7 @@ public interface StudioRepository extends JpaRepository<StudioEntities, Integer>
 {
     StudioEntities findByName(String name);
     List<StudioEntities> findAllByStatus(Integer status);
+    List<StudioEntities> findAllByAdmin(String username);
     List<StudioEntities> findAllByAdminAndStatus(String username, Integer status);
     List<StudioEntities> findAllByIdInAndStatus(List<Integer> idList, Integer status);
     StudioEntities findByAdminAndIdAndStatus(String username, Integer id, Integer status);

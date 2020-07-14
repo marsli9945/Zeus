@@ -1,5 +1,6 @@
 package com.tuyoo.framework.grow.admin.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class StudioEntities
     @Column
     private Integer status = 1;
 
+    @JsonBackReference
     @OneToMany(mappedBy = "studio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GameEntities> gameEntities;
 }

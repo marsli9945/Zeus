@@ -60,7 +60,7 @@ public class MapServiceImp implements MapService
     {
 
         MapEntities map = mapRepository.findById(editMapForm.getId()).orElse(null);
-        if (map == null || mapRepository.findByTypeAndValue(editMapForm.getType(), editMapForm.getValue()) != null)
+        if (map == null || mapRepository.findByTypeAndValueAndIdNot(editMapForm.getType(), editMapForm.getValue(), editMapForm.getId()) != null)
         {
             return false;
         }
@@ -86,6 +86,6 @@ public class MapServiceImp implements MapService
     @Override
     public List<MapEntities> select(String type)
     {
-        return mapRepository.findAllByTypeAndStatus(type,1);
+        return mapRepository.findAllByTypeAndStatus(type, 1);
     }
 }

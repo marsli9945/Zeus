@@ -11,5 +11,6 @@ import java.util.List;
 public interface MapRepository extends JpaRepository<MapEntities, Integer>, JpaSpecificationExecutor<MapEntities>
 {
     MapEntities findByTypeAndValue(String type, String value);
+    MapEntities findByTypeAndValueAndIdNot(String type, String value, Integer id);
     List<MapEntities> findAllByTypeAndStatus(String type, Integer status);
 }

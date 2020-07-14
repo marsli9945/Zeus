@@ -1,6 +1,7 @@
 package com.tuyoo.framework.grow.admin.ga.service;
 
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
+import com.tuyoo.framework.grow.admin.ga.entities.GaSelectEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaStudioEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaUserInfoEntities;
 import com.tuyoo.framework.grow.admin.ga.form.GaUserForm;
@@ -15,6 +16,8 @@ public interface GaUserService
     GaUserInfoEntities userInfo();
 
     List<GaStudioEntities> getPermission(String username);
+
+    List<GaSelectEntities> getStudioSelect();
 
     boolean create(GaUserForm gaUserForm);
 

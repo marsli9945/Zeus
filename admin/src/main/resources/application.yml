@@ -26,8 +26,8 @@ feign:
     enabled: true
 
 ga:
-  roleId: 1
-  roleName: ROLE_GA_WEB
+  roleId: 16 # ROLE_GA_WEB 允许登陆的角色ID
+  roleName: ROLE_GA_ADMAIN # 管理员的角色名
   clientId: net5ijy
   clientSecret: 123456
   permission:
