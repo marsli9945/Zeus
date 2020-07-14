@@ -60,6 +60,7 @@ public class GaController
     @ApiOperation(value = "注册", notes = "注册接口", response = ResultEntities.class)
     public ResultEntities<Object> sign(@RequestBody @Validated EditUserForm editUserForm)
     {
+        editUserForm.setStatus(1); // 开启用户状态
         if (userService.update(editUserForm)) {
             return ResultEntities.success();
         }
