@@ -3,14 +3,24 @@ package com.tuyoo.framework.grow.admin.controller;
 import com.tuyoo.framework.grow.admin.form.PageForm;
 import com.tuyoo.framework.grow.admin.form.game.CreateGameForm;
 import com.tuyoo.framework.grow.admin.form.game.EditGameForm;
+import com.tuyoo.framework.grow.admin.minio.MinioFileUploade;
 import com.tuyoo.framework.grow.admin.service.GameService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
+import io.minio.errors.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+@Slf4j
 @RestController
 @RequestMapping("game")
 @Api(tags = "游戏管理接口")
@@ -18,6 +28,9 @@ public class GameController
 {
     @Autowired
     GameService gameService;
+
+    @Autowired
+    MinioFileUploade minioFileUploade;
 
     @GetMapping
     @ApiOperation(value = "获取游戏列表", notes = "获取游戏列表接口", response = ResultEntities.class)
@@ -48,9 +61,19 @@ public class GameController
         return ResultEntities.failed();
     }
 
+    @PostMapping("/upload")
+    public ResultEntities<Object> upload(@RequestParam("file") MultipartFile file) throws IOException, XmlPullParserException, NoSuchAlgorithmException, RegionConflictException, InvalidKeyException, InvalidPortException, InvalidArgumentException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InvalidEndpointException, InternalException
+    {
+        if (file.isEmpty()) {
+            ResultEntities.failed("上传失败");
+        }
+        return ResultEntities.success(minioFileUploade.upload(file));
+    }
+
     @DeleteMapping
     @ApiOperation(value = "删除游戏", notes = "删除游戏接口", response = ResultEntities.class)
-    public ResultEntities<Object> delete(@RequestParam String projectId){
+    public ResultEntities<Object> delete(@RequestParam String projectId)
+    {
         if (gameService.delete(projectId))
         {
             return ResultEntities.success();

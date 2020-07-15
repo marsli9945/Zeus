@@ -1,6 +1,12 @@
 server:
   port: 8004
+
 spring:
+  servlet:
+    multipart:
+      max-request-size: 500MB
+      max-file-size: 500MB
+      location: /tmp
   application:
     name: admin
   datasource:
@@ -24,6 +30,12 @@ eureka:
 feign:
   hystrix:
     enabled: true
+
+minio:
+  host: http://47.95.216.127:9005
+  accessKey: tuyoo
+  secretKey: tuyougame
+  bucketName: web
 
 ga:
   roleId: 16 # ROLE_GA_WEB 允许登陆的角色ID
