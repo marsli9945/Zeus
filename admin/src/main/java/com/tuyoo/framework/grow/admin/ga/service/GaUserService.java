@@ -28,4 +28,10 @@ public interface GaUserService
     void clearNoPermissionUser(String username);
 
     void addAutoPermissionGame(Integer studioId, Integer gameId);
+
+    void sendSignEmail(String username);
+
+    boolean sendResetEmail(String username);
+
+    UserEntities validToken(String token);
 }

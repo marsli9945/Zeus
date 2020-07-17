@@ -5,7 +5,7 @@ import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
-import com.tuyoo.framework.grow.admin.mail.MailService;
+import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
 import com.tuyoo.framework.grow.admin.service.AuthService;
 import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
@@ -16,8 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 
@@ -37,10 +35,7 @@ public class GaController
     UserService userService;
 
     @Autowired
-    private MailService mailService;
-
-    @Autowired
-    private TemplateEngine templateEngine;
+    GaUserService gaUserService;
 
     @GetMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
@@ -82,13 +77,22 @@ public class GaController
         return ResultEntities.success();
     }
 
-    @GetMapping("mail")
+    @GetMapping("reset")
+    @ApiOperation(value = "重置密码", notes = "重置密码邮件发送接口", response = ResultEntities.class)
     public ResultEntities<Object> mail(@RequestParam String username) {
-        Context context = new Context();
-        context.setVariable("id", "001");
-        String emailContent = templateEngine.process("emailTemplate", context);
-
-        mailService.sendHtmlMail(username, "这是一个模板文件", emailContent);
+        if (gaUserService.sendResetEmail(username)) {
+            return ResultEntities.failed();
+        }
         return ResultEntities.success();
+    }
+
+    @GetMapping("reset")
+    @ApiOperation(value = "校验token", notes = "token校验接口", response = ResultEntities.class)
+    public ResultEntities<Object> token(@RequestParam String token) {
+        UserEntities userEntities = gaUserService.validToken(token);
+        if (userEntities == null) {
+            return ResultEntities.failed();
+        }
+        return ResultEntities.success(userEntities);
     }
 }

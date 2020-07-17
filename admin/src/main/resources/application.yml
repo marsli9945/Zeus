@@ -35,17 +35,26 @@ feign:
   hystrix:
     enabled: true
 
+# 图片上传
 minio:
   host: http://47.95.216.127:9005
   accessKey: tuyoo
   secretKey: tuyougame
   bucketName: web
 
+# 加密证书
+keystore:
+  keystore: ga.jks
+  keystorePassword: tuyoostore
+  alias: gakey
+  pubKey: -----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAk2ULSmOH2ZdkYFeUCm7wKHolHfp36NVJogt0ZucT/DLp4PVEYdBtl8JrTVCoi4CToPfTOXvKvsXm5Cbt/OQfEWA92HXSv2VJRx55kqTswh0qsATKBXqH2XQRinkuxrYOV9KDYf4hHpXTjVHtirTG4LDF91FFXMwxzvyx/8g0ZfEGOzA6O/YMz3teGLjbMqbWP/cYyvagIS6fKQvy6vmFh1+azj/YkwFIKnZcqf4+fz6d4FMMKjXf5BcCF9DxiSxc65n4myIpsEvdvwDjucEG24rxW1YAKyBfiDDrND7lCTM/jHCx/rI/lLi6PUDx/R1AaTrRLUCATaFOS+73PCXAWQIDAQAB-----END PUBLIC KEY-----
+
 ga:
   roleId: 16 # ROLE_GA_WEB 允许登陆的角色ID
   roleName: ROLE_GA_ADMAIN # 管理员的角色名
   clientId: net5ijy
   clientSecret: y4cZe@wmGBofIlQ
+  host: http://gacs.touch4.me
   permission:
     - id: admin
       name: 授权管理员权限

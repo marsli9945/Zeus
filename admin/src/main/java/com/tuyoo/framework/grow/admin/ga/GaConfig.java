@@ -18,5 +18,6 @@ public class GaConfig
     private String roleName;
     private String clientId;
     private String clientSecret;
+    private String host;
     private List<GaPermissionEntities> permission;
 }

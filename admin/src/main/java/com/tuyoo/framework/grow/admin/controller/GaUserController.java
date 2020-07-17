@@ -55,6 +55,8 @@ public class GaUserController
     {
         if (gaUserService.create(gaUserForm))
         {
+            // 发注册邮件
+            gaUserService.sendSignEmail(gaUserForm.getUsername());
             return ResultEntities.success();
         }
         return ResultEntities.failed();

@@ -6,13 +6,16 @@ import com.tuyoo.framework.grow.admin.entities.*;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.entities.*;
 import com.tuyoo.framework.grow.admin.ga.form.GaUserForm;
+import com.tuyoo.framework.grow.admin.jwt.ClaimsEntities;
 import com.tuyoo.framework.grow.admin.jwt.JwtUtil;
+import com.tuyoo.framework.grow.admin.mail.MailService;
 import com.tuyoo.framework.grow.admin.repository.GameRepository;
 import com.tuyoo.framework.grow.admin.repository.PermissionRepository;
 import com.tuyoo.framework.grow.admin.repository.StudioRepository;
 import com.tuyoo.framework.grow.admin.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +24,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import reactor.core.publisher.Mono;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
@@ -53,8 +59,15 @@ public class GaUserServiceImp implements GaUserService
     @Autowired
     JwtUtil jwtUtil;
 
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
     /**
      * 加上自己是管理员的工作室
+     *
      * @param studioList 有指定权限的用户的工作室
      * @return 可用工作室总和
      */
@@ -117,8 +130,6 @@ public class GaUserServiceImp implements GaUserService
     {
         List<Integer> studioList = hasDistributeStudioId();
 
-        log.info("studioList{}" + studioList);
-
         // 再找出拥有工作室权限的所有用户
         List<PermissionEntities> allByStudioIdInAndStatus = permissionRepository.findAllByStudioIdIn(studioList);
         ArrayList<String> usernameList = new ArrayList<>();
@@ -127,8 +138,6 @@ public class GaUserServiceImp implements GaUserService
         {
             usernameList.add(permissionEntities.getUsername());
         }
-
-        log.info("usernameList:{}" + usernameList);
 
         return usernameList;
     }
@@ -383,9 +392,6 @@ public class GaUserServiceImp implements GaUserService
             userPermissionMap.put(permissionEntities.getStudioId(), permissionMap);
         }
 
-        log.info("gaStudioEntitiesList:{}" + gaStudioEntitiesList);
-        log.info("userGameMap:{}" + userGameMap);
-
         // 遍历已构建好的权限，打开被操作人已经拥有的权限
         for (GaStudioEntities gaStudioEntities :
                 gaStudioEntitiesList)
@@ -393,8 +399,6 @@ public class GaUserServiceImp implements GaUserService
             // 处理游戏是否拥有
             for (GaGameEntities gaGameEntities : gaStudioEntities.getGame())
             {
-                log.info("gameMap:{}" + userGameMap.get(gaStudioEntities.getId()));
-                log.info("gameId:{}" + gaGameEntities.getId());
                 // 开启已拥有的游戏
                 if (
                         userGameMap.get(gaStudioEntities.getId()) != null &&
@@ -500,7 +504,6 @@ public class GaUserServiceImp implements GaUserService
             ArrayList<RoleEntities> roleList = new ArrayList<>();
             roleList.add(new RoleEntities(gaConfig.getRoleId(), null));
             userEntities.setRoleEntitiesList(roleList);
-            log.info("createUserEntities:{}" + userEntities);
             userRepository.save(userEntities);
         }
         else
@@ -565,7 +568,6 @@ public class GaUserServiceImp implements GaUserService
                 1,
                 new RoleEntities(gaConfig.getRoleId(), null)
         );
-        log.info("user:{}" + user);
         if (user == null)
         {
             return false;
@@ -688,7 +690,6 @@ public class GaUserServiceImp implements GaUserService
         }
         entities.setPermission(JSON.toJSONString(parentPermission));
 
-        log.info("entities:{}" + entities);
         permissionRepository.save(entities);
     }
 
@@ -713,5 +714,70 @@ public class GaUserServiceImp implements GaUserService
             permissionEntities.setGame(JSON.toJSONString(gameIdList));
             permissionRepository.save(permissionEntities);
         }
+    }
+
+    @Override
+    public void sendSignEmail(String username)
+    {
+        // 现获取jwt串
+        Context context = getContext(username);
+        String emailContent = templateEngine.process("signEmailTemplate", context);
+
+        mailService.sendHtmlMail(username, "GrowAnalytics注册邮件", emailContent);
+    }
+
+    @Override
+    public boolean sendResetEmail(String username)
+    {
+        UserEntities byUsernameAndStatusAndRoleEntitiesList = userRepository.findByUsernameAndStatusAndRoleEntitiesList(
+                username,
+                1,
+                new RoleEntities(gaConfig.getRoleId(), null)
+        );
+        if (byUsernameAndStatusAndRoleEntitiesList == null)
+        {
+            return false;
+        }
+
+        // 现获取jwt串
+        Context context = getContext(username);
+        context.setVariable("name", username);
+        String emailContent = templateEngine.process("resetEmailTemplate", context);
+
+        mailService.sendHtmlMail(username, "GrowAnalytics密码重置邮件", emailContent);
+
+        return true;
+    }
+
+    @Override
+    public UserEntities validToken(String token)
+    {
+        ClaimsEntities claimsEntities = jwtUtil.decode(token);
+        // 超过过期时间
+        if (System.currentTimeMillis() / 1000 > Integer.parseInt(claimsEntities.getExp()))
+        {
+            return null;
+        }
+        return userRepository.findByUsernameAndStatusAndRoleEntitiesList(
+                claimsEntities.getUserName(),
+                1,
+                new RoleEntities(gaConfig.getRoleId(), null)
+        );
+    }
+
+    private Context getContext(String username)
+    {
+        ClaimsEntities claimsEntities = new ClaimsEntities();
+        claimsEntities.setUserName(username);
+        // 两小时过期
+        long timeMillis = System.currentTimeMillis() / 1000 + 7200;
+        claimsEntities.setExp(String.valueOf(timeMillis));
+        String token = jwtUtil.encode(claimsEntities);
+
+        Context context = new Context();
+        context.setVariable("host", gaConfig.getHost());
+        context.setVariable("token", token);
+
+        return context;
     }
 }
