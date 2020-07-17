@@ -5,6 +5,7 @@ import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
+import com.tuyoo.framework.grow.admin.mail.MailService;
 import com.tuyoo.framework.grow.admin.service.AuthService;
 import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 
@@ -32,6 +35,12 @@ public class GaController
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    private MailService mailService;
+
+    @Autowired
+    private TemplateEngine templateEngine;
 
     @GetMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
@@ -70,6 +79,16 @@ public class GaController
     @GetMapping("loginOut")
     @ApiOperation(value = "登出", notes = "登出接口", response = ResultEntities.class)
     public ResultEntities<Object> loginOut() {
+        return ResultEntities.success();
+    }
+
+    @GetMapping("mail")
+    public ResultEntities<Object> mail(@RequestParam String username) {
+        Context context = new Context();
+        context.setVariable("id", "001");
+        String emailContent = templateEngine.process("emailTemplate", context);
+
+        mailService.sendHtmlMail(username, "这是一个模板文件", emailContent);
         return ResultEntities.success();
     }
 }
