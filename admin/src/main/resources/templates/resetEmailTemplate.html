@@ -6,6 +6,6 @@
 </head>
 <body>
 您好，这是一封验证邮件，请点击下面的链接完成密码重置，感谢您的支持！<br>
-<a href="#" th:href="@{${host}/sign(retset=1,name=${name},token=${token})}">激活账户</a>
+<a href="#" th:href="@{${baseUrl}(retset=1,name=${name},token=${token})}">激活账户</a>
 </body>
 </html>

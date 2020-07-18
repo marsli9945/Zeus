@@ -62,6 +62,13 @@ public class GaUserController
         return ResultEntities.failed();
     }
 
+    @GetMapping("resend")
+    @ApiOperation(value = "注册邮件重新发送", notes = "注册邮件重发接口", response = ResultEntities.class)
+    public ResultEntities<Object> resend(@RequestParam String username) {
+        gaUserService.sendSignEmail(username);
+        return ResultEntities.success();
+    }
+
     @PutMapping
     @ApiOperation(value = "编辑用户", notes = "编辑用户接口", response = ResultEntities.class)
     public ResultEntities<Object> edit(@RequestBody @Valid GaUserForm gaUserForm)

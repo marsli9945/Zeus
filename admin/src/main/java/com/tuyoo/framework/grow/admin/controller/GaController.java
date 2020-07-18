@@ -65,7 +65,8 @@ public class GaController
     public ResultEntities<Object> sign(@RequestBody @Validated EditUserForm editUserForm)
     {
         editUserForm.setStatus(1); // 开启用户状态
-        if (userService.update(editUserForm)) {
+        if (userService.update(editUserForm))
+        {
             return ResultEntities.success();
         }
         return ResultEntities.failed();
@@ -73,24 +74,29 @@ public class GaController
 
     @GetMapping("loginOut")
     @ApiOperation(value = "登出", notes = "登出接口", response = ResultEntities.class)
-    public ResultEntities<Object> loginOut() {
+    public ResultEntities<Object> loginOut()
+    {
         return ResultEntities.success();
     }
 
     @GetMapping("reset")
     @ApiOperation(value = "重置密码", notes = "重置密码邮件发送接口", response = ResultEntities.class)
-    public ResultEntities<Object> mail(@RequestParam String username) {
-        if (gaUserService.sendResetEmail(username)) {
-            return ResultEntities.failed();
+    public ResultEntities<Object> mail(@RequestParam String username)
+    {
+        if (gaUserService.sendResetEmail(username))
+        {
+            return ResultEntities.success();
         }
-        return ResultEntities.success();
+        return ResultEntities.failed();
     }
 
-    @GetMapping("reset")
+    @GetMapping("token")
     @ApiOperation(value = "校验token", notes = "token校验接口", response = ResultEntities.class)
-    public ResultEntities<Object> token(@RequestParam String token) {
+    public ResultEntities<Object> token(@RequestParam String token)
+    {
         UserEntities userEntities = gaUserService.validToken(token);
-        if (userEntities == null) {
+        if (userEntities == null)
+        {
             return ResultEntities.failed();
         }
         return ResultEntities.success(userEntities);

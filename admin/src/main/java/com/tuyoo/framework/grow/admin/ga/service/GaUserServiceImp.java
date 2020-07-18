@@ -775,7 +775,7 @@ public class GaUserServiceImp implements GaUserService
         String token = jwtUtil.encode(claimsEntities);
 
         Context context = new Context();
-        context.setVariable("host", gaConfig.getHost());
+        context.setVariable("baseUrl", gaConfig.getHost() + "/sign");
         context.setVariable("token", token);
 
         return context;
