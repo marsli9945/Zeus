@@ -83,9 +83,11 @@ public class JwtUtil
         {
             if (role.equals(gaConfig.getRoleName()))
             {
+                log.info("isAdmin:{}",true);
                 return true;
             }
         }
+        log.info("isAdmin:{}",false);
         return false;
     }
 }

@@ -9,4 +9,8 @@ public class PageForm
 {
     private Integer page = 0;
     private Integer size = 20;
+
+    public Integer getPage() {
+        return this.page - 1;
+    }
 }

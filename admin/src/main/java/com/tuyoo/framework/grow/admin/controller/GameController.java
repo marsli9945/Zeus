@@ -64,6 +64,7 @@ public class GameController
     @PostMapping("/upload")
     public ResultEntities<Object> upload(@RequestParam("file") MultipartFile file) throws IOException, XmlPullParserException, NoSuchAlgorithmException, RegionConflictException, InvalidKeyException, InvalidPortException, InvalidArgumentException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InvalidEndpointException, InternalException
     {
+        log.info("访问到上传接口");
         if (file.isEmpty()) {
             ResultEntities.failed("上传失败");
         }

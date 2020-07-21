@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -37,9 +38,9 @@ public class GaController
     @Autowired
     GaUserService gaUserService;
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
-    public ResultEntities<Object> login(LoginForm loginForm)
+    public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
     {
         // 查询用户名匹配切拥有GA_WEB角色状态为开的用户是否存在
         UserEntities user = userService.findByUsernameAndStatusAndRoleEntitiesList(

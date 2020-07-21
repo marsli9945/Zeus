@@ -343,12 +343,16 @@ public class GaUserServiceImp implements GaUserService
     }
 
     // 构造工作室下的全量权限
-    private GaStudioEntities getStudioPermission(StudioEntities studioEntities)
+    private GaStudioEntities getStudioPermission(StudioEntities studioEntities, boolean isDistribute)
     {
         GaStudioEntities gaStudioEntities = new GaStudioEntities();
         gaStudioEntities.setId(studioEntities.getId());
         gaStudioEntities.setName(studioEntities.getName());
-        gaStudioEntities.setPermission(gaConfig.getPermission());
+        List<GaPermissionEntities> permission = gaConfig.getPermission();
+        if (isDistribute) {
+            permission.remove(0);
+        }
+        gaStudioEntities.setPermission(permission);
 
         ArrayList<GaGameEntities> gameList = new ArrayList<>();
         for (GameEntities gameEntities :
@@ -442,17 +446,36 @@ public class GaUserServiceImp implements GaUserService
             for (StudioEntities studioEntities :
                     allByStatus)
             {
-                studioPermissionList.add(getStudioPermission(studioEntities));
+                studioPermissionList.add(getStudioPermission(studioEntities, false));
             }
         }
         else
         {
-            List<Integer> studioIdList = hasDistributeStudioId();
-            List<StudioEntities> allByIdInAndStatus = studioRepository.findAllByIdInAndStatus(studioIdList, 1);
+            // 先拿到是管理员的工作室
+            List<StudioEntities> allByAdminAndStatus = studioRepository.findAllByAdminAndStatus(jwtUtil.getUsername(), 1);
+            ArrayList<Integer> adminStudioIdList = new ArrayList<>();
+            for (StudioEntities studioEntities:
+                 allByAdminAndStatus)
+            {
+                // 获取全量权限
+                studioPermissionList.add(getStudioPermission(studioEntities,false));
+                adminStudioIdList.add(studioEntities.getId());
+            }
+
+            // 获取非工作室管理员具有管理权限的工作室
+            List<PermissionEntities> allByUsernameAndStudioIdNotIn = permissionRepository.findAllByUsernameAndStudioIdNotIn(jwtUtil.getUsername(), adminStudioIdList);
+            ArrayList<Integer> distributeStudioIdList = new ArrayList<>();
+            for (PermissionEntities permissionEntities :
+                    allByUsernameAndStudioIdNotIn)
+            {
+                distributeStudioIdList.add(permissionEntities.getStudioId());
+            }
+            List<StudioEntities> allByIdInAndStatus = studioRepository.findAllByIdInAndStatus(distributeStudioIdList, 1);
             for (StudioEntities studioEntities :
                     allByIdInAndStatus)
             {
-                studioPermissionList.add(getStudioPermission(studioEntities));
+                // 获取去掉admin部分的权限
+                studioPermissionList.add(getStudioPermission(studioEntities, true));
             }
         }
 

@@ -60,6 +60,13 @@ spring:
           filters:
             - StripPrefix=2
 
+        - id: admin
+          uri: lb://ADMIN
+          predicates:
+            - Path=/v1/admin/**
+          filters:
+            - StripPrefix=2
+
 eureka:
   instance:
     prefer-ip-address: true # 使用IP进行注册

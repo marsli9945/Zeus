@@ -48,6 +48,7 @@ public class SecurityServerConfigurer
                 .pathMatchers("/v1/auth/io200NoAuth").permitAll()
                 // admin服务下ga系统登陆注册相关接口允许匿名访问
                 .pathMatchers("/v1/admin/ga/system/**").permitAll()
+                .pathMatchers("/v1/admin/game/upload").permitAll()
                 // 系统健康检查和对外监控允许匿名
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/monitor").permitAll()
