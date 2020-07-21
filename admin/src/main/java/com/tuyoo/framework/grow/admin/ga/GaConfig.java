@@ -19,5 +19,6 @@ public class GaConfig
     private String clientId;
     private String clientSecret;
     private String host;
+    private Integer mailTokenExp;
     private List<GaPermissionEntities> permission;
 }

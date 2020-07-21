@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
-@RequestMapping("ga")
+@RequestMapping("ga/system")
 @Api(tags = "GA登陆、注册相关接口")
 public class GaController
 {

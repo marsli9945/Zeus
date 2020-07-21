@@ -55,6 +55,7 @@ ga:
   clientId: net5ijy
   clientSecret: y4cZe@wmGBofIlQ
   host: http://gacs.touch4.me
+  mailTokenExp: 7200
   permission:
     - id: admin
       name: 授权管理员权限

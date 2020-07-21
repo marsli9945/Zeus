@@ -770,7 +770,7 @@ public class GaUserServiceImp implements GaUserService
         ClaimsEntities claimsEntities = new ClaimsEntities();
         claimsEntities.setUserName(username);
         // 两小时过期
-        long timeMillis = System.currentTimeMillis() / 1000 + 7200;
+        long timeMillis = System.currentTimeMillis() / 1000 + gaConfig.getMailTokenExp();
         claimsEntities.setExp(String.valueOf(timeMillis));
         String token = jwtUtil.encode(claimsEntities);
 
