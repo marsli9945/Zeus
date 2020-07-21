@@ -1,11 +1,15 @@
 package com.tuyoo.framework.grow.admin.controller;
 
+import com.tuyoo.framework.grow.admin.entities.RoleEntities;
+import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.PageForm;
+import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.entities.GaSelectEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaStudioEntities;
 import com.tuyoo.framework.grow.admin.ga.entities.GaUserInfoEntities;
 import com.tuyoo.framework.grow.admin.ga.form.GaUserForm;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
+import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,6 +26,12 @@ public class GaUserController
     @Autowired
     private GaUserService gaUserService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private GaConfig gaConfig;
+
     @GetMapping
     @ApiOperation(value = "获取用户列表", notes = "获取用户列表接口", response = ResultEntities.class)
     public ResultEntities<Object> fetch(@Valid PageForm pageForm, String name)
@@ -31,7 +41,8 @@ public class GaUserController
 
     @GetMapping("userInfo")
     @ApiOperation(value = "获取当前用户的详细信息含游戏和权限", notes = "当前用户的详细信息接口", response = GaUserInfoEntities.class)
-    public ResultEntities<Object> userInfo() {
+    public ResultEntities<Object> userInfo()
+    {
         return ResultEntities.success(gaUserService.userInfo());
     }
 
@@ -39,6 +50,23 @@ public class GaUserController
     @ApiOperation(value = "获取当前用户可分配的所有权限", notes = "获取权限列表接口", response = GaStudioEntities.class)
     public ResultEntities<Object> getPermission(String username)
     {
+        if (username != null)
+        {
+            GaUserForm gaUserForm = new GaUserForm();
+            UserEntities user = userService.findByUsernameAndStatusAndRoleEntitiesList(
+                    username,
+                    1,
+                    new RoleEntities(gaConfig.getRoleId(), null)
+            );
+            if (user == null) {
+                return ResultEntities.failed("用户还未注册");
+            }
+            gaUserForm.setName(user.getName());
+            gaUserForm.setUsername(user.getUsername());
+            gaUserForm.setLevel(user.getLevel());
+            gaUserForm.setPermission(gaUserService.getPermission(username));
+            return ResultEntities.success(gaUserForm);
+        }
         return ResultEntities.success(gaUserService.getPermission(username));
     }
 
@@ -64,7 +92,8 @@ public class GaUserController
 
     @GetMapping("resend")
     @ApiOperation(value = "注册邮件重新发送", notes = "注册邮件重发接口", response = ResultEntities.class)
-    public ResultEntities<Object> resend(@RequestParam String username) {
+    public ResultEntities<Object> resend(@RequestParam String username)
+    {
         gaUserService.sendSignEmail(username);
         return ResultEntities.success();
     }

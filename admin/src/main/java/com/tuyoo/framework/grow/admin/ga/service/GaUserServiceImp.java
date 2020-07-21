@@ -349,7 +349,8 @@ public class GaUserServiceImp implements GaUserService
         gaStudioEntities.setId(studioEntities.getId());
         gaStudioEntities.setName(studioEntities.getName());
         List<GaPermissionEntities> permission = gaConfig.getPermission();
-        if (isDistribute) {
+        if (isDistribute)
+        {
             permission.remove(0);
         }
         gaStudioEntities.setPermission(permission);
@@ -396,43 +397,60 @@ public class GaUserServiceImp implements GaUserService
             userPermissionMap.put(permissionEntities.getStudioId(), permissionMap);
         }
 
+        log.info("userGameMap:{}", userGameMap);
+        log.info("userPermissionMap:{}", userPermissionMap);
+
+        ArrayList<GaStudioEntities> newGaStudioEntitiesList = new ArrayList<>();
         // 遍历已构建好的权限，打开被操作人已经拥有的权限
         for (GaStudioEntities gaStudioEntities :
                 gaStudioEntitiesList)
         {
+            GaStudioEntities newGaStudioEntities = new GaStudioEntities();
+            newGaStudioEntities.setId(gaStudioEntities.getId());
+            newGaStudioEntities.setName(gaStudioEntities.getName());
+            ArrayList<GaGameEntities> newGaGameEntitiesList = new ArrayList<>();
             // 处理游戏是否拥有
             for (GaGameEntities gaGameEntities : gaStudioEntities.getGame())
             {
+                GaGameEntities newGaGameEntities = new GaGameEntities();
+                newGaGameEntities.setId(gaGameEntities.getId());
+                newGaGameEntities.setName(gaGameEntities.getName());
+                newGaGameEntities.setIcon(gaGameEntities.getIcon());
                 // 开启已拥有的游戏
-                if (
-                        userGameMap.get(gaStudioEntities.getId()) != null &&
-                                userGameMap.get(gaStudioEntities.getId()).contains(gaGameEntities.getId())
-                )
-                {
-                    gaGameEntities.setIs_own(true);
-                }
+                newGaGameEntities.setIs_own(userGameMap.get(gaStudioEntities.getId()) != null &&
+                        userGameMap.get(gaStudioEntities.getId()).contains(gaGameEntities.getId()));
+                newGaGameEntitiesList.add(newGaGameEntities);
             }
+            newGaStudioEntities.setGame(newGaGameEntitiesList);
 
+            ArrayList<GaPermissionEntities> newGaPermissionEntitiesList = new ArrayList<>();
             // 处理内部权限是否拥有
             for (GaPermissionEntities gaPermissionEntities :
                     gaStudioEntities.getPermission())
             {
+                GaPermissionEntities newGaPermissionEntities = new GaPermissionEntities();
+                ArrayList<GaPermissionChildrenEntities> newGaPermissionChildrenEntitiesList = new ArrayList<>();
+                newGaPermissionEntities.setId(gaPermissionEntities.getId());
+                newGaPermissionEntities.setName(gaPermissionEntities.getName());
                 for (GaPermissionChildrenEntities gaPermissionChildrenEntities :
                         gaPermissionEntities.getChildren())
                 {
-                    if (
-                            userPermissionMap.get(gaStudioEntities.getId()) != null &&
-                                    userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()) != null &&
-                                    userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()).contains(gaPermissionChildrenEntities.getId())
-                    )
-                    {
-                        gaPermissionChildrenEntities.setIs_own(true);
-                    }
+                    GaPermissionChildrenEntities newGaPermissionChildrenEntities = new GaPermissionChildrenEntities();
+                    newGaPermissionChildrenEntities.setId(gaPermissionChildrenEntities.getId());
+                    newGaPermissionChildrenEntities.setName(gaPermissionChildrenEntities.getName());
+                    newGaPermissionChildrenEntities.setIs_own(userPermissionMap.get(gaStudioEntities.getId()) != null &&
+                            userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()) != null &&
+                            userPermissionMap.get(gaStudioEntities.getId()).get(gaPermissionEntities.getId()).contains(gaPermissionChildrenEntities.getId()));
+                    newGaPermissionChildrenEntitiesList.add(newGaPermissionChildrenEntities);
                 }
+                newGaPermissionEntities.setChildren(newGaPermissionChildrenEntitiesList);
+                newGaPermissionEntitiesList.add(newGaPermissionEntities);
             }
+            newGaStudioEntities.setPermission(newGaPermissionEntitiesList);
+            newGaStudioEntitiesList.add(newGaStudioEntities);
         }
 
-        return gaStudioEntitiesList;
+        return newGaStudioEntitiesList;
     }
 
     @Override
@@ -454,11 +472,11 @@ public class GaUserServiceImp implements GaUserService
             // 先拿到是管理员的工作室
             List<StudioEntities> allByAdminAndStatus = studioRepository.findAllByAdminAndStatus(jwtUtil.getUsername(), 1);
             ArrayList<Integer> adminStudioIdList = new ArrayList<>();
-            for (StudioEntities studioEntities:
-                 allByAdminAndStatus)
+            for (StudioEntities studioEntities :
+                    allByAdminAndStatus)
             {
                 // 获取全量权限
-                studioPermissionList.add(getStudioPermission(studioEntities,false));
+                studioPermissionList.add(getStudioPermission(studioEntities, false));
                 adminStudioIdList.add(studioEntities.getId());
             }
 
@@ -478,6 +496,8 @@ public class GaUserServiceImp implements GaUserService
                 studioPermissionList.add(getStudioPermission(studioEntities, true));
             }
         }
+
+        log.info("studioPermissionList:{}", studioPermissionList);
 
         // 有用户传入表示要编辑某人的权限
         if (username != null)
