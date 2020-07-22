@@ -39,6 +39,12 @@ public class GaUserController
         return ResultEntities.success(gaUserService.fetch(pageForm.getPage(), pageForm.getSize(), name));
     }
 
+    @GetMapping("select")
+    @ApiOperation(value = "获取所有用户", notes = "获取所有用户下拉框接口", response = GaSelectEntities.class)
+    public ResultEntities<Object> allUserSelect() {
+        return ResultEntities.success(gaUserService.allUserSelect());
+    }
+
     @GetMapping("userInfo")
     @ApiOperation(value = "获取当前用户的详细信息含游戏和权限", notes = "当前用户的详细信息接口", response = GaUserInfoEntities.class)
     public ResultEntities<Object> userInfo()

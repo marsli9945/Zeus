@@ -181,6 +181,22 @@ public class GaUserServiceImp implements GaUserService
         return userRepository.findAll(specification, pageable);
     }
 
+    @Override
+    public List<GaSelectEntities> allUserSelect()
+    {
+        ArrayList<GaSelectEntities> select = new ArrayList<>();
+        List<UserEntities> allByStatusAndAndRoleEntitiesList = userRepository.findAllByStatusAndRoleEntitiesList(
+                1,
+                new RoleEntities(gaConfig.getRoleId(), null)
+        );
+        for (UserEntities userEntities :
+                allByStatusAndAndRoleEntitiesList)
+        {
+            select.add(new GaSelectEntities(userEntities.getName(), userEntities.getUsername()));
+        }
+        return select;
+    }
+
     // 根据配置构造全量权限
     private String getAllPermission()
     {
@@ -348,11 +364,18 @@ public class GaUserServiceImp implements GaUserService
         GaStudioEntities gaStudioEntities = new GaStudioEntities();
         gaStudioEntities.setId(studioEntities.getId());
         gaStudioEntities.setName(studioEntities.getName());
-        List<GaPermissionEntities> permission = gaConfig.getPermission();
-        if (isDistribute)
+        List<GaPermissionEntities> permission = new ArrayList<>();
+        for (GaPermissionEntities gaPermissionEntities :
+                gaConfig.getPermission())
         {
-            permission.remove(0);
+            log.info("gaPermissionEntities:{}", gaPermissionEntities);
+            if (gaPermissionEntities.getId().equals("admin") && isDistribute)
+            {
+                continue;
+            }
+            permission.add(gaPermissionEntities);
         }
+        log.info("permission:{}", permission);
         gaStudioEntities.setPermission(permission);
 
         ArrayList<GaGameEntities> gameList = new ArrayList<>();
@@ -457,7 +480,7 @@ public class GaUserServiceImp implements GaUserService
     public List<GaStudioEntities> getPermission(String username)
     {
         ArrayList<GaStudioEntities> studioPermissionList = new ArrayList<>();
-        // 当前用户为GA_ADMAIN，获取到所有工作室权限
+        // 当前用户为admin，获取到所有工作室权限
         if (jwtUtil.isGaAdmin())
         {
             List<StudioEntities> allByStatus = studioRepository.findAllByStatus(1);
@@ -475,6 +498,7 @@ public class GaUserServiceImp implements GaUserService
             for (StudioEntities studioEntities :
                     allByAdminAndStatus)
             {
+                log.info("adminStudio:{}", studioEntities.getId());
                 // 获取全量权限
                 studioPermissionList.add(getStudioPermission(studioEntities, false));
                 adminStudioIdList.add(studioEntities.getId());
@@ -492,12 +516,11 @@ public class GaUserServiceImp implements GaUserService
             for (StudioEntities studioEntities :
                     allByIdInAndStatus)
             {
+                log.info("distributeStudio:{}", studioEntities.getId());
                 // 获取去掉admin部分的权限
                 studioPermissionList.add(getStudioPermission(studioEntities, true));
             }
         }
-
-        log.info("studioPermissionList:{}", studioPermissionList);
 
         // 有用户传入表示要编辑某人的权限
         if (username != null)

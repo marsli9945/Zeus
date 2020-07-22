@@ -28,7 +28,6 @@ public class StudioEntities
     @Column
     private Integer status = 1;
 
-    @JsonBackReference
     @OneToMany(mappedBy = "studio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<GameEntities> gameEntities;
 }

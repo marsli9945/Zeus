@@ -54,7 +54,7 @@ ga:
   roleName: ROLE_GA_ADMAIN # 管理员的角色名
   clientId: net5ijy
   clientSecret: y4cZe@wmGBofIlQ
-  host: http://gacs.touch4.me
+  host: http://127.0.0.1:9528
   mailTokenExp: 7200
   permission:
     - id: admin

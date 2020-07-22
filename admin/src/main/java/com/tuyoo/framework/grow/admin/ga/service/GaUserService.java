@@ -13,6 +13,8 @@ public interface GaUserService
 {
     Page<UserEntities> fetch(Integer page, Integer size, String name);
 
+    List<GaSelectEntities> allUserSelect();
+
     GaUserInfoEntities userInfo();
 
     List<GaStudioEntities> getPermission(String username);
