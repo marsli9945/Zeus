@@ -1,10 +1,15 @@
 package com.tuyoo.framework.grow.common.entities;
 
+import lombok.ToString;
+
+import java.io.Serializable;
+
 /**
  * 通用返回对象
  * Created by macro on 2019/4/19.
  */
-public class ResultEntities<T>
+@ToString
+public class ResultEntities<T> implements Serializable
 {
     private Integer code;
     private String message;

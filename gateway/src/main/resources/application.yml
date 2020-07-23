@@ -59,6 +59,7 @@ spring:
             - Path=/v1/api/**
           filters:
             - StripPrefix=2
+            - Result
 
         - id: admin
           uri: lb://ADMIN

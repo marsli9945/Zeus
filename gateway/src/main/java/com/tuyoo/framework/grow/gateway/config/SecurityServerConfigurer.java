@@ -52,6 +52,7 @@ public class SecurityServerConfigurer
                 // 系统健康检查和对外监控允许匿名
                 .pathMatchers("/actuator/**").permitAll()
                 .pathMatchers("/monitor").permitAll()
+                .pathMatchers("/v1/api/**").permitAll()
 //                .pathMatchers("/**").permitAll()
                 .anyExchange().authenticated();
 
