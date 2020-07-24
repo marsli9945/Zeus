@@ -11,7 +11,6 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
@@ -61,24 +60,37 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                 join.read(content);
                                 DataBufferUtils.release(join);
                                 String responseData = new String(content, StandardCharsets.UTF_8);
+                                int statusCode = originalResponse.getStatusCode().value();
 
                                 log.info("响应转前:{}", responseData);
-                                try
-                                {
-                                    responseData = JSON.toJSONString(ResultEntities.success(
-                                            JSON.parseObject(responseData)
+                                if (statusCode >= 200 && statusCode < 300) {
+                                    try
+                                    {
+                                        responseData = JSON.toJSONString(ResultEntities.init(
+                                                statusCode,
+                                                "操作成功",
+                                                JSON.parseObject(responseData)
+                                        ));
+                                        log.info("is json");
+                                    } catch (Exception e)
+                                    {
+                                        responseData = JSON.toJSONString(ResultEntities.init(
+                                                statusCode,
+                                                "操作成功",
+                                                responseData
+                                        ));
+                                        log.info("not json");
+                                    }
+                                } else {
+                                    responseData = JSON.toJSONString(ResultEntities.init(
+                                            statusCode,
+                                            responseData,
+                                            null
                                     ));
-                                    log.info("is json");
-                                } catch (Exception e)
-                                {
-                                    responseData = JSON.toJSONString(ResultEntities.success(
-                                            responseData
-                                    ));
-                                    log.info("not json");
-                                    HttpHeaders headers = originalResponse.getHeaders();
-                                    headers.set("Content-length",String.valueOf(responseData.getBytes().length));
+                                    originalResponse.setRawStatusCode(200);
                                 }
                                 log.info("响应转后:{}", responseData);
+                                originalResponse.getHeaders().set("Content-length",String.valueOf(responseData.getBytes().length));
 
                                 byte[] uppedContent = responseData.getBytes(StandardCharsets.UTF_8);
                                 return bufferFactory.wrap(uppedContent);
