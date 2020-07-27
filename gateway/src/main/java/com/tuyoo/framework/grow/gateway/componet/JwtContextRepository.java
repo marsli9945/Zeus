@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -72,7 +73,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
     /**
      * 校验sdk的token
-     * @param request 请求信息
+     *
+     * @param request   请求信息
      * @param authToken 令牌
      * @return Mono结果
      */
@@ -118,7 +120,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
     /**
      * 校验自己的token
-     * @param request 请求信息
+     *
+     * @param request   请求信息
      * @param authToken 令牌
      * @return Mono结果
      */
@@ -169,7 +172,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             }
 
             // 头信息中添加查询用户
-            request.mutate().header("search_user", parse.getUser_name()).build();
+            request.mutate().header("ga_username", parse.getUser_name()).build();
+            request.mutate().header("ga_request_id", getRequestId()).build();
             request.mutate().header("claims", jwt.getClaims()).build();
 
             //列出token中携带的角色表。
@@ -185,6 +189,15 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             e.printStackTrace();
             return Mono.empty();
         }
+    }
+
+    /**
+     * 构造头信息中需要到ga_request_id
+     * @return ga_request_id
+     */
+    private String getRequestId()
+    {
+        return System.currentTimeMillis() + "-" + UUID.randomUUID().toString().replace("-", "");
     }
 
     /**
