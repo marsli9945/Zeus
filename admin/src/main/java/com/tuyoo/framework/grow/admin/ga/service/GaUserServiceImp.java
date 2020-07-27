@@ -226,7 +226,7 @@ public class GaUserServiceImp implements GaUserService
                 break;
             }
             infoGameList.add(new GaUserInfoGameEntities(
-                    gameEntities.getId(),
+                    gameEntities.getProjectId(),
                     gameEntities.getName(),
                     gameEntities.getIcon(),
                     gameEntities.getTimeZone(),
@@ -250,7 +250,7 @@ public class GaUserServiceImp implements GaUserService
                 break;
             }
             infoGameList.add(new GaUserInfoGameEntities(
-                    gameEntities.getId(),
+                    gameEntities.getProjectId(),
                     gameEntities.getName(),
                     gameEntities.getIcon(),
                     gameEntities.getTimeZone(),

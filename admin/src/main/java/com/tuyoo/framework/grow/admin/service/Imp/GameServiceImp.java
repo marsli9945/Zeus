@@ -3,6 +3,7 @@ package com.tuyoo.framework.grow.admin.service.Imp;
 import com.tuyoo.framework.grow.admin.entities.GameEntities;
 import com.tuyoo.framework.grow.admin.form.game.CreateGameForm;
 import com.tuyoo.framework.grow.admin.form.game.EditGameForm;
+import com.tuyoo.framework.grow.admin.ga.entities.GaGameInfoEntities;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
 import com.tuyoo.framework.grow.admin.repository.GameRepository;
 import com.tuyoo.framework.grow.admin.service.GameService;
@@ -59,6 +60,24 @@ public class GameServiceImp implements GameService
         // 同时为拥有工作室后续新增游戏权限的人增加游戏
         gaUserService.addAutoPermissionGame(save.getStudio().getId(),save.getId());
         return true;
+    }
+
+    @Override
+    public GaGameInfoEntities info(String projectId)
+    {
+        GaGameInfoEntities gaGameInfoEntities = new GaGameInfoEntities();
+        GameEntities byProjectId = gameRepository.findByProjectId(projectId);
+
+        gaGameInfoEntities.setId(byProjectId.getId());
+        gaGameInfoEntities.setName(byProjectId.getName());
+        gaGameInfoEntities.setCurrency(byProjectId.getCurrency());
+        gaGameInfoEntities.setIcon(byProjectId.getIcon());
+        gaGameInfoEntities.setProjectId(byProjectId.getProjectId());
+        gaGameInfoEntities.setStatus(byProjectId.getStatus());
+        gaGameInfoEntities.setTimeZone(byProjectId.getTimeZone());
+        gaGameInfoEntities.setStudio(byProjectId.getStudio().getId());
+
+        return gaGameInfoEntities;
     }
 
     @Override

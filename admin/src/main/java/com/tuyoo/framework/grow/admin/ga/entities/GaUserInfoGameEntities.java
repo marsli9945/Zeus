@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class GaUserInfoGameEntities
 {
     @ApiModelProperty(value = "游戏ID", name = "id", example = "20249")
-    private Integer id;
+    private String id;
 
     @ApiModelProperty(value = "游戏名", name = "name", example = "GrowAnalytics")
     private String name;

@@ -60,37 +60,51 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                 join.read(content);
                                 DataBufferUtils.release(join);
                                 String responseData = new String(content, StandardCharsets.UTF_8);
-                                int statusCode = originalResponse.getStatusCode().value();
+                                Integer rawStatusCode = originalResponse.getRawStatusCode();
+                                log.info("rawStatusCode:{}", rawStatusCode);
 
                                 log.info("响应转前:{}", responseData);
-                                if (statusCode >= 200 && statusCode < 300) {
+                                if (rawStatusCode != null && rawStatusCode >= 200 && rawStatusCode < 300)
+                                {
                                     try
                                     {
                                         responseData = JSON.toJSONString(ResultEntities.init(
-                                                statusCode,
+                                                rawStatusCode,
                                                 "操作成功",
-                                                JSON.parseObject(responseData)
+                                                JSON.parse(responseData)
                                         ));
                                         log.info("is json");
                                     } catch (Exception e)
                                     {
                                         responseData = JSON.toJSONString(ResultEntities.init(
-                                                statusCode,
+                                                rawStatusCode,
                                                 "操作成功",
                                                 responseData
                                         ));
                                         log.info("not json");
                                     }
-                                } else {
+                                }
+                                else
+                                {
                                     responseData = JSON.toJSONString(ResultEntities.init(
-                                            statusCode,
+                                            rawStatusCode,
                                             responseData,
                                             null
                                     ));
+                                    log.info("no success");
+
+                                    // 返回的httpCode全为200，异常状态吗内置到code
                                     originalResponse.setRawStatusCode(200);
                                 }
                                 log.info("响应转后:{}", responseData);
-                                originalResponse.getHeaders().set("Content-length",String.valueOf(responseData.getBytes().length));
+
+                                // 重新设置content-length避免body被截断
+                                originalResponse.getHeaders().set("Content-length", String.valueOf(responseData.getBytes().length));
+
+                                // 设置跨域
+                                originalResponse.getHeaders().set("Access-Control-Allow-Origin", "*");
+                                originalResponse.getHeaders().set("Access-Control-Allow-Methods", "*");
+                                originalResponse.getHeaders().set("Access-Control-Allow-Headers", "*");
 
                                 byte[] uppedContent = responseData.getBytes(StandardCharsets.UTF_8);
                                 return bufferFactory.wrap(uppedContent);

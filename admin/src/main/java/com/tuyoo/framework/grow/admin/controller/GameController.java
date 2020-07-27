@@ -1,8 +1,10 @@
 package com.tuyoo.framework.grow.admin.controller;
 
+import com.tuyoo.framework.grow.admin.entities.GameEntities;
 import com.tuyoo.framework.grow.admin.form.PageForm;
 import com.tuyoo.framework.grow.admin.form.game.CreateGameForm;
 import com.tuyoo.framework.grow.admin.form.game.EditGameForm;
+import com.tuyoo.framework.grow.admin.ga.entities.GaGameInfoEntities;
 import com.tuyoo.framework.grow.admin.minio.MinioFileUploade;
 import com.tuyoo.framework.grow.admin.service.GameService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
@@ -50,6 +52,13 @@ public class GameController
         return ResultEntities.failed();
     }
 
+    @GetMapping("info")
+    @ApiOperation(value = "获取游戏信息", notes = "获取游戏信息接口", response = GaGameInfoEntities.class)
+    public ResultEntities<Object> info(@RequestParam String projectId)
+    {
+        return ResultEntities.success(gameService.info(projectId));
+    }
+
     @PutMapping
     @ApiOperation(value = "编辑游戏", notes = "编辑游戏接口", response = ResultEntities.class)
     public ResultEntities<Object> edit(@RequestBody @Validated EditGameForm editGameForm)
@@ -65,7 +74,8 @@ public class GameController
     public ResultEntities<Object> upload(@RequestParam("file") MultipartFile file) throws IOException, XmlPullParserException, NoSuchAlgorithmException, RegionConflictException, InvalidKeyException, InvalidPortException, InvalidArgumentException, ErrorResponseException, NoResponseException, InvalidBucketNameException, InsufficientDataException, InvalidEndpointException, InternalException
     {
         log.info("访问到上传接口");
-        if (file.isEmpty()) {
+        if (file.isEmpty())
+        {
             ResultEntities.failed("上传失败");
         }
         return ResultEntities.success(minioFileUploade.upload(file));
