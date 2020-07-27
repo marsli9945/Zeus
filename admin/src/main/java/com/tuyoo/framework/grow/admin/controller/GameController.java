@@ -53,17 +53,23 @@ public class GameController
     {
         if (gameService.create(createGameForm))
         {
-            InitForm initForm = new InitForm();
-            initForm.setGa_request_id(request.getHeader("ga_request_id"));
-            initForm.setGa_model_name(request.getHeader("ga_model_name"));
-            initForm.setGa_socket_name(request.getHeader("ga_socket_name"));
-            initForm.setGa_user_id(request.getHeader("ga_user_id"));
-            initForm.setGa_username(request.getHeader("ga_username"));
-            initForm.setWeb_request_id(request.getHeader("web_request_id"));
-            initForm.setGa_project_id(createGameForm.getProjectId());
+            log.info("ga_user_id:{}", request.getHeader("ga_user_id"));
+            log.info("ga_username:{}", request.getHeader("ga_username"));
+            log.info("ga_request_id:{}", request.getHeader("ga_request_id"));
+            log.info("web_request_id:{}", request.getHeader("web_request_id"));
+            log.info("ga_socket_name:{}", request.getHeader("ga_socket_name"));
+            log.info("ga_model_name:{}", request.getHeader("ga_model_name"));
+            log.info("ga_project_id:{}", request.getHeader("createGameForm.getProjectId()"));
 
-            log.info("initForm:{}", initForm);
-            log.info("init result:{}", initService.initProject(initForm));
+            log.info("init result:{}", initService.initProject(
+                    request.getHeader("ga_user_id"),
+                    request.getHeader("ga_username"),
+                    request.getHeader("ga_request_id"),
+                    request.getHeader("web_request_id"),
+                    request.getHeader("ga_socket_name"),
+                    request.getHeader("ga_model_name"),
+                    createGameForm.getProjectId()
+            ));
 
             return ResultEntities.success();
         }
