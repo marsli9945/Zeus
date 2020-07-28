@@ -63,7 +63,7 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                 Integer rawStatusCode = originalResponse.getRawStatusCode();
                                 log.info("rawStatusCode:{}", rawStatusCode);
 
-                                log.info("响应转前:{}", responseData);
+//                                log.info("响应转前:{}", responseData);
                                 if (rawStatusCode != null && rawStatusCode >= 200 && rawStatusCode < 300)
                                 {
                                     try
@@ -96,10 +96,13 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                     // 返回的httpCode全为200，异常状态吗内置到code
                                     originalResponse.setRawStatusCode(200);
                                 }
-                                log.info("响应转后:{}", responseData);
+//                                log.info("响应转后:{}", responseData);
 
                                 // 重新设置content-length避免body被截断
-                                originalResponse.getHeaders().set("Content-length", String.valueOf(responseData.getBytes().length));
+                                String resultLen = String.valueOf(responseData.getBytes().length);
+                                originalResponse.getHeaders().set("Content-length", resultLen);
+                                log.info("response path:{}", exchange.getRequest().getPath().toString());
+                                log.info("resultLen:{}", resultLen);
 
                                 // 设置跨域
                                 originalResponse.getHeaders().set("Access-Control-Allow-Origin", "*");

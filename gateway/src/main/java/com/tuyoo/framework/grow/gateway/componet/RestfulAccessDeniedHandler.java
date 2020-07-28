@@ -29,6 +29,9 @@ public class RestfulAccessDeniedHandler implements ServerAccessDeniedHandler
         // 设置头信息，防止中文乱码
         HttpHeaders headers = response.getHeaders();
         headers.add("Content-Type", "text/html; charset=UTF-8");
+        headers.set("Access-Control-Allow-Origin", "*");
+        headers.set("Access-Control-Allow-Methods", "*");
+        headers.set("Access-Control-Allow-Headers", "*");
 
         // 返回自定义的统一错误内容
         ResultEntities<Object> failed = ResultEntities.forbidden(null);
