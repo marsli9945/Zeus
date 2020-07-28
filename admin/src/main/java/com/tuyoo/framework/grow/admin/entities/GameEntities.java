@@ -37,6 +37,6 @@ public class GameEntities
     private Integer status = 1;
 
     @JsonBackReference
-    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional=false)
+    @ManyToOne(cascade={CascadeType.DETACH,CascadeType.REFRESH},optional=false)
     private StudioEntities studio;
 }
