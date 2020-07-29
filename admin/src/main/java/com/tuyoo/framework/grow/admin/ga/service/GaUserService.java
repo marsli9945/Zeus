@@ -36,4 +36,8 @@ public interface GaUserService
     boolean sendResetEmail(String username);
 
     UserEntities validToken(String token);
+
+    boolean hasPreset(String username, String projectId);
+
+    List<GaSelectEntities> hasProjectUserSelect(String projectId);
 }

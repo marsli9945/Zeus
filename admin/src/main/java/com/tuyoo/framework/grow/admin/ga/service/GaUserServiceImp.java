@@ -15,7 +15,6 @@ import com.tuyoo.framework.grow.admin.repository.StudioRepository;
 import com.tuyoo.framework.grow.admin.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,16 +25,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import reactor.core.publisher.Mono;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -824,9 +819,8 @@ public class GaUserServiceImp implements GaUserService
         {
             return null;
         }
-        return userRepository.findByUsernameAndStatusAndRoleEntitiesList(
+        return userRepository.findByUsernameAndRoleEntitiesList(
                 claimsEntities.getUserName(),
-                1,
                 new RoleEntities(gaConfig.getRoleId(), null)
         );
     }
@@ -845,5 +839,135 @@ public class GaUserServiceImp implements GaUserService
         context.setVariable("token", token);
 
         return context;
+    }
+
+    @Override
+    public boolean hasPreset(String username, String projectId)
+    {
+        // admin直接放行
+        UserEntities admin = userRepository.findByUsernameAndRoleEntitiesList(
+                username,
+                new RoleEntities(gaConfig.getAdminId(), null)
+        );
+        log.info("admin:{}", admin);
+        if (admin != null)
+        {
+            return true;
+        }
+
+        // 首先该用户是游戏所属工作室admin可以编辑预制概览
+        GameEntities byProjectId = gameRepository.findByProjectId(projectId);
+        if (byProjectId == null)
+        {
+            return false;
+        }
+        StudioEntities allByAdminAndStatus = studioRepository.findByAdminAndIdAndStatus(
+                username,
+                byProjectId.getStudio().getId(),
+                1);
+        log.info("allByAdminAndStatus:{}", allByAdminAndStatus);
+        if (allByAdminAndStatus != null)
+        {
+            return true;
+        }
+
+        // 其次判断用户对该游戏的权限中是否有edit_preset_overview权限
+        GameEntities game = gameRepository.findByProjectId(projectId);
+        if (game == null)
+        {
+            return false;
+        }
+        log.info("gameId:{}", game.getId());
+        PermissionEntities byUsernameAndGameLike = permissionRepository.findByUsernameAndGameLike(username, "%" + game.getId().toString() + "%");
+        log.info("byUsernameAndGameLike:{}", byUsernameAndGameLike);
+        if (byUsernameAndGameLike == null)
+        {
+            return false;
+        }
+        Map<String, Object> permission = JSON.parseObject(byUsernameAndGameLike.getPermission());
+        for (Map.Entry<String, Object> entry :
+                permission.entrySet())
+        {
+            if (entry.getValue() instanceof List<?>)
+            {
+                for (Object o : (List<?>) entry.getValue())
+                {
+                    if (o.equals("edit_preset_overview"))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<GaSelectEntities> hasProjectUserSelect(String projectId)
+    {
+        ArrayList<GaSelectEntities> select = new ArrayList<>();
+        ArrayList<String> repeats = new ArrayList<>();
+        GameEntities game = gameRepository.findByProjectId(projectId);
+        if (game == null)
+        {
+            return select;
+        }
+
+        // 先拿到admin用户
+        List<UserEntities> adminList = userRepository.findAllByStatusAndRoleEntitiesList(
+                1,
+                new RoleEntities(gaConfig.getAdminId(), null)
+        );
+        if (adminList.size() > 0)
+        {
+            for (UserEntities userEntities :
+                    adminList)
+            {
+                select.add(new GaSelectEntities(
+                        userEntities.getName(),
+                        userEntities.getUsername()
+                ));
+                repeats.add(userEntities.getUsername());
+            }
+        }
+
+        // 现取出所有ga用户生产速查表
+        List<UserEntities> allUser = userRepository.findAllByStatusAndRoleEntitiesList(
+                1,
+                new RoleEntities(gaConfig.getRoleId(), null)
+        );
+        Map<String, String> userMap = new HashMap<>();
+        for (UserEntities userEntities :
+                allUser)
+        {
+            userMap.put(userEntities.getUsername(), userEntities.getName());
+        }
+
+        // 再拿到padmin用户
+        StudioEntities studioEntities = studioRepository.findById(game.getStudio().getId()).orElse(null);
+        assert studioEntities != null;
+        select.add(new GaSelectEntities(
+                userMap.get(studioEntities.getAdmin()),
+                studioEntities.getAdmin()
+        ));
+        repeats.add(studioEntities.getAdmin());
+
+        // 拿到所有拥有此游戏权限的用户生成下拉数据
+        List<PermissionEntities> allByGameLike = permissionRepository.findAllByGameLike("%" + game.getId() + "%");
+        for (PermissionEntities permissionEntities :
+                allByGameLike)
+        {
+            // 过滤掉已经加入掉admin和padmin
+            if (repeats.contains(permissionEntities.getUsername()))
+            {
+                continue;
+            }
+            select.add(new GaSelectEntities(
+                    userMap.get(permissionEntities.getUsername()),
+                    permissionEntities.getUsername()
+            ));
+        }
+        return select;
     }
 }

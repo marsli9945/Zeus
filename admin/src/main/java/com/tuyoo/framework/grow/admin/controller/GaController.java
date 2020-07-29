@@ -98,7 +98,7 @@ public class GaController
         UserEntities userEntities = gaUserService.validToken(token);
         if (userEntities == null)
         {
-            return ResultEntities.failed();
+            return ResultEntities.failed("token校验失败，已超出有效期");
         }
         return ResultEntities.success(userEntities);
     }

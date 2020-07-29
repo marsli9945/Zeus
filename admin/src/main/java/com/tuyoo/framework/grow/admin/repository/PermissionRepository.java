@@ -4,6 +4,7 @@ import com.tuyoo.framework.grow.admin.entities.PermissionEntities;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -17,7 +18,16 @@ public interface PermissionRepository extends JpaRepository<PermissionEntities, 
     List<PermissionEntities> findAllByUsernameAndStudioIdNotIn(String username, List<Integer> studioIdList);
     List<PermissionEntities> findAllByUsername(String username);
     List<PermissionEntities> findAllByStudioIdAndIsAuto(Integer studioId, Integer isAuto);
+
+    @Transactional
     void deleteAllByUsername(String username);
+
+    @Transactional
     void deleteAllByStudioId(Integer studioId);
+
+    @Transactional
     void deleteAllByUsernameAndStudioIdIn(String username, List<Integer> studioIdList);
+
+    List<PermissionEntities> findAllByGameLike(String projectId);
+    PermissionEntities findByUsernameAndGameLike(String username, String projectId);
 }

@@ -16,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
@@ -41,7 +42,8 @@ public class GaUserController
 
     @GetMapping("select")
     @ApiOperation(value = "获取所有用户", notes = "获取所有用户下拉框接口", response = GaSelectEntities.class)
-    public ResultEntities<Object> allUserSelect() {
+    public ResultEntities<Object> allUserSelect()
+    {
         return ResultEntities.success(gaUserService.allUserSelect());
     }
 
@@ -64,7 +66,8 @@ public class GaUserController
                     1,
                     new RoleEntities(gaConfig.getRoleId(), null)
             );
-            if (user == null) {
+            if (user == null)
+            {
                 return ResultEntities.failed("用户还未注册");
             }
             gaUserForm.setName(user.getName());
@@ -126,5 +129,27 @@ public class GaUserController
             return ResultEntities.success();
         }
         return ResultEntities.failed();
+    }
+
+    @GetMapping("hasPreset")
+    @ApiOperation(value = "判断用户是否可以创建指定游戏的预制概览", notes = "判断用户是否可以创建指定游戏的预制概览接口", response = ResultEntities.class)
+    public ResultEntities<Object> hasPreset(
+            @RequestParam String username,
+            @RequestParam String projectId
+    )
+    {
+        return ResultEntities.success(gaUserService.hasPreset(username, projectId));
+    }
+
+    @GetMapping("hasProjectUserSelect")
+    @ApiOperation(value = "获取拥有游戏权限的所有用户下拉数据", notes = "获取拥有游戏权限的所有用户接口", response = GaSelectEntities.class)
+    public ResultEntities<Object> hasProjectUserSelect(HttpServletRequest request)
+    {
+        String gaProjectId = request.getHeader("ga_project_id");
+        if (gaProjectId == null)
+        {
+            return ResultEntities.failed("缺少ga_project_id信息");
+        }
+        return ResultEntities.success(gaUserService.hasProjectUserSelect(gaProjectId));
     }
 }

@@ -15,6 +15,7 @@ import java.util.List;
 public class GaConfig
 {
     private Integer roleId;
+    private Integer adminId;
     private String roleName;
     private String clientId;
     private String clientSecret;
