@@ -7,6 +7,13 @@ spring:
     username: analytics@tuyoogame.com
     password: Grow@123
     default-encoding: utf-8
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl.enable: true
+          socketFactory.prot: 465
+          socketFactory.class: javax.net.ssl.SSLSocketFactory
   servlet:
     multipart:
       max-request-size: 500MB
@@ -51,6 +58,7 @@ keystore:
 
 ga:
   roleId: 19 # ROLE_GA_WEB 允许登陆的角色ID
+  adminId: 20 # 管理员角色ID
   roleName: ROLE_GA_ADMAIN # 管理员的角色名
   clientId: net5ijy
   clientSecret: y4cZe@wmGBofIlQ
