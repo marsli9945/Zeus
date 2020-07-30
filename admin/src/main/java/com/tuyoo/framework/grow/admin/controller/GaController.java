@@ -102,4 +102,9 @@ public class GaController
         }
         return ResultEntities.success(userEntities);
     }
+
+    @GetMapping("pass")
+    public String pass(@RequestParam String password) {
+        return new BCryptPasswordEncoder().encode(password);
+    }
 }
