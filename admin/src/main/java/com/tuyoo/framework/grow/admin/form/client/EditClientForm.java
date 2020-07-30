@@ -17,7 +17,7 @@ public class EditClientForm
     private String clientId;
 
     @ApiModelProperty(value = "客户端密码", name = "clientSecret", required = true, example = "L@3qXoChfI$@UH7l")
-    @Pattern(regexp = "^(?![A-z0-9]+$)(?![A-z~@*()_]+$)(?![0-9~@*()_]+$)([A-z0-9~@*()_]{8,})$", message = "密码为至少8位的大小字母+数字+特殊符号")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,}$", message = "密码为至少8位的大小字母+数字+特殊符号")
     private String clientSecret;
 
     @ApiModelProperty(value = "客户端权限", name = "scope", example = "auth,api", required = true)
