@@ -18,7 +18,7 @@ public class EditUserForm
     private String username;
 
     @ApiModelProperty(value = "登录密码", name = "password", example = "Tuyoo@123")
-    @Pattern(regexp = "^(?![A-z0-9]+$)(?![A-z~@*()_]+$)(?![0-9~@*()_]+$)([A-z0-9~@*()_]{8,})$", message = "密码为至少8位的大小字母+数字+特殊符号")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\s\\S]{8,}$", message = "密码为至少8位的大小字母+数字+特殊符号")
     private String password;
 
     @ApiModelProperty(value = "用户名称", name = "name", example = "途游")
