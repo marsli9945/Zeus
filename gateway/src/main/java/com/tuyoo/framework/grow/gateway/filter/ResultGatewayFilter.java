@@ -61,9 +61,11 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                 DataBufferUtils.release(join);
                                 String responseData = new String(content, StandardCharsets.UTF_8);
                                 Integer rawStatusCode = originalResponse.getRawStatusCode();
+                                String rowLen = String.valueOf(content.length);
                                 log.info("rawStatusCode:{}", rawStatusCode);
+                                log.info("rowLen:{}", rowLen);
 
-//                                log.info("响应转前:{}", responseData);
+                                log.info("响应转前:{}", responseData);
                                 if (rawStatusCode != null && rawStatusCode >= 200 && rawStatusCode < 300)
                                 {
                                     try
@@ -96,7 +98,7 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                     // 返回的httpCode全为200，异常状态吗内置到code
                                     originalResponse.setRawStatusCode(200);
                                 }
-//                                log.info("响应转后:{}", responseData);
+                                log.info("响应转后:{}", responseData);
 
                                 // 重新设置content-length避免body被截断
                                 String resultLen = String.valueOf(responseData.getBytes().length);

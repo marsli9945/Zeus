@@ -53,13 +53,12 @@ spring:
           filters:
             - StripPrefix=2
 
-        - id: api
-          uri: lb://API
+        - id: zuul
+          uri: lb://ZUUL
           predicates:
-            - Path=/v1/api/**
+            - Path=/v1/zuul/**
           filters:
             - StripPrefix=2
-            - Result
 
         - id: admin
           uri: lb://ADMIN
@@ -67,6 +66,46 @@ spring:
             - Path=/v1/admin/**
           filters:
             - StripPrefix=2
+
+        - id: insight
+          uri: lb://INSIGHT
+          predicates:
+            - Path=/v1/insight/**
+          filters:
+            - StripPrefix=2
+            - Result
+
+        - id: axe
+          uri: lb://AXE
+          predicates:
+            - Path=/v1/axe/**
+          filters:
+            - StripPrefix=2
+            - Result
+
+        - id: remote
+          uri: lb://REMOTE
+          predicates:
+            - Path=/v1/remote/**
+          filters:
+            - StripPrefix=2
+            - Result
+
+        - id: report
+          uri: lb://REPORT
+          predicates:
+            - Path=/v1/report/**
+          filters:
+            - StripPrefix=2
+            - Result
+
+        - id: grow-analytics-log-server
+          uri: lb://GROW-ANALYTICS-LOG-SERVER
+          predicates:
+            - Path=/v1/grow-analytics-log-server/**
+          filters:
+            - StripPrefix=2
+            - Result
 
 eureka:
   instance:
