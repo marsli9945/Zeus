@@ -20,6 +20,8 @@ public class GaGameEntities
     @NotNull(message = "缺少游戏ID")
     private Integer id;
 
+    private String projectId;
+
     @ApiModelProperty(value = "游戏名称", name = "name", example = "GrowAnalytics")
     private String name;
 

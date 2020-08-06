@@ -377,7 +377,7 @@ public class GaUserServiceImp implements GaUserService
         for (GameEntities gameEntities :
                 studioEntities.getGameEntities())
         {
-            gameList.add(new GaGameEntities(gameEntities.getId(), gameEntities.getName(), gameEntities.getIcon(), false));
+            gameList.add(new GaGameEntities(gameEntities.getId(), gameEntities.getProjectId(), gameEntities.getName(), gameEntities.getIcon(), false));
         }
         gaStudioEntities.setGame(gameList);
 
