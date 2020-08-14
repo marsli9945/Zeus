@@ -2,7 +2,7 @@ server:
   port: 8001
 spring:
   application:
-    name: api
+    name: grow-analytics-log-server
 
 eureka:
   instance:

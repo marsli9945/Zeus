@@ -17,7 +17,6 @@ public class LoginForm
 
     @ApiModelProperty(value = "授权密码", name = "client_secret", required = true, example = "123456")
     @NotBlank(message = "授权密码不能为空")
-    @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
     private String clientSecret;
 
     @ApiModelProperty(value = "登录账号", name = "username", required = true, example = "admin")
@@ -26,6 +25,5 @@ public class LoginForm
 
     @ApiModelProperty(value = "登录密码", name = "password", required = true, example = "123456")
     @NotBlank(message = "密码不能为空")
-    @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
     private String password;
 }

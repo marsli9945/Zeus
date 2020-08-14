@@ -21,6 +21,5 @@ public class RefreshForm
 
     @ApiModelProperty(value = "授权密码", name = "clientSecret", required = true, example = "123456")
     @NotBlank(message = "授权密码不能为空")
-    @Size(min = 6,max = 18,message = "密码的长度范围为6-18位")
     private String clientSecret;
 }
