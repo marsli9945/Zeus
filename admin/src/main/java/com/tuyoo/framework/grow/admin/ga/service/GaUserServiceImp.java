@@ -104,7 +104,7 @@ public class GaUserServiceImp implements GaUserService
     private List<Integer> hasAccessGameStudioId()
     {
         // 先找到自己可分配权限的所有工作室
-        List<PermissionEntities> allByUsernameAndIsDistributeAndStatus = permissionRepository.findAllByUsernameAndIsAccessGame(jwtUtil.getUsername(), 1);
+        List<PermissionEntities> allByUsernameAndIsDistributeAndStatus = permissionRepository.findAllByUsername(jwtUtil.getUsername());
         ArrayList<Integer> studioList = new ArrayList<>();
         for (PermissionEntities permissionEntities :
                 allByUsernameAndIsDistributeAndStatus)
