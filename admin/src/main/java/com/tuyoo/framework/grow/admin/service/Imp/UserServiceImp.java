@@ -47,6 +47,12 @@ public class UserServiceImp implements UserService
     }
 
     @Override
+    public UserEntities findByUsernameAndRoleEntitiesList(String username, RoleEntities roleEntities)
+    {
+        return userRepository.findByUsernameAndRoleEntitiesList(username, roleEntities);
+    }
+
+    @Override
     public UserEntities findByUsernameAndStatusAndRoleEntitiesList(String username, Integer status, RoleEntities roleEntities)
     {
         return userRepository.findByUsernameAndStatusAndRoleEntitiesList(username, status, roleEntities);

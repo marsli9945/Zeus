@@ -61,9 +61,8 @@ public class GaUserController
         if (username != null)
         {
             GaUserForm gaUserForm = new GaUserForm();
-            UserEntities user = userService.findByUsernameAndStatusAndRoleEntitiesList(
+            UserEntities user = userService.findByUsernameAndRoleEntitiesList(
                     username,
-                    1,
                     new RoleEntities(gaConfig.getRoleId(), null)
             );
             if (user == null)

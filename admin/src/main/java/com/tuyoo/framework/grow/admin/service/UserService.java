@@ -10,6 +10,8 @@ public interface UserService
 {
     Page<UserEntities> fetch(Integer page, Integer size, String name);
 
+    UserEntities findByUsernameAndRoleEntitiesList(String username, RoleEntities roleEntities);
+
     UserEntities findByUsernameAndStatusAndRoleEntitiesList(String username, Integer status, RoleEntities roleEntities);
 
     boolean create(CreateUserForm createUserForm);

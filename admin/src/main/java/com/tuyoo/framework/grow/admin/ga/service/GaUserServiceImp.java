@@ -434,6 +434,7 @@ public class GaUserServiceImp implements GaUserService
                 newGaGameEntities.setId(gaGameEntities.getId());
                 newGaGameEntities.setName(gaGameEntities.getName());
                 newGaGameEntities.setIcon(gaGameEntities.getIcon());
+                newGaGameEntities.setProjectId(gaGameEntities.getProjectId());
                 // 开启已拥有的游戏
                 newGaGameEntities.setIs_own(userGameMap.get(gaStudioEntities.getId()) != null &&
                         userGameMap.get(gaStudioEntities.getId()).contains(gaGameEntities.getId()));
@@ -499,8 +500,13 @@ public class GaUserServiceImp implements GaUserService
                 adminStudioIdList.add(studioEntities.getId());
             }
 
+            if (adminStudioIdList.size() < 1)
+            {
+                adminStudioIdList.add(-1);
+            }
+
             // 获取非工作室管理员具有管理权限的工作室
-            List<PermissionEntities> allByUsernameAndStudioIdNotIn = permissionRepository.findAllByUsernameAndStudioIdNotIn(jwtUtil.getUsername(), adminStudioIdList);
+            List<PermissionEntities> allByUsernameAndStudioIdNotIn = permissionRepository.findAllByUsernameAndIsDistributeAndStudioIdNotIn(jwtUtil.getUsername(), 1, adminStudioIdList);
             ArrayList<Integer> distributeStudioIdList = new ArrayList<>();
             for (PermissionEntities permissionEntities :
                     allByUsernameAndStudioIdNotIn)
@@ -713,13 +719,10 @@ public class GaUserServiceImp implements GaUserService
                 gameList.add(game.getId());
             }
         }
-        if (gameList.size() == 0)
-        {
-            return;
-        }
         entities.setGame(JSON.toJSONString(gameList));
 
         // 收集权限信息
+        boolean noPermission = true;
         HashMap<Object, Object> parentPermission = new HashMap<>();
         for (GaPermissionEntities permission : studioEntities.getPermission())
         {
@@ -728,6 +731,7 @@ public class GaUserServiceImp implements GaUserService
             {
                 if (children.getIs_own())
                 {
+                    noPermission = false;
                     childrenPermission.add(children.getId());
 
                     // 三个重要权限设置
@@ -748,6 +752,13 @@ public class GaUserServiceImp implements GaUserService
                 }
             }
             parentPermission.put(permission.getId(), childrenPermission);
+        }
+        if (gameList.size() == 0 && noPermission)
+        {
+            if (studio != null) {
+                permissionRepository.deleteById(studio.getId());
+            }
+            return;
         }
         entities.setPermission(JSON.toJSONString(parentPermission));
 

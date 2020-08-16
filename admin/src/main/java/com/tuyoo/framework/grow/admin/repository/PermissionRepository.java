@@ -16,6 +16,7 @@ public interface PermissionRepository extends JpaRepository<PermissionEntities, 
     List<PermissionEntities> findAllByUsernameAndIsAccessGame(String username, Integer isAccessGame);
     List<PermissionEntities> findAllByStudioIdIn(List<Integer> studioList);
     List<PermissionEntities> findAllByUsernameAndStudioIdNotIn(String username, List<Integer> studioIdList);
+    List<PermissionEntities> findAllByUsernameAndIsDistributeAndStudioIdNotIn(String username, Integer isDistribute, List<Integer> studioIdList);
     List<PermissionEntities> findAllByUsername(String username);
     List<PermissionEntities> findAllByStudioIdAndIsAuto(Integer studioId, Integer isAuto);
 
