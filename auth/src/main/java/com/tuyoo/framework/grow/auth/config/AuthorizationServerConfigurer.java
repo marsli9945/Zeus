@@ -63,7 +63,7 @@ public class AuthorizationServerConfigurer extends AuthorizationServerConfigurer
         endpoints
                 .userDetailsService(userDetailsService) // 用户信息查询服务
                 .accessTokenConverter(accessTokenConverter())
-                .tokenStore(jwtTokenStore()) // 数据库管理access_token和refresh_token
+//                .tokenStore(jwtTokenStore()) // 数据库管理access_token和refresh_token
                 .reuseRefreshTokens(false) //该字段设置设置refresh token是否重复使用,不能重复使用否则和redis里的内容不匹配
                 .authenticationManager(authenticationManagerBean)
                 .authorizationCodeServices(new JdbcAuthorizationCodeServices(dataSource)) // 数据库管理授权码

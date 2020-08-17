@@ -20,6 +20,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 @Slf4j
 @Component
@@ -61,11 +62,11 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                 DataBufferUtils.release(join);
                                 String responseData = new String(content, StandardCharsets.UTF_8);
                                 Integer rawStatusCode = originalResponse.getRawStatusCode();
-                                String rowLen = String.valueOf(content.length);
-                                log.info("rawStatusCode:{}", rawStatusCode);
-                                log.info("rowLen:{}", rowLen);
+                                HashMap<String, Object> jsonLog = new HashMap<>();
+                                jsonLog.put("search_user", exchange.getRequest().getHeaders().getFirst("search_user"));
+                                jsonLog.put("rawStatusCode", rawStatusCode);
+                                jsonLog.put("响应转前", responseData);
 
-                                log.info("响应转前:{}", responseData);
                                 if (rawStatusCode != null && rawStatusCode >= 200 && rawStatusCode < 300)
                                 {
                                     try
@@ -76,7 +77,8 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                                 JSON.parse(responseData)
                                         ));
                                         log.info("is json");
-                                    } catch (Exception e)
+                                    }
+                                    catch (Exception e)
                                     {
                                         responseData = JSON.toJSONString(ResultEntities.init(
                                                 rawStatusCode,
@@ -98,13 +100,16 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                     // 返回的httpCode全为200，异常状态吗内置到code
                                     originalResponse.setRawStatusCode(200);
                                 }
-                                log.info("响应转后:{}", responseData);
+                                jsonLog.put("响应转后", responseData);
 
                                 // 重新设置content-length避免body被截断
                                 String resultLen = String.valueOf(responseData.getBytes().length);
                                 originalResponse.getHeaders().set("Content-length", resultLen);
-                                log.info("response path:{}", exchange.getRequest().getPath().toString());
-                                log.info("resultLen:{}", resultLen);
+                                jsonLog.put("response_path", exchange.getRequest().getPath().toString());
+                                if (!exchange.getRequest().getPath().toString().equals("/v1/grow-analytics-log-server/log/send"))
+                                {
+                                    log.info(JSON.toJSONString(jsonLog));
+                                }
 
                                 // 设置跨域
                                 originalResponse.getHeaders().set("Access-Control-Allow-Origin", "*");
@@ -124,7 +129,8 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                 return chain.filter(exchange.mutate().response(decoratedResponse).build());
             }
             return chain.filter(exchange);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             log.error(" ReplaceNullFilter 异常", e);
             return chain.filter(exchange);
