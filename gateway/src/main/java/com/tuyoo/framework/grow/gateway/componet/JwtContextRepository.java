@@ -20,6 +20,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,9 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
     @Value("${jwt.sdkTokenHeader}")
     private String sdkTokenHeader;
+
+    @Value("${jwt.projectHeader}")
+    private String projectHeader;
 
     @Value("${jwt.pubKey}")
     private String pubKey;
@@ -111,7 +115,8 @@ public class JwtContextRepository implements ServerSecurityContextRepository
                     roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
             return Mono.just(authentication).map(SecurityContextImpl::new);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return Mono.empty();
@@ -171,20 +176,32 @@ public class JwtContextRepository implements ServerSecurityContextRepository
                 return Mono.empty();
             }
 
+            // 校验游戏权限
+            List<String> roles = parse.getAuthorities();
+            String projectId = request.getHeaders().getFirst(projectHeader);
+            log.info("projectId:{}", projectId);
+            log.info("roleList:{}", roles);
+            if (projectId != null && !projectId.equals(""))
+            {
+                if (!projectValid(projectId, roles)) {
+                    return Mono.empty();
+                }
+            }
+
             // 头信息中添加查询用户
             request.mutate().header("ga_username", parse.getUser_name()).build();
             request.mutate().header("ga_request_id", getRequestId()).build();
             request.mutate().header("claims", jwt.getClaims()).build();
 
             //列出token中携带的角色表。
-            List<String> roles = parse.getAuthorities();
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     parse.getUser_name(),
                     null,
                     roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList())
             );
             return Mono.just(authentication).map(SecurityContextImpl::new);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             e.printStackTrace();
             return Mono.empty();
@@ -193,11 +210,30 @@ public class JwtContextRepository implements ServerSecurityContextRepository
 
     /**
      * 构造头信息中需要到ga_request_id
+     *
      * @return ga_request_id
      */
     private String getRequestId()
     {
         return System.currentTimeMillis() + "-" + UUID.randomUUID().toString().replace("-", "");
+    }
+
+    /**
+     * @param projectId 游戏ID
+     * @param roleList  角色列表
+     * @return 是/否
+     */
+    private boolean projectValid(String projectId, List<String> roleList)
+    {
+        for (String role :
+                roleList)
+        {
+            if (role.equals("PROJECT_" + projectId) || role.equals("ROLE_GA_ADMAIN"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -211,7 +247,6 @@ public class JwtContextRepository implements ServerSecurityContextRepository
     {
         for (String scope : scopeList)
         {
-            log.info("scope:{}" + scope);
             if (scope.equals(serverName) || scope.equals("all"))
             {
                 return true;

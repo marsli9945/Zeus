@@ -63,6 +63,7 @@ ga:
   clientId: net5ijy
   clientSecret: y4cZe@wmGBofIlQ
   host: http://127.0.0.1:9528
+  tmpHost: http://tmp.tuyoo.com
   mailTokenExp: 7200
   permission:
     - id: admin

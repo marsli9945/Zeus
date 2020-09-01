@@ -1,5 +1,6 @@
 package com.tuyoo.framework.grow.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
@@ -13,12 +14,19 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.Objects;
 
 @Slf4j
 @RestController
@@ -37,6 +45,12 @@ public class GaController
 
     @Autowired
     GaUserService gaUserService;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Value("${ga.tmpHost}")
+    private String tmpHost;
 
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
@@ -103,8 +117,42 @@ public class GaController
         return ResultEntities.success(userEntities);
     }
 
+    @PostMapping("delUser")
+    public ResultEntities<Object> delTmpUser(@RequestBody String token, @RequestBody String username)
+    {
+
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("token", token);
+        body.add("username", username);
+
+        HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+        String url = tmpHost + "/user/login";
+        ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
+
+        log.info(Objects.requireNonNull(exchange.getBody()).toString());
+
+        // 判断security反馈信息
+        if (exchange.getStatusCodeValue() != 200 || exchange.getBody() == null)
+        {
+            return ResultEntities.failed("令牌校验失败");
+        }
+
+        log.info(exchange.getBody().toString());
+        userService.delete(username);
+
+        return ResultEntities.success();
+    }
+
+    @GetMapping
+    public String test() {
+        return "{\"age\":\"28\"}";
+    }
+
     @GetMapping("pass")
-    public String pass(@RequestParam String password) {
+    public String pass(@RequestParam String password)
+    {
         return new BCryptPasswordEncoder().encode(password);
     }
 }

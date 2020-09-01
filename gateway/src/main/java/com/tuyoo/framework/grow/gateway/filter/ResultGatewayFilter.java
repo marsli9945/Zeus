@@ -1,6 +1,7 @@
 package com.tuyoo.framework.grow.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
@@ -75,8 +76,8 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                                 rawStatusCode,
                                                 "操作成功",
                                                 JSON.parse(responseData)
-                                        ));
-                                        log.info("is json");
+                                        ), SerializerFeature.WriteMapNullValue);
+                                        jsonLog.put("json check", 1);
                                     }
                                     catch (Exception e)
                                     {
@@ -84,8 +85,8 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                                 rawStatusCode,
                                                 "操作成功",
                                                 responseData
-                                        ));
-                                        log.info("not json");
+                                        ), SerializerFeature.WriteMapNullValue);
+                                        jsonLog.put("json check", 2);
                                     }
                                 }
                                 else
@@ -94,8 +95,8 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                             rawStatusCode,
                                             responseData,
                                             null
-                                    ));
-                                    log.info("no success");
+                                    ), SerializerFeature.WriteMapNullValue);
+                                    jsonLog.put("json check", 3);
 
                                     // 返回的httpCode全为200，异常状态吗内置到code
                                     originalResponse.setRawStatusCode(200);
