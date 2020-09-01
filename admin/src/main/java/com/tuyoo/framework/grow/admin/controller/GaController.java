@@ -46,9 +46,6 @@ public class GaController
     @Autowired
     GaUserService gaUserService;
 
-    @Autowired
-    RestTemplate restTemplate;
-
     @Value("${ga.tmpHost}")
     private String tmpHost;
 
@@ -115,39 +112,6 @@ public class GaController
             return ResultEntities.failed("token校验失败，已超出有效期");
         }
         return ResultEntities.success(userEntities);
-    }
-
-    @PostMapping("delUser")
-    public ResultEntities<Object> delTmpUser(@RequestBody String token, @RequestBody String username)
-    {
-
-        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-
-        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("token", token);
-        body.add("username", username);
-
-        HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
-        String url = tmpHost + "/user/login";
-        ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-
-        log.info(Objects.requireNonNull(exchange.getBody()).toString());
-
-        // 判断security反馈信息
-        if (exchange.getStatusCodeValue() != 200 || exchange.getBody() == null)
-        {
-            return ResultEntities.failed("令牌校验失败");
-        }
-
-        log.info(exchange.getBody().toString());
-        userService.delete(username);
-
-        return ResultEntities.success();
-    }
-
-    @GetMapping
-    public String test() {
-        return "{\"age\":\"28\"}";
     }
 
     @GetMapping("pass")
