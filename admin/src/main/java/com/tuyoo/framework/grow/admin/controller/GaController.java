@@ -46,9 +46,6 @@ public class GaController
     @Autowired
     GaUserService gaUserService;
 
-    @Value("${ga.tmpHost}")
-    private String tmpHost;
-
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
     public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
@@ -99,7 +96,7 @@ public class GaController
         {
             return ResultEntities.success();
         }
-        return ResultEntities.failed();
+        return ResultEntities.failed("该账号还未注册为有效用户，请进行核实");
     }
 
     @GetMapping("token")

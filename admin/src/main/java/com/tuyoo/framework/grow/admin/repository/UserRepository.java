@@ -15,5 +15,6 @@ public interface UserRepository extends JpaRepository<UserEntities, Integer>, Jp
     UserEntities findByUsernameAndRoleEntitiesList(String username, RoleEntities roleEntities);
     UserEntities findByUsernameAndStatusAndRoleEntitiesList(String username, Integer status, RoleEntities roleEntities);
 
+    List<UserEntities> findAllByRoleEntitiesList(RoleEntities role);
     List<UserEntities> findAllByStatusAndRoleEntitiesList(Integer status, RoleEntities role);
 }

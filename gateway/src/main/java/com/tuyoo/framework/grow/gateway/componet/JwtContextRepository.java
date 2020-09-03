@@ -228,7 +228,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
         for (String role :
                 roleList)
         {
-            if (role.equals("PROJECT_" + projectId) || role.equals("ROLE_GA_ADMAIN"))
+            if (role.equals("PROJECT_" + projectId) || role.equals("ROLE_GA_ADMAIN")|| role.equals("ROLE_All_PROJECT"))
             {
                 return true;
             }

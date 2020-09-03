@@ -180,8 +180,7 @@ public class GaUserServiceImp implements GaUserService
     public List<GaSelectEntities> allUserSelect()
     {
         ArrayList<GaSelectEntities> select = new ArrayList<>();
-        List<UserEntities> allByStatusAndAndRoleEntitiesList = userRepository.findAllByStatusAndRoleEntitiesList(
-                1,
+        List<UserEntities> allByStatusAndAndRoleEntitiesList = userRepository.findAllByRoleEntitiesList(
                 new RoleEntities(gaConfig.getRoleId(), null)
         );
         for (UserEntities userEntities :
