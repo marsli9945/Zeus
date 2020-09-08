@@ -1,4 +1,4 @@
-package com.tuyoo.framework.grow.admin.entities;
+package com.tuyoo.framework.grow.auth.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,6 +27,6 @@ public class StudioEntities
     @Column
     private Integer status = 1;
 
-    @OneToMany(mappedBy = "studio", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "studio", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<GameEntities> gameEntities;
 }

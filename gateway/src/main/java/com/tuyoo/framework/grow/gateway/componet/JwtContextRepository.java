@@ -181,7 +181,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             String projectId = request.getHeaders().getFirst(projectHeader);
             log.info("projectId:{}", projectId);
             log.info("roleList:{}", roles);
-            if (projectId != null && !projectId.equals(""))
+            if (projectId != null && !projectId.equals("") && !projectId.equals("null"))
             {
                 if (!projectValid(projectId, roles)) {
                     return Mono.empty();

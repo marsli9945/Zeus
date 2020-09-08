@@ -2,11 +2,9 @@ package com.tuyoo.framework.grow.auth.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.tuyoo.framework.grow.auth.entities.GameEntities;
-import com.tuyoo.framework.grow.auth.entities.RoleEntities;
-import com.tuyoo.framework.grow.auth.entities.UserEntities;
-import com.tuyoo.framework.grow.auth.entities.UserPermissionEntities;
+import com.tuyoo.framework.grow.auth.entities.*;
 import com.tuyoo.framework.grow.auth.repository.GameRepository;
+import com.tuyoo.framework.grow.auth.repository.StudioRepository;
 import com.tuyoo.framework.grow.auth.repository.UserPermissionRepository;
 import com.tuyoo.framework.grow.auth.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +29,9 @@ public class UserDetailsServiceImpl implements UserDetailsService
     GameRepository gameRepository;
 
     @Autowired
+    StudioRepository studioRepository;
+
+    @Autowired
     UserPermissionRepository userPermissionRepository;
 
     @Override
@@ -49,6 +50,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
     private Collection<? extends GrantedAuthority> getGrantedAuthorities(
             UserEntities user)
     {
+        // 写入角色
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (RoleEntities role : user.getRoleEntitiesList())
         {
@@ -56,37 +58,51 @@ public class UserDetailsServiceImpl implements UserDetailsService
                     .add(new SimpleGrantedAuthority("ROLE_" + role.getName()));
         }
 
-        List<UserPermissionEntities> permissionList = userPermissionRepository.findAllByUsername(user.getUsername());
-        if (permissionList == null)
-        {
-            return authorities;
-        }
-        List<GameEntities> allGame = gameRepository.findAll();
-        HashMap<String, String> gameMap = new HashMap<>();
-        for (GameEntities gameEntities :
-                allGame)
-        {
-            gameMap.put(gameEntities.getId(), gameEntities.getProjectId());
-        }
-        for (UserPermissionEntities permission :
-                permissionList)
-        {
-            try
+        // padmin写入工作室下所有游戏
+        List<StudioEntities> studioList = studioRepository.findAllByAdmin(user.getUsername());
+        if (studioList != null) {
+            for (StudioEntities studioEntities :
+                    studioList)
             {
-                List<String> gameList = JSON.parseArray(permission.getGame()).toJavaList(String.class);
-                for (String game :
-                        gameList)
+                for (GameEntities gameEntities:
+                     studioEntities.getGameEntities())
                 {
-                    String projectId = gameMap.get(game);
-                    if (projectId == null) {
-                        projectId = game;
-                    }
-                    authorities.add(new SimpleGrantedAuthority("PROJECT_" + projectId));
+                    authorities.add(new SimpleGrantedAuthority("PROJECT_" + gameEntities.getProjectId()));
                 }
             }
-            catch (Exception ignored)
-            {
+        }
 
+        // 写入权限列表中的游戏
+        List<UserPermissionEntities> permissionList = userPermissionRepository.findAllByUsername(user.getUsername());
+        if (permissionList != null)
+        {
+            List<GameEntities> allGame = gameRepository.findAll();
+            HashMap<String, String> gameMap = new HashMap<>();
+            for (GameEntities gameEntities :
+                    allGame)
+            {
+                gameMap.put(gameEntities.getId().toString(), gameEntities.getProjectId());
+            }
+            for (UserPermissionEntities permission :
+                    permissionList)
+            {
+                try
+                {
+                    List<String> gameList = JSON.parseArray(permission.getGame()).toJavaList(String.class);
+                    for (String game :
+                            gameList)
+                    {
+                        String projectId = gameMap.get(game);
+                        if (projectId == null) {
+                            projectId = game;
+                        }
+                        authorities.add(new SimpleGrantedAuthority("PROJECT_" + projectId));
+                    }
+                }
+                catch (Exception ignored)
+                {
+
+                }
             }
         }
 
