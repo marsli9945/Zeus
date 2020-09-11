@@ -15,6 +15,9 @@ spring:
         minIdle: 1
         maxWait: -1 #连接池最大等行时间 -1没有限制
   cloud:
+    loadbalancer:
+      retry:
+        enabled: true
     sentinel:
       transport:
         dashboard: ${SENTINEL_DASHBOARD:localhost:8080}
@@ -45,6 +48,22 @@ spring:
             - Path=/v1/auth/**
           filters:
             - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: feature
           uri: lb://FEATURE
@@ -52,6 +71,22 @@ spring:
             - Path=/v1/feature/**
           filters:
             - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: zuul
           uri: lb://ZUUL
@@ -59,6 +94,22 @@ spring:
             - Path=/v1/zuul/**
           filters:
             - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: admin
           uri: lb://ADMIN
@@ -66,6 +117,22 @@ spring:
             - Path=/v1/admin/**
           filters:
             - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: insight
           uri: lb://INSIGHT
@@ -74,6 +141,22 @@ spring:
           filters:
             - StripPrefix=2
             - Result
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: axe
           uri: lb://AXE
@@ -82,6 +165,22 @@ spring:
           filters:
             - StripPrefix=2
             - Result
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: remote
           uri: lb://REMOTE
@@ -90,6 +189,22 @@ spring:
           filters:
             - StripPrefix=2
             - Result
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: report
           uri: lb://REPORT
@@ -98,6 +213,22 @@ spring:
           filters:
             - StripPrefix=2
             - Result
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
         - id: grow-analytics-log-server
           uri: lb://GROW-ANALYTICS-LOG-SERVER
@@ -106,6 +237,114 @@ spring:
           filters:
             - StripPrefix=2
             - Result
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
+
+        - id: ad-trace
+          uri: lb://AD-TRACE
+          predicates:
+            - Path=/v1/ad-trace/**
+          filters:
+            - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
+
+        - id: query-log
+          uri: lb://QUERY-LOG
+          predicates:
+            - Path=/v1/query-log/**
+          filters:
+            - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
+
+        - id: init
+          uri: lb://INIT
+          predicates:
+            - Path=/v1/init/**
+          filters:
+            - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
+
+        - id: data-proxy
+          uri: lb://DATA-PROXY
+          predicates:
+            - Path=/v1/data-proxy/**
+          filters:
+            - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
 
 eureka:
   instance:
@@ -113,10 +352,18 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+    registry-fetch-interval-seconds: 1
 
 ribbon:
   ReadTimeout: 5000 # 建立连接后读取资源过期时间
   ConnectTimeout: 5000 # 建立连接过期时间
+  serverListRefreshInterval: 5000
+  OkToRetryOnAllOperations: true
+  MaxAutoRetriesNextServer: 3
+  MaxAutoRetries: 1
+  retryableStatusCodes: 404,500,503
+  eureka:
+    enabled: true
 
 logging:
   level:
