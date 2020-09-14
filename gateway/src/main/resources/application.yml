@@ -140,7 +140,6 @@ spring:
             - Path=/v1/insight/**
           filters:
             - StripPrefix=2
-            - Result
             - name: Retry
               args:
                 retries: 3
