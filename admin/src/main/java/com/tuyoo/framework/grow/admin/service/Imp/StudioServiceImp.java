@@ -1,10 +1,12 @@
 package com.tuyoo.framework.grow.admin.service.Imp;
 
-import com.tuyoo.framework.grow.admin.entities.StudioEntities;
+import com.tuyoo.framework.grow.admin.entities.*;
 import com.tuyoo.framework.grow.admin.form.studio.CreateStudioForm;
 import com.tuyoo.framework.grow.admin.form.studio.EditStudioForm;
+import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.repository.PermissionRepository;
 import com.tuyoo.framework.grow.admin.repository.StudioRepository;
+import com.tuyoo.framework.grow.admin.repository.UserRepository;
 import com.tuyoo.framework.grow.admin.service.StudioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -18,11 +20,18 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class StudioServiceImp implements StudioService
 {
+    @Autowired
+    GaConfig gaConfig;
+
+    @Autowired
+    UserRepository userRepository;
+
     @Autowired
     StudioRepository studioRepository;
 
@@ -90,14 +99,42 @@ public class StudioServiceImp implements StudioService
     }
 
     @Override
-    public boolean isStudioAdmin(String username, Integer studioId)
+    public List<StudioOutEntities> fetchAll()
     {
-        return studioRepository.findByAdminAndIdAndStatus(username, studioId, 1) != null;
-    }
+        // 生成用户映射集合
+        List<UserEntities> userEntitiesList = userRepository.findAllByStatusAndRoleEntitiesList(1, new RoleEntities(gaConfig.getRoleId(), null));
+        HashMap<String, String> userMap = new HashMap<>();
+        for (UserEntities userEntities :
+                userEntitiesList)
+        {
+            userMap.put(userEntities.getUsername(), userEntities.getName());
+        }
 
-    @Override
-    public List<StudioEntities> findAllIsAdminStudio(String username)
-    {
-        return studioRepository.findAllByAdminAndStatus(username, 1);
+        // 获取工作室拥有增删权限的用户列表
+        List<PermissionEntities> permissionEntitiesList = permissionRepository.findAllByIsDistribute(1);
+        HashMap<Integer, List<String>> distributeList = new HashMap<>();
+        for (PermissionEntities permissionEntities :
+                permissionEntitiesList)
+        {
+            distributeList.computeIfAbsent(permissionEntities.getStudioId(), k -> new ArrayList<>());
+            distributeList.get(permissionEntities.getStudioId()).add(userMap.get(permissionEntities.getUsername()));
+        }
+
+        // 装配输出的工作室实体
+        ArrayList<StudioOutEntities> all = new ArrayList<>();
+        List<StudioEntities> studioEntitiesList = studioRepository.findAll();
+        for (StudioEntities studioEntities :
+                studioEntitiesList)
+        {
+            StudioOutEntities studioOutEntities = new StudioOutEntities();
+            studioOutEntities.setId(studioEntities.getId());
+            studioOutEntities.setName(studioEntities.getName());
+            studioOutEntities.setGameEntities(studioEntities.getGameEntities());
+            studioOutEntities.setAdmin(userMap.get(studioEntities.getAdmin()));
+            studioOutEntities.setDistribute(distributeList.get(studioEntities.getId()));
+            all.add(studioOutEntities);
+        }
+
+        return all;
     }
 }

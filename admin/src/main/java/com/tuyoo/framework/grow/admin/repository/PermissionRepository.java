@@ -13,7 +13,7 @@ public interface PermissionRepository extends JpaRepository<PermissionEntities, 
 {
     PermissionEntities findByUsernameAndStudioId(String username, Integer studioId);
     List<PermissionEntities> findAllByUsernameAndIsDistribute(String username, Integer isDistribute);
-    List<PermissionEntities> findAllByUsernameAndIsAccessGame(String username, Integer isAccessGame);
+    List<PermissionEntities> findAllByIsDistribute(Integer isDistribute);
     List<PermissionEntities> findAllByStudioIdIn(List<Integer> studioList);
     List<PermissionEntities> findAllByUsernameAndStudioIdNotIn(String username, List<Integer> studioIdList);
     List<PermissionEntities> findAllByUsernameAndIsDistributeAndStudioIdNotIn(String username, Integer isDistribute, List<Integer> studioIdList);

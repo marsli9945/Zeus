@@ -2,12 +2,15 @@ package com.tuyoo.framework.grow.admin.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.admin.entities.RoleEntities;
+import com.tuyoo.framework.grow.admin.entities.StudioEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
+import com.tuyoo.framework.grow.admin.repository.StudioRepository;
 import com.tuyoo.framework.grow.admin.service.AuthService;
+import com.tuyoo.framework.grow.admin.service.StudioService;
 import com.tuyoo.framework.grow.admin.service.UserService;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
@@ -26,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Objects;
 
 @Slf4j
@@ -45,6 +49,9 @@ public class GaController
 
     @Autowired
     GaUserService gaUserService;
+
+    @Autowired
+    StudioService studioService;
 
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
@@ -109,6 +116,13 @@ public class GaController
             return ResultEntities.failed("token校验失败，已超出有效期");
         }
         return ResultEntities.success(userEntities);
+    }
+
+    @GetMapping("fetchStudio")
+    @ApiOperation(value = "获取工作室列表", notes = "工作室获取接口", response = ResultEntities.class)
+    public ResultEntities<Object> fetchStudio()
+    {
+        return ResultEntities.success(studioService.fetchAll());
     }
 
     @GetMapping("pass")

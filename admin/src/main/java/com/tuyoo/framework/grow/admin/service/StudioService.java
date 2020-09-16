@@ -1,6 +1,7 @@
 package com.tuyoo.framework.grow.admin.service;
 
 import com.tuyoo.framework.grow.admin.entities.StudioEntities;
+import com.tuyoo.framework.grow.admin.entities.StudioOutEntities;
 import com.tuyoo.framework.grow.admin.form.studio.CreateStudioForm;
 import com.tuyoo.framework.grow.admin.form.studio.EditStudioForm;
 import org.springframework.data.domain.Page;
@@ -17,18 +18,5 @@ public interface StudioService
 
     boolean delete(Integer id);
 
-    /**
-     * 判断用户是否为该工作室管理员
-     * @param username 需查询用户
-     * @param studioId 工作室ID
-     * @return true/false
-     */
-    boolean isStudioAdmin(String username, Integer studioId);
-
-    /**
-     * 获取用户是管理员的所有工作室
-     * @param username 用户名
-     * @return 工作室列表
-     */
-    List<StudioEntities> findAllIsAdminStudio(String username);
+    List<StudioOutEntities> fetchAll();
 }
