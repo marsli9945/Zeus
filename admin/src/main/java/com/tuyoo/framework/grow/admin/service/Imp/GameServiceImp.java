@@ -76,6 +76,8 @@ public class GameServiceImp implements GameService
         gaGameInfoEntities.setStatus(byProjectId.getStatus());
         gaGameInfoEntities.setTimeZone(byProjectId.getTimeZone());
         gaGameInfoEntities.setStudio(byProjectId.getStudio().getId());
+        gaGameInfoEntities.setRegion(byProjectId.getRegion());
+        gaGameInfoEntities.setType(byProjectId.getType());
 
         return gaGameInfoEntities;
     }

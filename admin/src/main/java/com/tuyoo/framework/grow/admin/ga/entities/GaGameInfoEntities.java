@@ -31,4 +31,10 @@ public class GaGameInfoEntities
 
     @ApiModelProperty(value = "游戏所属工作室ID", name = "studio", example = "3")
     private Integer studio;
+
+    @ApiModelProperty(value = "游戏所属区域", name = "region", example = "3")
+    private String region;
+
+    @ApiModelProperty(value = "游戏类型", name = "type", example = "3")
+    private String type;
 }

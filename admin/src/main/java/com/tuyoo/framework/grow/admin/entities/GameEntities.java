@@ -36,6 +36,12 @@ public class GameEntities
     @Column
     private Integer status = 1;
 
+    @Column
+    private String region;
+
+    @Column
+    private String type;
+
     @JsonBackReference
     @ManyToOne(cascade={CascadeType.DETACH,CascadeType.REFRESH},optional=false)
     private StudioEntities studio;

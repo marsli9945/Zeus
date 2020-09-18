@@ -82,11 +82,12 @@ public class ResultGatewayFilter implements GatewayFilter, Ordered
                                     }
                                     catch (Exception e)
                                     {
-                                        responseData = JSON.toJSONString(ResultEntities.init(
-                                                rawStatusCode,
-                                                "操作成功",
-                                                responseData
-                                        ), SerializerFeature.WriteMapNullValue);
+//                                        responseData = JSON.toJSONString(ResultEntities.init(
+//                                                rawStatusCode,
+//                                                "操作成功",
+//                                                responseData
+//                                        ), SerializerFeature.WriteMapNullValue);
+                                        responseData = JSON.toJSONString(ResultEntities.success(responseData), SerializerFeature.WriteMapNullValue);
                                         jsonLog.put("json check", 2);
                                     }
                                 }

@@ -211,7 +211,6 @@ spring:
             - Path=/v1/report/**
           filters:
             - StripPrefix=2
-            - Result
             - name: Retry
               args:
                 retries: 3

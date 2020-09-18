@@ -33,8 +33,14 @@ public class EditGameForm
     @ApiModelProperty(value = "游戏状态", name = "status", example = "1")
     private Integer status;
 
+    @ApiModelProperty(value = "游戏所属区域", name = "region", example = "3")
+    private String region;
+
+    @ApiModelProperty(value = "游戏类型", name = "type", example = "3")
+    private String type;
+
     public GameEntities entities(GameEntities gameEntities)
     {
-        return CreateGameForm.setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status);
+        return CreateGameForm.setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status, this.region, this.type);
     }
 }

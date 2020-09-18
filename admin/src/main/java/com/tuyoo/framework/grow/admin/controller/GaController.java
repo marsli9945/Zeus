@@ -1,14 +1,11 @@
 package com.tuyoo.framework.grow.admin.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.admin.entities.RoleEntities;
-import com.tuyoo.framework.grow.admin.entities.StudioEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
-import com.tuyoo.framework.grow.admin.repository.StudioRepository;
 import com.tuyoo.framework.grow.admin.service.AuthService;
 import com.tuyoo.framework.grow.admin.service.StudioService;
 import com.tuyoo.framework.grow.admin.service.UserService;
@@ -17,20 +14,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Objects;
 
 @Slf4j
 @RestController

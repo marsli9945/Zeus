@@ -84,6 +84,8 @@ public class TableImport
                         "+8",
                         "USDT",
                         1,
+                        "1",
+                        "2",
                         save
                 ));
             }

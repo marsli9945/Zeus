@@ -39,12 +39,18 @@ public class CreateGameForm
     @ApiModelProperty(value = "游戏状态", name = "status", required = true, example = "1")
     private Integer status;
 
+    @ApiModelProperty(value = "游戏所属区域", name = "region", example = "3")
+    private String region;
+
+    @ApiModelProperty(value = "游戏类型", name = "type", example = "3")
+    private String type;
+
     public GameEntities entities(GameEntities gameEntities)
     {
-        return setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status);
+        return setValue(gameEntities, this.projectId, this.name, this.studio, this.icon, this.timeZone, this.currency, this.status, this.region, this.type);
     }
 
-    static GameEntities setValue(GameEntities gameEntities, String projectId, String name, Integer studio, String icon, String timeZone, String currency, Integer status)
+    static GameEntities setValue(GameEntities gameEntities, String projectId, String name, Integer studio, String icon, String timeZone, String currency, Integer status, String region, String type)
     {
         if (projectId != null)
         {
@@ -79,6 +85,14 @@ public class CreateGameForm
         if (status != null)
         {
             gameEntities.setStatus(status);
+        }
+
+        if (region != null) {
+            gameEntities.setRegion(region);
+        }
+
+        if (type != null) {
+            gameEntities.setType(type);
         }
 
         return gameEntities;
