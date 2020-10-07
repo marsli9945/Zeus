@@ -344,6 +344,29 @@ spring:
                   - java.io.IOException
                   - java.util.concurrent.TimeoutException
 
+        - id: push-service
+          uri: lb://PUSH-SERVICE
+          predicates:
+            - Path=/v1/push-service/**
+          filters:
+            - StripPrefix=2
+            - name: Retry
+              args:
+                retries: 3
+                series:
+                  - SERVER_ERROR
+                statuses:
+                  - INTERNAL_SERVER_ERROR
+                  - BAD_GATEWAY
+                methods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                exceptions:
+                  - java.io.IOException
+                  - java.util.concurrent.TimeoutException
+
 eureka:
   instance:
     prefer-ip-address: true # 使用IP进行注册
@@ -353,8 +376,8 @@ eureka:
     registry-fetch-interval-seconds: 1
 
 ribbon:
-  ReadTimeout: 5000 # 建立连接后读取资源过期时间
-  ConnectTimeout: 5000 # 建立连接过期时间
+  ReadTimeout: 300000 # 建立连接后读取资源过期时间
+  ConnectTimeout: 300000 # 建立连接过期时间
   serverListRefreshInterval: 5000
   OkToRetryOnAllOperations: true
   MaxAutoRetriesNextServer: 3
