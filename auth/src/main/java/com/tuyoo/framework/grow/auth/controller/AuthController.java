@@ -1,9 +1,11 @@
 package com.tuyoo.framework.grow.auth.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.auth.form.LoginForm;
 import com.tuyoo.framework.grow.auth.form.RefreshForm;
 import com.tuyoo.framework.grow.auth.response.TokenResponse;
+import com.tuyoo.framework.grow.common.entities.ResultCode;
 import com.tuyoo.framework.grow.common.entities.ResultEntities;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.security.oauth2.provider.token.ConsumerTokenServices;
 import org.springframework.util.Base64Utils;
@@ -20,10 +23,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -32,6 +37,9 @@ public class AuthController
 {
     @Autowired
     RestTemplate restTemplate;
+
+    @Resource
+    RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
     @Qualifier("consumerTokenServices")
@@ -42,8 +50,14 @@ public class AuthController
 
     @PostMapping("/login")
     @ApiOperation(value = "登录", notes = "使用账号密码登录以获取token", response = TokenResponse.class)
-    public ResultEntities<Object> login(@RequestBody @Valid LoginForm loginForm)
+    public ResultEntities login(@RequestBody @Valid LoginForm loginForm)
     {
+        Object token = redisTemplate.opsForValue().get("cached-" + loginForm.getClientId() + "-" + loginForm.getUsername());
+        if (token != null)
+        {
+            return JSON.parseObject(token.toString(), ResultEntities.class);
+        }
+
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
         headers.add("Authorization", getHttpBasic(loginForm.getClientId(), loginForm.getClientSecret()));
 
@@ -56,7 +70,11 @@ public class AuthController
 
         try
         {
-            return sendSecurity(entity);
+            ResultEntities<Object> entities = sendSecurity(entity);
+            if (entities.getCode().equals(ResultCode.SUCCESS.getCode())) {
+                redisTemplate.opsForValue().set("cached-" + loginForm.getClientId() + "-" + loginForm.getUsername(), JSON.toJSONString(entities), 5, TimeUnit.SECONDS);
+            }
+            return entities;
         }
         catch (Exception e)
         {
@@ -130,7 +148,8 @@ public class AuthController
         Enumeration<String> headerNames = request.getHeaderNames();
         ArrayList<String> headerArr = new ArrayList<>();
         //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
-        while (headerNames.hasMoreElements()){
+        while (headerNames.hasMoreElements())
+        {
             String headerName = headerNames.nextElement();
             log.info(headerName + " : " + request.getHeader(headerName) + "<br/>");
             headerArr.add(headerName + " : " + request.getHeader(headerName));

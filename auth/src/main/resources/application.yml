@@ -18,10 +18,14 @@ spring:
     username: ${MYSQL_USERNAME:root}
     password: ${MYSQL_PASSWOR:123456}
     driverClassName: com.mysql.cj.jdbc.Driver
+    dbcp2:
+      min-idle: 3
+      initial-size: 3
+      max-idle: 5
+      max-wait-millis: 200
   jpa:
     hibernate:
       ddl-auto: update # 更新或创建数据表
-    show-sql: true # 打印sql
     open-in-view: true
 
 # 加密证书
