@@ -956,12 +956,13 @@ public class GaUserServiceImp implements GaUserService
 
         // 再拿到padmin用户
         StudioEntities studioEntities = studioRepository.findById(game.getStudio().getId()).orElse(null);
-        assert studioEntities != null;
-        select.add(new GaSelectEntities(
-                userMap.get(studioEntities.getAdmin()),
-                studioEntities.getAdmin()
-        ));
-        repeats.add(studioEntities.getAdmin());
+        if (studioEntities != null && !repeats.contains(studioEntities.getAdmin())) {
+            select.add(new GaSelectEntities(
+                    userMap.get(studioEntities.getAdmin()),
+                    studioEntities.getAdmin()
+            ));
+            repeats.add(studioEntities.getAdmin());
+        }
 
         // 拿到所有拥有此游戏权限的用户生成下拉数据
         List<PermissionEntities> allByGameLike = permissionRepository.findAllByGameLike("%" + game.getId() + "%");

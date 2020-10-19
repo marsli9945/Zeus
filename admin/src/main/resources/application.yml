@@ -28,7 +28,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update # 更新或创建数据表
-    show-sql: true # 打印sql
+    show-sql: false # 打印sql
     open-in-view: true
 
 eureka:
