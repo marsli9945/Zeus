@@ -143,6 +143,7 @@ public class JwtContextRepository implements ServerSecurityContextRepository
             jsonLog.put("headers", request.getHeaders());
             jsonLog.put("projectId", projectId);
             jsonLog.put("roleList", roles);
+            jsonLog.put("body", request.getBody());
             if (!request.getPath().toString().equals("/v1/grow-analytics-log-server/log/send")) {
                 log.info("requestLog:{}", jsonLog);
             }
