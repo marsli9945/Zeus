@@ -42,6 +42,11 @@ public class ApiController
         return ResultEntities.success("this is api");
     }
 
+    @PostMapping("post")
+    public ResultEntities<Object> post() {
+        return ResultEntities.success("111");
+    }
+
     @PostMapping("/log/record")
     public ResultEntities<Object> record(@RequestBody JSONArray jsonArray) {
         ArrayList<String> list = (ArrayList<String>) JSON.parseArray(jsonArray.toJSONString(),String.class);
