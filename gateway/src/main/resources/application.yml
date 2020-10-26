@@ -48,6 +48,7 @@ spring:
             - Path=/v1/api/**
           filters:
             - StripPrefix=2
+            - Result
             - name: Retry
               args:
                 retries: 3

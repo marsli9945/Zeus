@@ -19,6 +19,7 @@
         <module>consumer</module>
         <module>sentinel</module>
         <module>admin</module>
+        <module>grow-analytics-log-server</module>
     </modules>
 
     <parent>
