@@ -137,6 +137,8 @@ public class GaController
     public ResultEntities<Object> delTmpUser(@RequestParam String token, @RequestParam String username)
     {
         LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("token", token);
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
 
         LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("token", token);
@@ -144,13 +146,16 @@ public class GaController
 
         HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
         String url = gaConfig.getTmpHost() + "/user/login";
-        ResponseEntity<JSONObject> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
-        JSONObject result = exchange.getBody();
-        assert result != null;
-        Integer code = result.getInteger("code");
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        String result = exchange.getBody();
+        log.info("url:{}", url);
+        log.info("result:{}", result);
+        JSONObject jsonResult = JSONObject.parseObject(result);
+        Integer code = jsonResult.getInteger("status");
+        log.info("code:{}", code);
 
         // 判断security反馈信息
-        if (exchange.getStatusCodeValue() != 200 || exchange.getBody() == null || code != 0)
+        if (exchange.getStatusCodeValue() != 200 || result == null || code != 0)
         {
             return ResultEntities.failed("令牌校验失败");
         }
