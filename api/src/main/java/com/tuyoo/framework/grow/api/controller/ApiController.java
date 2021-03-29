@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
@@ -29,7 +30,8 @@ public class ApiController
         //获取请求头信息
         Enumeration<String> headerNames = request.getHeaderNames();
         //使用循环遍历请求头，并通过getHeader()方法获取一个指定名称的头字段
-        while (headerNames.hasMoreElements()){
+        while (headerNames.hasMoreElements())
+        {
             String headerName = headerNames.nextElement();
             log.info(headerName + " : " + request.getHeader(headerName) + "<br/>");
         }
@@ -42,10 +44,23 @@ public class ApiController
         return ResultEntities.success("this is api");
     }
 
+    @PostMapping("post")
+    public ResultEntities<Object> post()
+    {
+        return ResultEntities.success("111");
+    }
+
+    @PostMapping("err")
+    public String err(HttpServletResponse response) {
+        response.setStatus(450);
+        return "err";
+    }
+
     @PostMapping("/log/record")
-    public ResultEntities<Object> record(@RequestBody JSONArray jsonArray) {
-        ArrayList<String> list = (ArrayList<String>) JSON.parseArray(jsonArray.toJSONString(),String.class);
+    public ResultEntities<Object> record(@RequestBody JSONArray jsonArray)
+    {
+        ArrayList<String> list = (ArrayList<String>) JSON.parseArray(jsonArray.toJSONString(), String.class);
         log.info("list:{}", list);
-        return ResultEntities.success();
+        return ResultEntities.init(200, "success", null);
     }
 }

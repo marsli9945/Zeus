@@ -1,11 +1,13 @@
 package com.tuyoo.framework.grow.admin.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.tuyoo.framework.grow.admin.entities.RoleEntities;
 import com.tuyoo.framework.grow.admin.entities.UserEntities;
 import com.tuyoo.framework.grow.admin.form.LoginForm;
 import com.tuyoo.framework.grow.admin.form.user.EditUserForm;
 import com.tuyoo.framework.grow.admin.ga.GaConfig;
 import com.tuyoo.framework.grow.admin.ga.service.GaUserService;
+import com.tuyoo.framework.grow.admin.repository.PermissionRepository;
 import com.tuyoo.framework.grow.admin.service.AuthService;
 import com.tuyoo.framework.grow.admin.service.StudioService;
 import com.tuyoo.framework.grow.admin.service.UserService;
@@ -14,9 +16,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -41,6 +48,12 @@ public class GaController
 
     @Autowired
     StudioService studioService;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Autowired
+    PermissionRepository permissionRepository;
 
     @PostMapping("/login")
     @ApiOperation(value = "登陆", notes = "登陆接口", response = ResultEntities.class)
@@ -118,5 +131,38 @@ public class GaController
     public String pass(@RequestParam String password)
     {
         return new BCryptPasswordEncoder().encode(password);
+    }
+
+    @PostMapping("delUser")
+    public ResultEntities<Object> delTmpUser(@RequestParam String token, @RequestParam String username)
+    {
+        LinkedMultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
+        headers.add("token", token);
+        headers.add("Content-Type", "application/x-www-form-urlencoded");
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("token", token);
+        body.add("username", username);
+
+        HttpEntity<LinkedMultiValueMap<String, String>> entity = new HttpEntity<>(body, headers);
+        String url = gaConfig.getTmpHost() + "/user/login";
+        ResponseEntity<String> exchange = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+        String result = exchange.getBody();
+        log.info("url:{}", url);
+        log.info("result:{}", result);
+        JSONObject jsonResult = JSONObject.parseObject(result);
+        Integer code = jsonResult.getInteger("status");
+        log.info("code:{}", code);
+
+        // 判断security反馈信息
+        if (exchange.getStatusCodeValue() != 200 || result == null || code != 0)
+        {
+            return ResultEntities.failed("令牌校验失败");
+        }
+
+        userService.delete(username);
+        permissionRepository.deleteAllByUsername(username);
+
+        return ResultEntities.success();
     }
 }

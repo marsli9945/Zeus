@@ -45,9 +45,10 @@ public class SecurityServerConfigurer
                 .pathMatchers("/v1/auth/login").permitAll()
                 .pathMatchers("/v1/auth/refresh").permitAll()
                 .pathMatchers("/v1/auth/signOut").permitAll()
-                .pathMatchers("/v1/auth/io200NoAuth").permitAll()
                 // admin服务下ga系统登陆注册相关接口允许匿名访问
                 .pathMatchers("/v1/admin/ga/system/**").permitAll()
+                // 日志上传接口允许匿名访问
+                .pathMatchers("/v1/grow-analytics-log-server/log/send").permitAll()
                 // 资源上传的接口允许匿名访问
                 .pathMatchers("/v1/admin/game/upload").permitAll()
                 .pathMatchers("/v1/insight/file/upload").permitAll()
