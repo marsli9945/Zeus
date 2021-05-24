@@ -1,0 +1,25 @@
+server:
+  port: 7000
+
+spring:
+  application:
+    name: nacos-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: nacos-provider
+          uri: lb://nacos-provider
+          predicates:
+            - Path=/provider/**
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+      config:
+        server-addr: 127.0.0.1:8848
+        file-extension: yaml
+
+debug: true

@@ -10,25 +10,25 @@ import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
 @Ignore
 @SpringBootTest
-public class TestJks
+class TestJks
 {
     @Autowired
     KeystoreConfig keystore;
 
     @Test
-    public void keystore() {
+    void keystore() {
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("ga.keystore"), "GaKeystore".toCharArray());
         System.out.println(keyStoreKeyFactory.getKeyPair("gakey", "Tuyoogame123".toCharArray()));
     }
 
     @Test
-    public void ga(){
+    void ga(){
         KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource(keystore.getKeystore()), keystore.getKeystorePassword().toCharArray());
         System.out.println(keyStoreKeyFactory.getKeyPair(keystore.getAlias()));
     }
 
     @Test
-    public void config() {
+    void config() {
         // $2a$10$9dFyv1Gr3/.1C.VdevQo4uN.jWZ/zp1VIJc3kFV9EXStVjue8fjBW
 //        System.out.println(new BCryptPasswordEncoder().encode("123456"));
 
